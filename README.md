@@ -1,0 +1,3 @@
+#  CoreDexter
+## CoreData Pokédex
+

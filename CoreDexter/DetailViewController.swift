@@ -17,7 +17,8 @@ class DetailViewController: UIViewController {
         // Update the user interface for the detail item.
         if let detail = detailItem {
             if let label = detailDescriptionLabel {
-                label.text = detail.timestamp!.description
+                label.numberOfLines = 0
+                label.text = "\(detail.name) \n \(detail.id) \n \(detail.generation) \n \(detail.region!.name) \n \(detail.type1) \n \(detail.initialDesc)"//detail.timestamp!.description
             }
         }
     }
@@ -28,7 +29,7 @@ class DetailViewController: UIViewController {
         configureView()
     }
 
-    var detailItem: Event? {
+    var detailItem: Pokemon? {
         didSet {
             // Update the view.
             configureView()

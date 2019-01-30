@@ -36,10 +36,50 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     @objc
     func insertNewObject(_ sender: Any) {
         let context = self.fetchedResultsController.managedObjectContext
-        let newEvent = Event(context: context)
-             
+        let newPokemon = Pokemon(context: context)
+        
+//        NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"Favorite"];
+//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"stationIdentifier == %@", stID];
+//        [fetch setPredicate:predicate];
+//        YourObject *obj = [ctx executeRequest:fetch];
+        let regionName = "Kanto"
+        
+        let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
+        regionFetch.returnsDistinctResults = true;
+        regionFetch.resultType = .managedObjectResultType
+        let predicate = NSPredicate(format: "name == %@", regionName)
+        regionFetch.predicate = predicate
+        var regionList:[Region] = []
+        do {
+            regionList = try context.fetch(regionFetch) as [Region]
+            print(regionList)
+            print("hello")
+        } catch {
+            fatalError()
+        }
+        
+        var region:Region
+        
+        if(regionList.count == 0){
+            print("creating new region")
+            region = Region(context: context)
+            region.name = regionName
+        } else {
+            region = regionList[0]
+            print("using existing region")
+        }
+        
+        newPokemon.generation = "gen1"
+        newPokemon.name = "bulbasaur"
+        newPokemon.region = region
+        
+        newPokemon.id = 1
+        newPokemon.initialDesc = "cool initial description for poke"
+        newPokemon.type1 = "grass"
+        newPokemon.type2 = ""
+        
         // If appropriate, configure the new managed object.
-        newEvent.timestamp = Date()
+        //newPokemon.timestamp = Date()
 
         // Save the context.
         do {
@@ -105,24 +145,24 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
     }
 
-    func configureCell(_ cell: UITableViewCell, withEvent event: Event) {
-        cell.textLabel!.text = event.timestamp!.description
+    func configureCell(_ cell: UITableViewCell, withEvent event: Pokemon) {
+        cell.textLabel!.text = event.name//event.timestamp!.description
     }
 
     // MARK: - Fetched results controller
 
-    var fetchedResultsController: NSFetchedResultsController<Event> {
+    var fetchedResultsController: NSFetchedResultsController<Pokemon> {
         if _fetchedResultsController != nil {
             return _fetchedResultsController!
         }
         
-        let fetchRequest: NSFetchRequest<Event> = Event.fetchRequest()
+        let fetchRequest: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
         
         // Set the batch size to a suitable number.
         fetchRequest.fetchBatchSize = 20
         
         // Edit the sort key as appropriate.
-        let sortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: "id", ascending: false)
         
         fetchRequest.sortDescriptors = [sortDescriptor]
         
@@ -141,9 +181,13 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
              fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
         }
         
+        for object in (aFetchedResultsController.fetchedObjects!){
+            print((object as! Pokemon).region?.objectID)
+        }
+        
         return _fetchedResultsController!
     }    
-    var _fetchedResultsController: NSFetchedResultsController<Event>? = nil
+    var _fetchedResultsController: NSFetchedResultsController<Pokemon>? = nil
 
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
@@ -167,9 +211,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             case .delete:
                 tableView.deleteRows(at: [indexPath!], with: .fade)
             case .update:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Event)
+                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Pokemon)
             case .move:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Event)
+                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Pokemon)
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
     }

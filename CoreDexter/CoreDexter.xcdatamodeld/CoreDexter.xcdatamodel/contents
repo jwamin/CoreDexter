@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Event" representedClassName="Event" codeGenerationType="class">
-        <attribute name="timestamp" optional="YES" attributeType="Date"/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G5019" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Pokemon" representedClassName="Pokemon" syncable="YES" codeGenerationType="class">
+        <attribute name="front_sprite" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="generation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="initialDesc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type2" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="region" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Region" inverseName="pokemon" inverseEntity="Region" syncable="YES"/>
+    </entity>
+    <entity name="Region" representedClassName="Region" syncable="YES" codeGenerationType="class">
+        <attribute name="generation" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="realWorldContinent" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="pokemon" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Pokemon" inverseName="region" inverseEntity="Pokemon" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Event" positionX="261" positionY="189" width="128" height="60"/>
+        <element name="Pokemon" positionX="-330.58203125" positionY="-164.1015625" width="128" height="165"/>
+        <element name="Region" positionX="-87.7109375" positionY="3.55078125" width="128" height="105"/>
     </elements>
 </model>
