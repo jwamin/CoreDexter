@@ -34,28 +34,62 @@ class DetailViewController: UIViewController {
             return
         }
         
+       
         imageview = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 300, height: 300)))
         imageview.translatesAutoresizingMaskIntoConstraints = false
 
+        
         self.view.addSubview(imageview)
         
         let views:[String:UIView] = ["imageview":imageview,"label":detailDescriptionLabel]
         
         var constraints = [NSLayoutConstraint]()
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imageview(==300)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imageview(<=300)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imageview]-[label]", options: [], metrics: nil, views: views)
         
         NSLayoutConstraint(item: imageview, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        imageview.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         NSLayoutConstraint(item: imageview, attribute: .height, relatedBy: .equal, toItem: imageview, attribute: .width, multiplier: 1.0, constant: 0).isActive = true
         
         NSLayoutConstraint.activate(constraints)
         
         
-    
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+         imageview.isUserInteractionEnabled = true
+        imageview.addGestureRecognizer(gesture)
         
 
     }
 
+    @objc func tap(_ sender:UITapGestureRecognizer){
+        
+        if(sender.state == .ended){
+            print("ended")
+        }
+        
+        guard let imageview = imageview else {
+            return
+        }
+        
+        CATransaction.begin()
+        let keyframeAnimation = CAKeyframeAnimation(keyPath: "transform")
+        
+        keyframeAnimation.values = [
+            CATransform3DMakeAffineTransform(CGAffineTransform.identity),
+            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 0.8, y: 0.8)),
+            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.2, y: 1.2).concatenating(CGAffineTransform(translationX: 0, y: 20))),
+            CATransform3DMakeAffineTransform(CGAffineTransform.identity)
+        ]
+        keyframeAnimation.keyTimes = [0,0.2,0.8,1]
+        
+        keyframeAnimation.duration = 0.5
+        
+        imageview.layer.add(keyframeAnimation, forKey: "animation")
+        CATransaction.setDisableActions(true)
+        CATransaction.commit()
+        
+        
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         getImage()

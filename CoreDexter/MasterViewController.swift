@@ -120,8 +120,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let event = fetchedResultsController.object(at: indexPath)
-        configureCell(cell, withEvent: event)
+        let poke = fetchedResultsController.object(at: indexPath)
+        configureCell(cell, withPokemon: poke)
         return cell
     }
 
@@ -146,8 +146,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
     }
 
-    func configureCell(_ cell: UITableViewCell, withEvent event: Pokemon) {
-        cell.textLabel!.text = event.name//event.timestamp!.description
+    func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
+        cell.textLabel!.text = pokemon.name?.capitalized//event.timestamp!.description
     }
 
     // MARK: - Fetched results controller
@@ -212,9 +212,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             case .delete:
                 tableView.deleteRows(at: [indexPath!], with: .fade)
             case .update:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Pokemon)
+                configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
             case .move:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withEvent: anObject as! Pokemon)
+                configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
     }
