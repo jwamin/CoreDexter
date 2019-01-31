@@ -13,6 +13,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     var imageview:UIImageView!
     
+    private var animating = false
+    
     var img:UIImage?{
         didSet{
             print("set image")
@@ -63,15 +65,31 @@ class DetailViewController: UIViewController {
 
     @objc func tap(_ sender:UITapGestureRecognizer){
         
-        if(sender.state == .ended){
+
+        if(sender.state != .ended){
             print("ended")
+            return
+        }
+        
+        if(animating){
+            return
+        } else {
+            print("will anim")
+            animating = true
         }
         
         guard let imageview = imageview else {
             return
         }
         
+        //configure transations
         CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        CATransaction.setCompletionBlock {
+            self.animating = false
+        }
+        
+        //tap animation
         let keyframeAnimation = CAKeyframeAnimation(keyPath: "transform")
         
         keyframeAnimation.values = [
@@ -80,12 +98,14 @@ class DetailViewController: UIViewController {
             CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.2, y: 1.2).concatenating(CGAffineTransform(translationX: 0, y: 20))),
             CATransform3DMakeAffineTransform(CGAffineTransform.identity)
         ]
-        keyframeAnimation.keyTimes = [0,0.2,0.8,1]
         
+        keyframeAnimation.keyTimes = [0,0.2,0.8,1]
         keyframeAnimation.duration = 0.5
         
+        //add animation
         imageview.layer.add(keyframeAnimation, forKey: "animation")
-        CATransaction.setDisableActions(true)
+
+        //commit animation
         CATransaction.commit()
         
         
