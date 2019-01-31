@@ -60,43 +60,28 @@ class Initialiser{
             return
         }
         
-        let regionName = "Kanto"
+        //create region object
+        let region = Region(context: context)
         
-        let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
-        let predicate = NSPredicate(format: "name == %@", regionName)
-        regionFetch.predicate = predicate
-        var regionList:[Region] = []
-        do {
-            regionList = try context.fetch(regionFetch) as [Region]
-            print(regionList)
-            print("hello")
-        } catch {
-            fatalError()
+        
+        //loop through pokemenz
+        for pokemen in pokeArray{
+            
+            let pokemon = Pokemon(context: context)
+            pokemon.name = pokemen.name
+            pokemon.generation = pokemen.generation
+            pokemon.region = region
+            pokemon.id = Int16(pokemen.index)!
+            
+            //add as set to region
+            region.pokemon?.adding(pokemon)
+            
         }
         
-        var region:Region
         
-        if(regionList.count == 0){
-            print("creating new region")
-            region = Region(context: context)
-            region.name = regionName
-        } else {
-            region = regionList[0]
-            print("using existing region")
-        }
+       
+        //commit to cd
         
-        let newPokemon = Pokemon(context: context)
-        newPokemon.generation = "gen1"
-        newPokemon.name = "bulbasaur"
-        newPokemon.region = region
-        
-        newPokemon.id = 1
-        newPokemon.initialDesc = "cool initial description for poke"
-        newPokemon.type1 = "grass"
-        newPokemon.type2 = ""
-        
-        // If appropriate, configure the new managed object.
-        //newPokemon.timestamp = Date()
         
         // Save the context.
         do {
