@@ -12,6 +12,7 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     var imageview:UIImageView!
+    var contextUpdate:((Data)->())?
     
     private var animating = false
     
@@ -89,21 +90,49 @@ class DetailViewController: UIViewController {
             self.animating = false
         }
         
+        let animationGroup = CAAnimationGroup()
+        
         //tap animation
         let keyframeAnimation = CAKeyframeAnimation(keyPath: "transform")
         
         keyframeAnimation.values = [
-            CATransform3DMakeAffineTransform(CGAffineTransform.identity),
-            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 0.8, y: 0.8)),
-            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.2, y: 1.2).concatenating(CGAffineTransform(translationX: 0, y: 20))),
-            CATransform3DMakeAffineTransform(CGAffineTransform.identity)
+            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1, y: 1)),
+            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 0.6, y: 0.6)),
+            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.3, y: 1.3)),
+            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1, y: 1))
         ]
         
         keyframeAnimation.keyTimes = [0,0.2,0.8,1]
         keyframeAnimation.duration = 0.5
+        keyframeAnimation.fillMode =  .forwards
+        
+        let pathAnimation = CAKeyframeAnimation(keyPath: "position")
+        let bezier = UIBezierPath()
+        
+        let start = imageview.layer.position
+        let end = CGPoint(x: imageview.layer.position.x, y: imageview.layer.position.y+50.0)
+        bezier.move(to: imageview.layer.position)
+        
+        
+        
+        // Calculate the control points
+        let c1 = CGPoint(x: start.x , y: start.y)
+        let c2 = CGPoint(x: end.x,        y: end.y - 128)
+        
+        bezier.addCurve(to: end, controlPoint1: c1, controlPoint2: c2)
+        
+        pathAnimation.path = bezier.cgPath
+        pathAnimation.fillMode = .forwards
+        pathAnimation.isRemovedOnCompletion = false
+        pathAnimation.duration = 0.5
+        pathAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        
+        animationGroup.animations = [keyframeAnimation,pathAnimation]
+        animationGroup.duration = 0.5
+        animationGroup.fillMode = .forwards
         
         //add animation
-        imageview.layer.add(keyframeAnimation, forKey: "animation")
+        imageview.layer.add(animationGroup, forKey: "animation")
 
         //commit animation
         CATransaction.commit()
@@ -112,10 +141,18 @@ class DetailViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.title = detailItem!.name?.capitalized
         getImage()
     }
     
     private func getImage(){
+        
+        if let front_sprite = detailItem?.front_sprite{
+            print("loading existing image!")
+            self.img = UIImage(data: front_sprite)
+            return
+        }
+        
         
         DispatchQueue.global().async {
             
@@ -139,8 +176,14 @@ class DetailViewController: UIViewController {
                 return
             }
             
+            if let cdFillInCallback = self.contextUpdate{
+                cdFillInCallback(data)
+            }
+            
+            
             DispatchQueue.main.async {
                 print("distpatching main")
+                
                 self.img = UIImage(data: data)
             }
             

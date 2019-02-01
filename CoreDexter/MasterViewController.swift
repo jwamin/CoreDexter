@@ -101,6 +101,15 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             let object = fetchedResultsController.object(at: indexPath)
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = object
+                controller.contextUpdate = {(data) in
+                    do{
+                        print("attempting cd update")
+                        object.front_sprite = data
+                        try self.managedObjectContext?.save()
+                    } catch {
+                        print("guess that didnt work")
+                    }
+                }
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
             }
@@ -183,7 +192,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
         
         for object in (aFetchedResultsController.fetchedObjects!){
-            print((object as! Pokemon).region?.objectID)
+            print(object.region?.objectID)
         }
         
         return _fetchedResultsController!
