@@ -50,6 +50,7 @@
 		3D2BE72A220231F200E28519 = {
 			isa = PBXGroup;
 			children = (
+				3D2BE74F2202487600E28519 /* README.md */,
 				3D2BE735220231F200E28519 /* CoreDexter */,
 				3D2BE734220231F200E28519 /* Products */,
 			);
@@ -72,7 +73,6 @@
 				3D2BE74D220238D400E28519 /* InitialiserModel.swift */,
 				3D2BE73D220231F200E28519 /* DetailViewController.swift */,
 				3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */,
-				3D2BE74F2202487600E28519 /* README.md */,
 				3D2BE750220248E400E28519 /* .gitignore */,
 				3D2BE73F220231F200E28519 /* Main.storyboard */,
 				3D2BE742220231F300E28519 /* Assets.xcassets */,
