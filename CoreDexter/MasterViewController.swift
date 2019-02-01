@@ -19,7 +19,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
 
-        
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
+        ]
         
 //        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
 //        navigationItem.rightBarButtonItem = addButton
@@ -156,8 +158,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 
     func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
-        cell.textLabel!.text = pokemon.name?.capitalized//event.timestamp!.description
+        cell.textLabel!.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
+    
+
 
     // MARK: - Fetched results controller
 
