@@ -98,11 +98,10 @@ class DetailViewController: UIViewController {
         keyframeAnimation.values = [
             CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1, y: 1)),
             CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 0.6, y: 0.6)),
-            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.3, y: 1.3)),
-            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1, y: 1))
+            CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.3, y: 1.3))
         ]
         
-        keyframeAnimation.keyTimes = [0,0.2,0.8,1]
+        keyframeAnimation.keyTimes = [0,0.2,0.8]
         keyframeAnimation.duration = 0.5
         keyframeAnimation.fillMode =  .forwards
         
@@ -113,11 +112,9 @@ class DetailViewController: UIViewController {
         let end = CGPoint(x: imageview.layer.position.x, y: imageview.layer.position.y+50.0)
         bezier.move(to: imageview.layer.position)
         
-        
-        
         // Calculate the control points
         let c1 = CGPoint(x: start.x , y: start.y)
-        let c2 = CGPoint(x: end.x,        y: end.y - 128)
+        let c2 = CGPoint(x: end.x, y: end.y - 128)
         
         bezier.addCurve(to: end, controlPoint1: c1, controlPoint2: c2)
         
@@ -127,8 +124,25 @@ class DetailViewController: UIViewController {
         pathAnimation.duration = 0.5
         pathAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         
-        animationGroup.animations = [keyframeAnimation,pathAnimation]
-        animationGroup.duration = 0.5
+        
+        let basicAnimation = CABasicAnimation(keyPath: "position")
+        basicAnimation.fromValue = end
+        basicAnimation.toValue = start
+        basicAnimation.fillMode = .forwards
+        basicAnimation.isRemovedOnCompletion = true
+        basicAnimation.beginTime = 0.5;
+        basicAnimation.duration = 0.25;
+        
+        let scaleBasicAnimation = CABasicAnimation(keyPath: "transform")
+        scaleBasicAnimation.fromValue = CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.3, y: 1.3))
+        scaleBasicAnimation.toValue = CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1, y: 1))
+        scaleBasicAnimation.fillMode = .forwards
+        scaleBasicAnimation.isRemovedOnCompletion = true
+        scaleBasicAnimation.beginTime = 0.5;
+        scaleBasicAnimation.duration = 0.25;
+        
+        animationGroup.animations = [keyframeAnimation,pathAnimation,basicAnimation,scaleBasicAnimation]
+        animationGroup.duration = 0.75
         animationGroup.fillMode = .forwards
         
         //add animation
