@@ -22,8 +22,46 @@ class DetailViewController: UIViewController {
             imageview.image = img!
         }
     }
+    
+    var detailItem: Pokemon? {
+        didSet {
+            // Update the view.
+            configureView()
+        }
+    }
 
-    func configureView() {
+    //Actions
+    @objc func tap(_ sender:UITapGestureRecognizer){
+        
+
+        if(sender.state != .ended){
+            print("!ended")
+            return
+        }
+        
+       tapAnimation()
+        
+        
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        
+        configureView()
+    }
+
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let detail = detailItem {
+           
+        self.title = detail.name?.capitalized // there is a lag with this being set, fix
+            getImage()
+            
+        }
+    }
+    
+    private func configureView() {
         // Update the user interface for the detail item.
         
         if let detail = detailItem {
@@ -37,11 +75,9 @@ class DetailViewController: UIViewController {
             return
         }
         
-       
+        
         imageview = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 300, height: 300)))
         imageview.translatesAutoresizingMaskIntoConstraints = false
-
-        
         self.view.addSubview(imageview)
         
         let views:[String:UIView] = ["imageview":imageview,"label":detailDescriptionLabel]
@@ -58,20 +94,13 @@ class DetailViewController: UIViewController {
         
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
-         imageview.isUserInteractionEnabled = true
+        imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
         
-
+        
     }
-
-    @objc func tap(_ sender:UITapGestureRecognizer){
-        
-
-        if(sender.state != .ended){
-            print("ended")
-            return
-        }
-        
+    
+    private func tapAnimation(){
         if(animating){
             return
         } else {
@@ -147,16 +176,9 @@ class DetailViewController: UIViewController {
         
         //add animation
         imageview.layer.add(animationGroup, forKey: "animation")
-
+        
         //commit animation
         CATransaction.commit()
-        
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.title = detailItem!.name?.capitalized
-        getImage()
     }
     
     private func getImage(){
@@ -207,21 +229,6 @@ class DetailViewController: UIViewController {
         }
         
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-
-        configureView()
-    }
-
-    var detailItem: Pokemon? {
-        didSet {
-            // Update the view.
-            configureView()
-        }
-    }
-
 
 }
 
