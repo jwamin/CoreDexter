@@ -9,5 +9,12 @@
 * Tap animation utilising `CAKeyframesAnimation`
 * Int extension to create 3-digit pokemon index strings
 
+### TODO
+* ViewModel / Model for data transactions. Move URLSession logic for images out of Detail View.
+* UITableViewDelegate method to get images.
+* Custom UITableViewCell View
+* Dynamic Text
+* Dynamic height cells
+
 #### Frameworks Used
 `CoreData` `UIKit` `CoreAnimation`
