@@ -18,8 +18,8 @@ class DetailViewController: UIViewController {
     
     var img:UIImage?{
         didSet{
-            print("set image")
-            imageview.image = img!
+            print("set image",img)
+            setImage()
         }
     }
     
@@ -79,7 +79,7 @@ class DetailViewController: UIViewController {
         imageview = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 300, height: 300)))
         imageview.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(imageview)
-        
+        setImage()
         let views:[String:UIView] = ["imageview":imageview,"label":detailDescriptionLabel]
         
         var constraints = [NSLayoutConstraint]()
@@ -98,6 +98,13 @@ class DetailViewController: UIViewController {
         imageview.addGestureRecognizer(gesture)
         
         
+    }
+    
+    private func setImage(){
+        guard let imageview = self.imageview, let img = self.img else {
+            return
+        }
+        imageview.image = img
     }
     
     private func tapAnimation(){

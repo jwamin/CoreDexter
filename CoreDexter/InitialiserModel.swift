@@ -159,12 +159,10 @@ class Initialiser{
             var pokies:[PokeData] = []
             for poke in pokeDict{
                 let pokeAny = poke as! [String:Any]
-                print("about to print pokeany")
-                print(pokeAny)
                 let speciesInfo = pokeAny["pokemon_species"] as! [String:String]
                 let name = speciesInfo["name"]
                 let number = String(pokeAny["entry_number"] as! Int)
-                let generation = "generation-i"
+                let generation = ""
                 let region = dexDict["name"] as! String
                 let poke = PokeData(name: name!, region: region, generation: generation, index: number)
                 pokies.append(poke)

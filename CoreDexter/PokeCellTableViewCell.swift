@@ -23,4 +23,11 @@ class PokeCellTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    override func prepareForReuse() {
+        print("reusing cell")
+        self.imgview.image = nil
+        self.mainLabel.text = nil
+        super.prepareForReuse()
+    }
+    
 }

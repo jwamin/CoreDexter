@@ -6,6 +6,12 @@
 //  Copyright © 2019 Joss Manger. All rights reserved.
 //
 
+#if DEBUG
+    let debug = true
+#else
+    let debug = false
+#endif
+
 import UIKit
 import CoreData
 
@@ -13,9 +19,13 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
     var window: UIWindow?
-
+    
+   
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+         print("debug in operation: \(debug)")
+        
         // Override point for customization after application launch.
         let splitViewController = self.window!.rootViewController as! UISplitViewController
         let navigationController = splitViewController.viewControllers[splitViewController.viewControllers.count-1] as! UINavigationController
@@ -25,6 +35,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let masterNavigationController = splitViewController.viewControllers[0] as! UINavigationController
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
+        
+        
+        if(debug){
+            deleteAllData("Pokemon")
+            deleteAllData("Region")
+        }
+        
         
         let initialiser = Initialiser()
         initialiser.managedObjectContext = self.persistentContainer.viewContext
@@ -113,5 +130,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
     }
 
+    func deleteAllData(_ entity:String) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+        fetchRequest.returnsObjectsAsFaults = false
+        do {
+            let results = try persistentContainer.viewContext.fetch(fetchRequest)
+            for object in results {
+                guard let objectData = object as? NSManagedObject else {continue}
+                persistentContainer.viewContext.delete(objectData)
+            }
+            print("\(entity) delete successful")
+        } catch let error {
+            print("Detele all data in \(entity) error :", error)
+        }
+    }
+    
 }
 
