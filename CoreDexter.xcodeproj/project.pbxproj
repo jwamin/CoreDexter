@@ -15,6 +15,7 @@
 		3D2BE743220231F300E28519 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D2BE742220231F300E28519 /* Assets.xcassets */; };
 		3D2BE746220231F300E28519 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D2BE744220231F300E28519 /* LaunchScreen.storyboard */; };
 		3D2BE74E220238D400E28519 /* InitialiserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2BE74D220238D400E28519 /* InitialiserModel.swift */; };
+		3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */; };
 		3D4060F92204E63100196626 /* MajorMonoDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */; };
 		3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4060FA2204E93300196626 /* ExtensionsEtx.swift */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,7 @@
 		3D2BE74D220238D400E28519 /* InitialiserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialiserModel.swift; sourceTree = "<group>"; };
 		3D2BE74F2202487600E28519 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		3D2BE750220248E400E28519 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
+		3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeCellTableViewCell.swift; sourceTree = "<group>"; };
 		3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MajorMonoDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		3D4060FA2204E93300196626 /* ExtensionsEtx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEtx.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,6 +77,7 @@
 				3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */,
 				3D2BE750220248E400E28519 /* .gitignore */,
 				3D2BE73F220231F200E28519 /* Main.storyboard */,
+				3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */,
 				3D2BE742220231F300E28519 /* Assets.xcassets */,
 				3D2BE744220231F300E28519 /* LaunchScreen.storyboard */,
 				3D2BE747220231F300E28519 /* Info.plist */,
@@ -157,6 +160,7 @@
 			files = (
 				3D2BE73A220231F200E28519 /* CoreDexter.xcdatamodeld in Sources */,
 				3D2BE737220231F200E28519 /* AppDelegate.swift in Sources */,
+				3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */,
 				3D2BE73C220231F200E28519 /* MasterViewController.swift in Sources */,
 				3D2BE74E220238D400E28519 /* InitialiserModel.swift in Sources */,
 				3D2BE73E220231F200E28519 /* DetailViewController.swift in Sources */,

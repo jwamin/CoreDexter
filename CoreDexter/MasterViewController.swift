@@ -129,7 +129,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PokeCell", for: indexPath) as! PokeCellTableViewCell
         let poke = fetchedResultsController.object(at: indexPath)
         configureCell(cell, withPokemon: poke)
         return cell
@@ -140,6 +140,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return true
     }
 
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 40.0
+    }
+    
+ 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let context = fetchedResultsController.managedObjectContext
@@ -156,8 +161,23 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
     }
 
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let cell = cell as! PokeCellTableViewCell
+        if(cell.imgview.image == nil){
+            getImage(indexpath: indexPath)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.prepareForReuse()
+    }
+    
     func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
-        cell.textLabel!.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
+        let pokeCell = cell as! PokeCellTableViewCell
+        if let sprite_data = pokemon.front_sprite{
+            pokeCell.imgview.image = UIImage(data: sprite_data)
+        }
+        pokeCell.mainLabel.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
     
 
@@ -244,5 +264,68 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
      }
      */
 
+    private func getImage(indexpath:IndexPath){
+        
+        DispatchQueue.global().async {
+        
+            let item = self.fetchedResultsController.object(at: indexpath)
+            
+        if let front_sprite = item.front_sprite{
+            DispatchQueue.main.async {
+                
+            
+            print("loading existing image!")
+            let cell = self.tableView.cellForRow(at: indexpath) as! PokeCellTableViewCell
+            cell.imgview.image = UIImage(data: front_sprite)
+            }
+            return
+        }
+            
+//            guard let detail = item else {
+//                return
+//            }
+            
+            guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
+                return
+            }
+            URLSession.shared.dataTask(with: url, completionHandler: {
+                (data, response, error) in
+                
+                if (error != nil){
+                    print("err")
+                    return
+                }
+                
+                guard let data = data else {
+                    return
+                }
+                
+                
+                    do{
+                        print("attempting cd update")
+                        item.front_sprite = data
+                        try self.managedObjectContext?.save()
+                    } catch {
+                        print("guess that didnt work")
+                    }
+                
+                
+                
+                DispatchQueue.main.async {
+                    print("distpatching main")
+                    let cell = self.tableView.cellForRow(at: indexpath) as! PokeCellTableViewCell
+                    if let imgdata = item.front_sprite {
+                        cell.imgview.image = UIImage(data: imgdata)
+                    }
+                    
+                }
+                
+                
+                
+            }).resume()
+        }
+        
+    }
+    
 }
 

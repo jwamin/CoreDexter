@@ -181,51 +181,9 @@ class DetailViewController: UIViewController {
         CATransaction.commit()
     }
     
-    private func getImage(){
-        
-        if let front_sprite = detailItem?.front_sprite{
-            print("loading existing image!")
-            self.img = UIImage(data: front_sprite)
-            return
-        }
-        
-        
-        DispatchQueue.global().async {
-            
-       
-        
-        guard let detail = self.detailItem else {
-            return
-        }
-        guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(detail.id)+".png") else {
-            return
-        }
-        URLSession.shared.dataTask(with: url, completionHandler: {
-            (data, response, error) in
-            
-            if (error != nil){
-                print("err")
-                return
-            }
-            
-            guard let data = data else {
-                return
-            }
-            
-            if let cdFillInCallback = self.contextUpdate{
-                cdFillInCallback(data)
-            }
-            
-            
-            DispatchQueue.main.async {
-                print("distpatching main")
-                
-                self.img = UIImage(data: data)
-            }
-            
-            
-            
-        }).resume()
+    func getImage(){
+        if let detail = detailItem, let sprite = detail.front_sprite{
+            self.imageview.image = UIImage(data: sprite)
         }
         
     }
