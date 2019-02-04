@@ -22,7 +22,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
         ]
-        
 //        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
 //        navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
