@@ -223,7 +223,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 print("loading cell image", imageurl.path)
                 
                 DispatchQueue.main.async{
-                    pokeCell.imgview.image = img
+                    //pokeCell.imgview.image = img
                 }
                 
                 //print("skipped")
@@ -241,7 +241,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             
             
             let item = self.fetchedResultsController.object(at: indexpath)
-            
+        
             guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
                 return
             }
@@ -272,7 +272,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                         
                         try imgdata.write(to: fileURL)
                         
-                            item.front_sprite_filename = filename
+                        DispatchQueue.main.async {
+                            if let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell{
+                                cell.imgview.image = image
+                            }
+                        }
      
                             print("success! \(indexpath)")
 
@@ -346,6 +350,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     var _fetchedResultsController: NSFetchedResultsController<Pokemon>? = nil
 
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("updates!")
         tableView.beginUpdates()
     }
 
@@ -368,10 +373,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             case .delete:
                 tableView.deleteRows(at: [indexPath!], with: .fade)
             case .update:
-                guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-                    return
-                }
-                self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
+            break
+//                guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
+//                    return
+//                }
+//                self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
             case .move:
                 configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)
