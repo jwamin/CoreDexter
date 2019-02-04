@@ -10,6 +10,7 @@
 * Int extension to create 3-digit pokemon index strings
 
 ### TODO
+* Fix async background mode. should be smooth and do everything in the background!
 * ViewModel / Model for data transactions. Move URLSession logic for images out of Detail View.
 * UITableViewDelegate method to get images.
 * Custom UITableViewCell View
