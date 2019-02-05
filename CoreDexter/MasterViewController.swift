@@ -346,7 +346,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         case .update:
             print("updating row")
             guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-                print("no indexpath:\(indexPath) or cell \(tableView.cellForRow(at: indexPath!))")
+                print("problem with indexpath and/or cell")
                 return
             }
             self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)

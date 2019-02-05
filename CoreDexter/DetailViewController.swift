@@ -12,13 +12,11 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     var imageview:UIImageView!
-    var contextUpdate:((Data)->())?
     
     private var animating = false
     
     var img:UIImage?{
         didSet{
-            print("set image",img)
             setImage()
         }
     }
@@ -67,7 +65,9 @@ class DetailViewController: UIViewController {
         if let detail = detailItem {
             if let label = detailDescriptionLabel {
                 label.numberOfLines = 0
-                label.text = "\(detail.name) \n \(detail.id) \n \(detail.generation) \n \(detail.region!.name) \n \(detail.type1) \n \(detail.initialDesc)"//detail.timestamp!.description
+                label.textAlignment = .center
+                let id = Int(detail.id).digitString()
+                label.text = "\(detail.name ?? "")\n\(id)\n\(detail.generation ?? "")\n\(detail.region!.name ?? "")\n\(detail.type1 ?? "")\n\(detail.initialDesc ?? "")"//detail.timestamp!.description
             } else {
                 return
             }

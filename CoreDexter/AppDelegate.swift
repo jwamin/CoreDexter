@@ -36,17 +36,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
         
-        
         if(debug){
             deleteAllData("Pokemon")
             deleteAllData("Region")
             clearAllFilesFromTempDirectory()
         }
         
-        
-
-        
         return true
+        
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -131,10 +128,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     func clearAllFilesFromTempDirectory(){
         
-        var error: NSErrorPointer = nil
+        
         let fileManager = FileManager.default
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        var directoryContents: [String] = try! fileManager.contentsOfDirectory(atPath: dirPath)
+        let directoryContents: [String] = try! fileManager.contentsOfDirectory(atPath: dirPath)
         
         if directoryContents.count != 0 {
             for path in directoryContents {

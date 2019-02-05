@@ -103,7 +103,7 @@ class Initialiser{
             return false
         }
         
-        let regionName = "Kanto"
+        //let regionName = "Kanto"
         
         let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
         var regionList:[Region] = []
@@ -116,7 +116,7 @@ class Initialiser{
         //first region
         let isKanto = regionList.first
         
-        guard let kanto = isKanto, let pokemon = isKanto?.pokemon else {
+        guard let kanto = isKanto, let pokemon = kanto.pokemon else {
             return false
         }
         
