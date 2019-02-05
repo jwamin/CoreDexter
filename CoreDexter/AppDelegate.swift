@@ -40,6 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         if(debug){
             deleteAllData("Pokemon")
             deleteAllData("Region")
+            clearAllFilesFromTempDirectory()
         }
         
         
@@ -130,6 +131,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
     }
 
+    func clearAllFilesFromTempDirectory(){
+        
+        var error: NSErrorPointer = nil
+        let fileManager = FileManager.default
+        let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        var directoryContents: [String] = try! fileManager.contentsOfDirectory(atPath: dirPath)
+        
+        if directoryContents.count != 0 {
+            for path in directoryContents {
+                let fullPath = dirPath.appending("/"+path)
+                do{
+                    try fileManager.removeItem(atPath: fullPath)
+                    print("successfully deleted \(fullPath)")
+                } catch {
+                    print("that didnt work \(fullPath)")
+                }
+            }
+        } else {
+            print("Could not retrieve directory: \(dirPath)")
+        }
+    }
+    
     func deleteAllData(_ entity:String) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
         fetchRequest.returnsObjectsAsFaults = false

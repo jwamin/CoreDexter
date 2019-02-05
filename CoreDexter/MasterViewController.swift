@@ -29,7 +29,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         
-       
+      
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -137,7 +137,16 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
      // MARK: - Scroll view
     
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("didscroll")
+//        if(fetchedResultsController.delegate != nil){
+//            fetchedResultsController.delegate = nil
+//        }
+    }
+    
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        fetchedResultsController.delegate = self
+        print("did end scroll")
         if(self.fetchedResultsController.managedObjectContext.hasChanges){
             do{
             try fetchedResultsController.managedObjectContext.save()
@@ -163,6 +172,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let poke = fetchedResultsController.object(at: indexPath)
         print("loading cell \(indexPath)")
         configureCell(cell, withPokemon: poke)
+        //getImage(indexpath: indexPath)
         return cell
     }
 
@@ -197,7 +207,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let obj = self.fetchedResultsController.object(at: indexPath)
         if(obj.front_sprite_filename == nil){
                 print("no image data for cell \(indexPath), attempting background load")
-                self.getImage(indexpath: indexPath)
+                //self.getImage(indexpath: indexPath)
             }
         }
     }
@@ -207,6 +217,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         print("\(indexPath) will prepare for reuse")
         cell.prepareForReuse()
     }
+    
+    
+    // MARK: - Custom
     
     func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
         let pokeCell = cell as! PokeCellTableViewCell
@@ -219,13 +232,19 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             if let dirpath = filepaths.first{
                 let imageurl = URL(fileURLWithPath: dirpath).appendingPathComponent(sprite_filename)
             
+                var boolPointer = ObjCBool(booleanLiteral: false)
+                
+                if (FileManager.default.fileExists(atPath: imageurl.path, isDirectory: &boolPointer)){
+                    
+                
+                
             let img = UIImage(contentsOfFile: imageurl.path)
                 print("loading cell image", imageurl.path)
                 
                 DispatchQueue.main.async{
-                    //pokeCell.imgview.image = img
+                    pokeCell.imgview.image = img
                 }
-                
+                }
                 //print("skipped")
             }
         } else {
@@ -235,83 +254,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         pokeCell.mainLabel.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
     
-    private func getImage(indexpath:IndexPath){
-        
-        
-            
-            
-            let item = self.fetchedResultsController.object(at: indexpath)
-        
-            guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
-                return
-            }
-            URLSession.shared.dataTask(with: url, completionHandler: {
-                (data, response, error) in
-                
-                if (error != nil){
-                    print("err")
-                    return
-                }
-                
-                guard let data = data else {
-                    return
-                }
-                
-                
-                let fileManager = FileManager.default
-                do{
-                    let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-                    let filename = "\(indexpath.row).png"
-                    let fileURL = documentDirectory.appendingPathComponent(filename)
-                    let image = UIImage(data: data)
-                    do{
-                        
-                        guard let imgdata = image?.pngData() else {
-                            return
-                        }
-                        
-                        try imgdata.write(to: fileURL)
-                        
-                        DispatchQueue.main.async {
-                            if let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell{
-                                cell.imgview.image = image
-                            }
-                        }
-     
-                            print("success! \(indexpath)")
-
-                        
-                    } catch {
-                        print("write failed")
-                    }
-                    
-                } catch {
-                    print("error")
-                }
-                
-                
-                
-                //                guard let imgdata = item.front_sprite, let img = UIImage(data: imgdata) else {
-                //                    return
-                //                }
-                //
-                //
-                //                DispatchQueue.main.async {
-                //
-                //                    guard let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell else {
-                //                        return
-                //                    }
-                //
-                //                    print("distpatching main with image \(indexpath)")
-                //                     cell.imgview.image = img
-                //                }
-                
-                
-                
-            }).resume()
-        
-        
-    }
+    
 
     // MARK: - Fetched results controller
 
@@ -350,7 +293,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     var _fetchedResultsController: NSFetchedResultsController<Pokemon>? = nil
 
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("updates!")
+        
         tableView.beginUpdates()
     }
 
@@ -373,11 +316,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             case .delete:
                 tableView.deleteRows(at: [indexPath!], with: .fade)
             case .update:
-            break
-//                guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-//                    return
-//                }
-//                self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
+//            break
+                print("updating row")
+                guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
+                    return
+                }
+                self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
             case .move:
                 configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)

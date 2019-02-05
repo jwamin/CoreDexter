@@ -73,13 +73,15 @@ class Initialiser{
             pokemon.region = region
             pokemon.id = Int16(pokemen.index)!
             
+            getImage(id: pokemon.objectID)
+            
             //add as set to region
             region.pokemon?.adding(pokemon)
             
         }
         
         
-       
+        
         //commit to cd
         
         
@@ -180,6 +182,88 @@ class Initialiser{
             
             })
         return task
+    }
+    
+    
+    public func getImage(id:NSManagedObjectID){
+        
+        //        if(self.fetchedResultsController.delegate != nil){
+        //             self.fetchedResultsController.delegate = nil
+        //        }
+        
+        
+        
+        let item = self.managedObjectContext.object(with: id) as! Pokemon
+        
+        guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
+            return
+        }
+        URLSession.shared.dataTask(with: url, completionHandler: {
+            (data, response, error) in
+            
+            if (error != nil){
+                print("err")
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            
+            let fileManager = FileManager.default
+            do{
+                let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
+                let filename = "\(Int(item.id).digitString()).png"
+                let fileURL = documentDirectory.appendingPathComponent(filename)
+                let image = UIImage(data: data)
+                do{
+                    
+                    guard let imgdata = image?.pngData() else {
+                        return
+                    }
+                    
+                    try imgdata.write(to: fileURL)
+                    item.front_sprite_filename = filename
+//                    DispatchQueue.main.async {
+//                        if let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell{
+//                            //cell.imgview.image = image
+//                        }
+//                    }
+                    
+                    print("success! \(id)")
+                    
+                    
+                } catch {
+                    print("write failed")
+                }
+                
+            } catch {
+                print("error")
+            }
+            
+            
+            
+            //                guard let imgdata = item.front_sprite, let img = UIImage(data: imgdata) else {
+            //                    return
+            //                }
+            //
+            //
+            //                DispatchQueue.main.async {
+            //
+            //                    guard let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell else {
+            //                        return
+            //                    }
+            //
+            //                    print("distpatching main with image \(indexpath)")
+            //                     cell.imgview.image = img
+            //                }
+            
+            
+            
+        }).resume()
+        
+        
     }
     
 }
