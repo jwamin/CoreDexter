@@ -7,7 +7,7 @@
 //
 
 #if DEBUG
-    let debug = true
+    let debug = false
 #else
     let debug = false
 #endif
@@ -44,9 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
         
         
-        let initialiser = Initialiser()
-        initialiser.managedObjectContext = self.persistentContainer.viewContext
-        initialiser.checkAndLoadData()
+
         
         return true
     }

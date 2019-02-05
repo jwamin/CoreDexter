@@ -10,17 +10,21 @@ import UIKit
 import CoreData
 
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
-
+    
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
- 
-    var scrolling = false
+    var viewModel:Initialiser!
+    var scrollLoading = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
-
+        
+        let initialiser = Initialiser()
+        initialiser.managedObjectContext = self.managedObjectContext
+        initialiser.checkAndLoadData()
+        viewModel = initialiser
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
         ]
@@ -31,77 +35,77 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         
-      
+        
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
     }
-
-    @objc
-    func insertNewObject(_ sender: Any) {
-        let context = self.fetchedResultsController.managedObjectContext
-        let newPokemon = Pokemon(context: context)
-        
-//        NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"Favorite"];
-//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"stationIdentifier == %@", stID];
-//        [fetch setPredicate:predicate];
-//        YourObject *obj = [ctx executeRequest:fetch];
-        let regionName = "Kanto"
-        
-        let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
-        regionFetch.returnsDistinctResults = true;
-        regionFetch.resultType = .managedObjectResultType
-        let predicate = NSPredicate(format: "name == %@", regionName)
-        regionFetch.predicate = predicate
-        var regionList:[Region] = []
-        do {
-            regionList = try context.fetch(regionFetch) as [Region]
-            print(regionList)
-            print("hello")
-        } catch {
-            fatalError()
-        }
-        
-        var region:Region
-        
-        if(regionList.count == 0){
-            print("creating new region")
-            region = Region(context: context)
-            region.name = regionName
-        } else {
-            region = regionList[0]
-            print("using existing region")
-        }
-        
-        newPokemon.generation = "gen1"
-        newPokemon.name = "bulbasaur"
-        newPokemon.region = region
-        
-        newPokemon.id = 1
-        newPokemon.initialDesc = "cool initial description for poke"
-        newPokemon.type1 = "grass"
-        newPokemon.type2 = ""
-        
-        // If appropriate, configure the new managed object.
-        //newPokemon.timestamp = Date()
-
-        // Save the context.
-        do {
-            try context.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
-    }
-
+    
+    //    @objc
+    //    func insertNewObject(_ sender: Any) {
+    //        let context = self.fetchedResultsController.managedObjectContext
+    //        let newPokemon = Pokemon(context: context)
+    //
+    ////        NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"Favorite"];
+    ////        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"stationIdentifier == %@", stID];
+    ////        [fetch setPredicate:predicate];
+    ////        YourObject *obj = [ctx executeRequest:fetch];
+    //        let regionName = "Kanto"
+    //
+    //        let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
+    //        regionFetch.returnsDistinctResults = true;
+    //        regionFetch.resultType = .managedObjectResultType
+    //        let predicate = NSPredicate(format: "name == %@", regionName)
+    //        regionFetch.predicate = predicate
+    //        var regionList:[Region] = []
+    //        do {
+    //            regionList = try context.fetch(regionFetch) as [Region]
+    //            print(regionList)
+    //            print("hello")
+    //        } catch {
+    //            fatalError()
+    //        }
+    //
+    //        var region:Region
+    //
+    //        if(regionList.count == 0){
+    //            print("creating new region")
+    //            region = Region(context: context)
+    //            region.name = regionName
+    //        } else {
+    //            region = regionList[0]
+    //            print("using existing region")
+    //        }
+    //
+    //        newPokemon.generation = "gen1"
+    //        newPokemon.name = "bulbasaur"
+    //        newPokemon.region = region
+    //
+    //        newPokemon.id = 1
+    //        newPokemon.initialDesc = "cool initial description for poke"
+    //        newPokemon.type1 = "grass"
+    //        newPokemon.type2 = ""
+    //
+    //        // If appropriate, configure the new managed object.
+    //        //newPokemon.timestamp = Date()
+    //
+    //        // Save the context.
+    //        do {
+    //            try context.save()
+    //        } catch {
+    //            // Replace this implementation with code to handle the error appropriately.
+    //            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+    //            let nserror = error as NSError
+    //            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+    //        }
+    //    }
+    //
     @objc
     func fileinfo(_ sender:Any){
         
-        let alert = UIAlertController(title: "File Ifo", message:nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "File Info", message:nil, preferredStyle: .alert)
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do{
@@ -113,46 +117,47 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             print("nah")
         }
         
-        
-        
-        
-        
-        
     }
     
     // MARK: - Segues
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
-            let object = fetchedResultsController.object(at: indexPath)
+                let object = fetchedResultsController.object(at: indexPath)
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = object
                 let selectedCell = tableView.cellForRow(at: tableView.indexPathForSelectedRow!) as! PokeCellTableViewCell
-
+                
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
                 controller.img = selectedCell.imgview.image
             }
         }
     }
-
-     // MARK: - Scroll view
     
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("didscroll")
-//        if(fetchedResultsController.delegate != nil){
-//            fetchedResultsController.delegate = nil
-//        }
-    }
+    // MARK: - Scroll view
+    
+    //    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    //
+    //
+    //    }
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        fetchedResultsController.delegate = self
-        scrolling = false
+        endScroll()
+    }
+    
+    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        endScroll()
+    }
+    
+    func endScroll(){
+        scrollLoading = false
         print("did end scroll")
         if(self.fetchedResultsController.managedObjectContext.hasChanges){
             do{
-            try fetchedResultsController.managedObjectContext.save()
+                try fetchedResultsController.managedObjectContext.save()
+                print("saved on scroll end")
             } catch {
                 print("no worky")
             }
@@ -160,40 +165,39 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
     
     // MARK: - Table View
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return fetchedResultsController.sections?.count ?? 0
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionInfo = fetchedResultsController.sections![section]
         return sectionInfo.numberOfObjects
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PokeCell", for: indexPath) as! PokeCellTableViewCell
         let poke = fetchedResultsController.object(at: indexPath)
         print("loading cell \(indexPath)")
         configureCell(cell, withPokemon: poke)
-        //getImage(indexpath: indexPath)
         return cell
     }
-
+    
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40.0
     }
     
- 
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let context = fetchedResultsController.managedObjectContext
             context.delete(fetchedResultsController.object(at: indexPath))
-                
+            
             do {
                 try context.save()
             } catch {
@@ -204,18 +208,18 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             }
         }
     }
-
+    
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         DispatchQueue.global(qos: .background).async {
-        let obj = self.fetchedResultsController.object(at: indexPath)
-        if(obj.front_sprite_filename == nil){
-            self.scrolling = true
+            let obj = self.fetchedResultsController.object(at: indexPath)
+            if(obj.front_sprite_filename == nil){
+                self.scrollLoading = true
                 print("no image data for cell \(indexPath), attempting background load")
                 self.getImage(indexPath: indexPath)
             }
         }
     }
-
+    
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         print("\(indexPath) will prepare for reuse")
@@ -228,33 +232,26 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
         let pokeCell = cell as! PokeCellTableViewCell
         
-        DispatchQueue.global().async {
-            
-        
-        if let sprite_filename = pokemon.front_sprite_filename{
-            let filepaths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-            if let dirpath = filepaths.first{
-                let imageurl = URL(fileURLWithPath: dirpath).appendingPathComponent(sprite_filename)
-            
-                var boolPointer = ObjCBool(booleanLiteral: false)
-                
-                if (FileManager.default.fileExists(atPath: imageurl.path, isDirectory: &boolPointer)){
+            if let sprite_filename = pokemon.front_sprite_filename{
+                let filepaths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+                if let dirpath = filepaths.first{
+                    let imageurl = URL(fileURLWithPath: dirpath).appendingPathComponent(sprite_filename)
                     
-                
-                
-            let img = UIImage(contentsOfFile: imageurl.path)
-                print("loading cell image", imageurl.path)
-                
-                DispatchQueue.main.async{
-                    pokeCell.imgview.image = img
+                    var boolPointer = ObjCBool(booleanLiteral: false)
+                    
+                    if (FileManager.default.fileExists(atPath: imageurl.path, isDirectory: &boolPointer)){
+                        print("using existing file")
+                        let img = UIImage(contentsOfFile: imageurl.path)
+                        print("loading cell image", imageurl.path)
+                        pokeCell.imgview.image = img
+                        
+                    }
+                    
                 }
-                }
-                //print("skipped")
+            } else {
+                print("no filename")
             }
-        } else {
-            print("no url")
-        }
-        }
+        
         pokeCell.mainLabel.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
     
@@ -262,79 +259,23 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         let item = self.fetchedResultsController.object(at: indexPath)
         
-        guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
-            return
-        }
-        URLSession.shared.dataTask(with: url, completionHandler: {
-            (data, response, error) in
+        viewModel.getImage(item: item) { img,filename in
             
-            if (error != nil){
-                print("err")
-                return
-            }
-            
-            guard let data = data else {
-                return
-            }
-            
-            
-            let fileManager = FileManager.default
-            do{
-                let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-                let filename = "\(Int(item.id).digitString()).png"
-                let fileURL = documentDirectory.appendingPathComponent(filename)
-                let image = UIImage(data: data)
-                do{
-                    
-                    guard let imgdata = image?.pngData() else {
-                        return
-                    }
-                    
-                    try imgdata.write(to: fileURL)
-                    DispatchQueue.global().async {
-                        item.front_sprite_filename = filename
-                    }
-                    DispatchQueue.main.async {
-                        if let cell = self.tableView.cellForRow(at: indexPath) as? PokeCellTableViewCell{
-                            cell.imgview.image = image
-                        }
-                    }
-                    
-                    print("success! \(indexPath)")
-                    
-                    
-                } catch {
-                    print("write failed")
+            DispatchQueue.main.async {
+                guard let cell = self.tableView.cellForRow(at: indexPath) as? PokeCellTableViewCell else {
+                    print("no cell at \(indexPath) ?")
+                    return
                 }
-                
-            } catch {
-                print("error")
+                item.front_sprite_filename = filename
+                cell.imgview.image = img
             }
-            
-            
-            
-            //                guard let imgdata = item.front_sprite, let img = UIImage(data: imgdata) else {
-            //                    return
-            //                }
-            //
-            //
-            //                DispatchQueue.main.async {
-            //
-            //                    guard let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell else {
-            //                        return
-            //                    }
-            //
-            //                    print("distpatching main with image \(indexpath)")
-            //                     cell.imgview.image = img
-            //                }
-            
-            
-            
-        }).resume()
+        }
+        
+        
     }
-
+    
     // MARK: - Fetched results controller
-
+    
     var fetchedResultsController: NSFetchedResultsController<Pokemon> {
         if _fetchedResultsController != nil {
             return _fetchedResultsController!
@@ -359,79 +300,79 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         do {
             try _fetchedResultsController!.performFetch()
         } catch {
-             // Replace this implementation with code to handle the error appropriately.
-             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-             let nserror = error as NSError
-             fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nserror = error as NSError
+            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
         }
         
         return _fetchedResultsController!
     }    
     var _fetchedResultsController: NSFetchedResultsController<Pokemon>? = nil
-
+    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        if(scrolling){
+        if(scrollLoading){
             return
         }
-           tableView.beginUpdates()
+        tableView.beginUpdates()
         
         
     }
-
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        if(scrolling){
+        if(scrollLoading){
             return
         }
         switch type {
-            case .insert:
-                tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-            case .delete:
-                tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-            default:
-                return
+        case .insert:
+            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+        default:
+            return
         }
     }
     
-
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        if(scrolling){
+        if(scrollLoading){
             return
         }
         switch type {
-            case .insert:
-                tableView.insertRows(at: [newIndexPath!], with: .fade)
-            case .delete:
-                tableView.deleteRows(at: [indexPath!], with: .fade)
-            case .update:
-            break
-//                print("updating row")
-//                guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-//                    return
-//                }
-//                self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
-            case .move:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
-                tableView.moveRow(at: indexPath!, to: newIndexPath!)
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: .fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: .fade)
+        case .update:
+            print("updating row")
+            guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
+                print("no indexpath:\(indexPath) or cell \(tableView.cellForRow(at: indexPath!))")
+                return
+            }
+            self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
+        case .move:
+            configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
+            tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
     }
-
+    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        if(scrolling){
+        if(scrollLoading){
             return
         }
         tableView.endUpdates()
     }
-
+    
     /*
      // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
      
      func controllerDidChangeContent(controller: NSFetchedResultsController) {
-         // In the simplest, most efficient, case, reload the table view.
-         tableView.reloadData()
+     // In the simplest, most efficient, case, reload the table view.
+     tableView.reloadData()
      }
      */
-
-   
+    
+    
     
 }
 

@@ -185,15 +185,7 @@ class Initialiser{
     }
     
     
-    public func getImage(id:NSManagedObjectID){
-        
-        //        if(self.fetchedResultsController.delegate != nil){
-        //             self.fetchedResultsController.delegate = nil
-        //        }
-        
-        
-        
-        let item = self.managedObjectContext.object(with: id) as! Pokemon
+    public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String)->Void)?){
         
         guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
             return
@@ -216,22 +208,26 @@ class Initialiser{
                 let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
                 let filename = "\(Int(item.id).digitString()).png"
                 let fileURL = documentDirectory.appendingPathComponent(filename)
-                let image = UIImage(data: data)
+                
+                guard let image = UIImage(data: data) else {
+                    return
+                }
+                
                 do{
                     
-                    guard let imgdata = image?.pngData() else {
+                    guard let imgdata = image.pngData() else {
                         return
                     }
                     
                     try imgdata.write(to: fileURL)
-                    item.front_sprite_filename = filename
-//                    DispatchQueue.main.async {
-//                        if let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell{
-//                            //cell.imgview.image = image
-//                        }
-//                    }
                     
-                    print("success! \(id)")
+                    
+                    if let callback = callback{
+                        callback(image,filename)
+                    }
+                    
+                    
+                    print("success!")
                     
                     
                 } catch {
@@ -262,8 +258,17 @@ class Initialiser{
             
             
         }).resume()
-        
-        
+    }
+    
+    func saveChanges(){
+        if(self.managedObjectContext.hasChanges){
+            do{
+                try self.managedObjectContext.save()
+                print("saved on scroll end")
+            } catch {
+                print("no worky")
+            }
+        }
     }
     
 }
