@@ -25,12 +25,12 @@ public extension Int{
 
 enum RegionIndex:Int{
     case national = 1
-    case kanto
-    case jhoto
-    case hoenn
-    case sinnoh
-    case unova
-    case kalos
+    case kanto = 2
+    case jhoto = 3
+    case hoenn = 4
+    case sinnoh = 5
+    case unova = 8
+    case kalos = 12
     case alola
     func string() -> String{
         switch self {
@@ -51,6 +51,25 @@ enum RegionIndex:Int{
         default:
             return "National"
         }
+    }
+    func startIndex(index:Int)->String{
+        var str = 0
+        switch self {
+        case .jhoto:
+            str = index + 151
+        case .hoenn:
+            str = index + 251
+        case .sinnoh:
+            str = index + 386
+        case .unova:
+            str = index + 493
+        case .kalos:
+            str = index + 649
+        default:
+             str = index + 0
+        }
+        
+        return String(str)
     }
     func physicalRegion() -> String{
         switch self {

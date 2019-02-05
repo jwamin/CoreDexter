@@ -25,6 +25,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         initialiser.managedObjectContext = self.managedObjectContext
         initialiser.checkAndLoadData()
         viewModel = initialiser
+        
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
         ]
@@ -43,66 +44,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         super.viewWillAppear(animated)
     }
     
-    //    @objc
-    //    func insertNewObject(_ sender: Any) {
-    //        let context = self.fetchedResultsController.managedObjectContext
-    //        let newPokemon = Pokemon(context: context)
-    //
-    ////        NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:@"Favorite"];
-    ////        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"stationIdentifier == %@", stID];
-    ////        [fetch setPredicate:predicate];
-    ////        YourObject *obj = [ctx executeRequest:fetch];
-    //        let regionName = "Kanto"
-    //
-    //        let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
-    //        regionFetch.returnsDistinctResults = true;
-    //        regionFetch.resultType = .managedObjectResultType
-    //        let predicate = NSPredicate(format: "name == %@", regionName)
-    //        regionFetch.predicate = predicate
-    //        var regionList:[Region] = []
-    //        do {
-    //            regionList = try context.fetch(regionFetch) as [Region]
-    //            print(regionList)
-    //            print("hello")
-    //        } catch {
-    //            fatalError()
-    //        }
-    //
-    //        var region:Region
-    //
-    //        if(regionList.count == 0){
-    //            print("creating new region")
-    //            region = Region(context: context)
-    //            region.name = regionName
-    //        } else {
-    //            region = regionList[0]
-    //            print("using existing region")
-    //        }
-    //
-    //        newPokemon.generation = "gen1"
-    //        newPokemon.name = "bulbasaur"
-    //        newPokemon.region = region
-    //
-    //        newPokemon.id = 1
-    //        newPokemon.initialDesc = "cool initial description for poke"
-    //        newPokemon.type1 = "grass"
-    //        newPokemon.type2 = ""
-    //
-    //        // If appropriate, configure the new managed object.
-    //        //newPokemon.timestamp = Date()
-    //
-    //        // Save the context.
-    //        do {
-    //            try context.save()
-    //        } catch {
-    //            // Replace this implementation with code to handle the error appropriately.
-    //            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-    //            let nserror = error as NSError
-    //            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-    //        }
-    //    }
-    //
-    
+
     @objc
     func fileinfo(_ sender:Any){
         
@@ -196,23 +138,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return 40.0
     }
     
-    
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            let context = fetchedResultsController.managedObjectContext
-            context.delete(fetchedResultsController.object(at: indexPath))
-            
-            do {
-                try context.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         DispatchQueue.global(qos: .background).async {
             let obj = self.fetchedResultsController.object(at: indexPath)
@@ -256,7 +181,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 print("no filename")
             }
         
-        pokeCell.mainLabel.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
+        pokeCell.mainLabel.text =  "\(Int(pokemon.region_id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
     
     public func getImage(indexPath:IndexPath){
@@ -291,7 +216,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         fetchRequest.fetchBatchSize = 20
         
         // Edit the sort key as appropriate.
-        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "region_id", ascending: true)
         
         fetchRequest.sortDescriptors = [sortDescriptor]
         

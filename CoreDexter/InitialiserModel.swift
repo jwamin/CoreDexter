@@ -15,20 +15,17 @@ struct PokeData {
     let region:String
     let generation:String
     let index:String
+    let nationalIndex:String
 }
 
 class Initialiser{
     
-    let max = 151
-    
+    static let region:RegionIndex = .jhoto
 
+    let region = Initialiser.region
+    
     let dispatchGroup = DispatchGroup.init()
-    var pokeArray:[PokeData] = [] {
-        didSet{
-            print("done.. updated")
-            print(pokeArray)
-        }
-    }
+    var pokeArray:[PokeData] = []
     
     weak var managedObjectContext:NSManagedObjectContext!
     
@@ -50,6 +47,7 @@ class Initialiser{
         
         dispatchGroup.notify(queue: .main) {
             print("loaded")
+            print(self.pokeArray.first!)
             self.coreDataProcess()
         }
         
@@ -62,7 +60,7 @@ class Initialiser{
         
         //create region object
         let region = Region(context: context)
-        
+        // do this. loop through and find regions. if region exists, add pokemon, if not, create region and add pokemon
         
         //loop through pokemenz
         for pokemen in pokeArray{
@@ -71,8 +69,8 @@ class Initialiser{
             pokemon.name = pokemen.name
             pokemon.generation = pokemen.generation
             pokemon.region = region
-            pokemon.id = Int16(pokemen.index)!
-            
+            pokemon.id = Int16(pokemen.nationalIndex)!
+            pokemon.region_id = Int16(pokemen.index)!
             //getImage(id: pokemon.objectID)
             
             //add as set to region
@@ -124,7 +122,7 @@ class Initialiser{
     
     func returnTask() -> URLSessionDataTask?{
         
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokedex/1") else {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokedex/"+String(region.rawValue)) else {
             return nil
         }
         self.dispatchGroup.enter()
@@ -147,27 +145,71 @@ class Initialiser{
             }
             
             let pokeDict = dexDict["pokemon_entries"] as! [Any]
-            var pokies:[PokeData] = []
-            for poke in pokeDict{
+            self.pokeArray = []
+            for (index,poke) in pokeDict.enumerated(){
                 let pokeAny = poke as! [String:Any]
                 let speciesInfo = pokeAny["pokemon_species"] as! [String:String]
-                let name = speciesInfo["name"]
-                let number = String(pokeAny["entry_number"] as! Int)
-                let generation = ""
-                let region = dexDict["name"] as! String
-                let poke = PokeData(name: name!, region: region, generation: generation, index: number)
-                pokies.append(poke)
+                let regionNumber = index+1
+                if let urlString = speciesInfo["url"]{
+                    self.getDataforPokemon(urlString: urlString,regionIndex:regionNumber)
+                }
             }
             
-            DispatchQueue.main.async {
-                self.pokeArray = pokies
+
                 self.dispatchGroup.leave()
-            }
+            
             
             })
         return task
     }
     
+    
+    private func getDataforPokemon(urlString:String,regionIndex:Int){
+        
+        dispatchGroup.enter()
+        
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        URLSession.shared.dataTask(with: url, completionHandler: {
+            (data, response, error) in
+            
+            if (error != nil){
+                print("err")
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            let pokeDict:[String:Any]
+            do{
+                pokeDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
+            } catch {
+                fatalError()
+            }
+            
+            
+
+            let name = pokeDict["name"] as! String
+            let number = String(pokeDict["id"] as! Int)
+            let generationDict = pokeDict["generation"] as! [String:String]
+            let generation = generationDict["name"] ?? ""
+            let region = Initialiser.region.string()
+            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number)
+            self.pokeArray.append(poke)
+            //print(poke)
+            
+            self.dispatchGroup.leave()
+            
+                //process pokedata and
+  
+            
+        }).resume()
+    
+        
+    }
     
     public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String)->Void)?){
         

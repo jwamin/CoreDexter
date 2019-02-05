@@ -56,9 +56,10 @@ class DetailViewController: UIViewController {
             if let label = detailDescriptionLabel {
                 label.numberOfLines = 0
                 label.textAlignment = .center
-                
+                print(detail)
                 let id = Int(detail.id).digitString()
-                label.text = "\(detail.name ?? "")\n\(id)\n\(detail.generation ?? "")\n\(detail.region!.name ?? "")\n\(detail.type1 ?? "")\n\(detail.initialDesc ?? "")"//detail.timestamp!.description
+                let regionId = Int(detail.region_id).digitString()
+                label.text = "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(detail.region!.name ?? "")\n\(detail.type1 ?? "")\n\(detail.initialDesc ?? "")"//detail.timestamp!.description
             } else {
                 return
             }

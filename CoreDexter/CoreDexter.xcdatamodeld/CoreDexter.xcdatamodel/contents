@@ -7,6 +7,7 @@
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="initialDesc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="region_id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="type1" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type2" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="region" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Region" inverseName="pokemon" inverseEntity="Region" syncable="YES"/>
@@ -18,7 +19,7 @@
         <relationship name="pokemon" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Pokemon" inverseName="region" inverseEntity="Pokemon" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Pokemon" positionX="-330.58203125" positionY="-164.1015625" width="128" height="180"/>
+        <element name="Pokemon" positionX="-330.58203125" positionY="-164.1015625" width="128" height="195"/>
         <element name="Region" positionX="-87.7109375" positionY="3.55078125" width="128" height="105"/>
     </elements>
 </model>
