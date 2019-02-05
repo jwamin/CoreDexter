@@ -48,16 +48,6 @@ class DetailViewController: UIViewController {
         
         configureView()
     }
-
-    
-    override func viewWillAppear(_ animated: Bool) {
-        if let detail = detailItem {
-           
-        self.title = detail.name?.capitalized // there is a lag with this being set, fix
-            getImage()
-            
-        }
-    }
     
     private func configureView() {
         // Update the user interface for the detail item.
@@ -66,6 +56,7 @@ class DetailViewController: UIViewController {
             if let label = detailDescriptionLabel {
                 label.numberOfLines = 0
                 label.textAlignment = .center
+                
                 let id = Int(detail.id).digitString()
                 label.text = "\(detail.name ?? "")\n\(id)\n\(detail.generation ?? "")\n\(detail.region!.name ?? "")\n\(detail.type1 ?? "")\n\(detail.initialDesc ?? "")"//detail.timestamp!.description
             } else {

@@ -102,6 +102,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     //        }
     //    }
     //
+    
     @objc
     func fileinfo(_ sender:Any){
         
@@ -126,12 +127,15 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             if let indexPath = tableView.indexPathForSelectedRow {
                 let object = fetchedResultsController.object(at: indexPath)
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = object
                 let selectedCell = tableView.cellForRow(at: tableView.indexPathForSelectedRow!) as! PokeCellTableViewCell
+                
+                controller.detailItem = object
+                controller.title = object.name?.capitalized
+                controller.img = selectedCell.imgview.image
                 
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
-                controller.img = selectedCell.imgview.image
+                
             }
         }
     }

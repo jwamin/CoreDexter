@@ -80,12 +80,7 @@ class Initialiser{
             
         }
         
-        
-        
         //commit to cd
-        
-        
-        // Save the context.
         do {
             try context.save()
         } catch {
@@ -94,6 +89,7 @@ class Initialiser{
             let nserror = error as NSError
             fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
         }
+        
     }
     
     private func datasetCheck()->Bool{
@@ -103,8 +99,6 @@ class Initialiser{
             return false
         }
         
-        //let regionName = "Kanto"
-        
         let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
         var regionList:[Region] = []
         do {
@@ -113,29 +107,24 @@ class Initialiser{
             fatalError()
         }
         
-        //first region
-        let isKanto = regionList.first
-        
-        guard let kanto = isKanto, let pokemon = kanto.pokemon else {
+        guard let kanto = regionList.first, let pokemon = kanto.pokemon else {
             return false
         }
         
         if(pokemon.count>0){
-            
-            print(pokemon)
             
             return true
             
         }
         
         //check coredata for region and check region has pokemon objects
-        return true
+        return false
         
     }
     
     func returnTask() -> URLSessionDataTask?{
         
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokedex/2") else {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokedex/1") else {
             return nil
         }
         self.dispatchGroup.enter()
@@ -170,15 +159,10 @@ class Initialiser{
                 pokies.append(poke)
             }
             
-            
-            
             DispatchQueue.main.async {
                 self.pokeArray = pokies
                 self.dispatchGroup.leave()
             }
-            
-            
-            
             
             })
         return task
@@ -239,36 +223,7 @@ class Initialiser{
             }
             
             
-            
-            //                guard let imgdata = item.front_sprite, let img = UIImage(data: imgdata) else {
-            //                    return
-            //                }
-            //
-            //
-            //                DispatchQueue.main.async {
-            //
-            //                    guard let cell = self.tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell else {
-            //                        return
-            //                    }
-            //
-            //                    print("distpatching main with image \(indexpath)")
-            //                     cell.imgview.image = img
-            //                }
-            
-            
-            
         }).resume()
-    }
-    
-    func saveChanges(){
-        if(self.managedObjectContext.hasChanges){
-            do{
-                try self.managedObjectContext.save()
-                print("saved on scroll end")
-            } catch {
-                print("no worky")
-            }
-        }
     }
     
 }

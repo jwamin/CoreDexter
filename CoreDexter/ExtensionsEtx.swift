@@ -22,3 +22,54 @@ public extension Int{
     }
     
 }
+
+enum RegionIndex:Int{
+    case national = 1
+    case kanto
+    case jhoto
+    case hoenn
+    case sinnoh
+    case unova
+    case kalos
+    case alola
+    func string() -> String{
+        switch self {
+        case .kanto:
+            return "Kanto"
+        case .jhoto:
+            return "Jhoto"
+        case .hoenn:
+            return "Hoenn"
+        case .sinnoh:
+            return "Sinnoh"
+        case .unova:
+            return "Unova"
+        case .kalos:
+            return "Kalos"
+        case .alola:
+            return "Alola"
+        default:
+            return "National"
+        }
+    }
+    func physicalRegion() -> String{
+        switch self {
+        case .kanto:
+            return "Japan; Greater Tokyo and bay area."
+        case .jhoto:
+            return "Japan; Central western Honshu."
+        case .hoenn:
+            return "Japan; Kyushu and islands."
+        case .sinnoh:
+            return "Japan; Hokkaido."
+        case .unova:
+            return "USA, New York City area."
+        case .kalos:
+            return "France."
+        case .alola:
+            return "USA, Hawaii."
+        default:
+            return ""
+        }
+    }
+}
