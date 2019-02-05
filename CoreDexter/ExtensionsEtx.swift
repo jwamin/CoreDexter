@@ -63,11 +63,11 @@ enum RegionIndex:Int{
         case .sinnoh:
             return "Japan; Hokkaido."
         case .unova:
-            return "USA, New York City area."
+            return "USA; New York City area."
         case .kalos:
             return "France."
         case .alola:
-            return "USA, Hawaii."
+            return "USA; Hawaii."
         default:
             return ""
         }
