@@ -73,7 +73,7 @@ class Initialiser{
             pokemon.region = region
             pokemon.id = Int16(pokemen.index)!
             
-            getImage(id: pokemon.objectID)
+            //getImage(id: pokemon.objectID)
             
             //add as set to region
             region.pokemon?.adding(pokemon)
