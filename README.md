@@ -1,21 +1,29 @@
 #  CoreDexter
-## `CoreData` Pokédex
+## The `CoreData` Pokédex
 
 ### Features
 
 * `CoreData` backed relational persistence. Preloaded from [PokeAPI](https://pokeapi.co)
-* Lazy loaded sprites, saved to CD on first load
+* MVVM architecture
+* Lazy loaded sprites on scroll, saved to CD on first load. Smooth async with tableview scroll!
+* Custom UITableViewCell View
 * Custom font [Major Mono Display - Google Fonts](https://fonts.google.com/specimen/Major+Mono+Display)
 * Tap animation utilising `CAKeyframesAnimation`
 * Int extension to create 3-digit pokemon index strings
 
 ### TODO
-* Fix async background mode. should be smooth and do everything in the background!
-* ViewModel / Model for data transactions. Move URLSession logic for images out of Detail View.
-* UITableViewDelegate method to get images.
-* Custom UITableViewCell View
+* Unit Tests
+* Make detail view more detailed
+* Make cell views richer
+* Save images in a more organised way.
+* Segmented / Tab View for alternative regions
+* More Info From API
+* Fix to CD Region object propagation.
 * Dynamic Text
 * Dynamic height cells
 
+### Bugs
+* Custom font not set on detail view for iPad.
+
 #### Frameworks Used
-`CoreData` `UIKit` `CoreAnimation`
+`UIKit` `CoreData` `CoreAnimation`
