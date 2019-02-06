@@ -18,11 +18,11 @@ struct PokeData {
     let nationalIndex:String
 }
 
-class Initialiser{
+class PokemonModel{
     
     static let region:RegionIndex = .jhoto
 
-    let region = Initialiser.region
+    let region = PokemonModel.region
     
     let dispatchGroup = DispatchGroup.init()
     var pokeArray:[PokeData] = []
@@ -34,6 +34,10 @@ class Initialiser{
             print("initialised")
 
         
+    }
+    
+    func getItem(id:NSManagedObjectID)->Pokemon{
+        return managedObjectContext.object(with: id) as! Pokemon
     }
     
     func checkAndLoadData(){
@@ -189,14 +193,12 @@ class Initialiser{
             } catch {
                 fatalError()
             }
-            
-            
 
             let name = pokeDict["name"] as! String
             let number = String(pokeDict["id"] as! Int)
             let generationDict = pokeDict["generation"] as! [String:String]
             let generation = generationDict["name"] ?? ""
-            let region = Initialiser.region.string()
+            let region = PokemonModel.region.string()
             let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number)
             self.pokeArray.append(poke)
             //print(poke)
@@ -211,61 +213,109 @@ class Initialiser{
         
     }
     
-    public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String)->Void)?){
+    public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
         
-        guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
-            return
-        }
-        URLSession.shared.dataTask(with: url, completionHandler: {
-            (data, response, error) in
+        if let sprite_filename = item.front_sprite_filename{
             
-            if (error != nil){
-                print("err")
-                return
-            }
+            DispatchQueue.global().async {
             
-            guard let data = data else {
-                return
-            }
-            
-            
-            let fileManager = FileManager.default
-            do{
-                let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-                let filename = "\(Int(item.id).digitString()).png"
-                let fileURL = documentDirectory.appendingPathComponent(filename)
+            let filepaths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+            if let dirpath = filepaths.first{
+                let imageurl = URL(fileURLWithPath: dirpath).appendingPathComponent(sprite_filename)
                 
-                guard let image = UIImage(data: data) else {
-                    return
-                }
+                var boolPointer = ObjCBool(booleanLiteral: false)
                 
-                do{
-                    
-                    guard let imgdata = image.pngData() else {
+                if (FileManager.default.fileExists(atPath: imageurl.path, isDirectory: &boolPointer)){
+                    print("using existing file")
+                    guard let img = UIImage(contentsOfFile: imageurl.path) else {
                         return
                     }
                     
-                    try imgdata.write(to: fileURL)
-                    
-                    
-                    if let callback = callback{
-                        callback(image,filename)
+                    guard let callback = callback else {
+                        print("no callback, so pointless")
+                        return
                     }
                     
+                    callback(img,nil)
+                    print("loading cell image", imageurl.path)
+                    return
+                
                     
-                    print("success!")
-                    
-                    
-                } catch {
-                    print("write failed")
+                }
+                print("file doesnt exist",item.front_sprite_filename)
+                return
+            }
+            print("no callback, so pointless")
+            return
+            }
+        } else {
+            print("no filename, will load",item.id)
+           loadImage(item: item, callback: callback)
+        }
+        
+       
+}
+
+    private func loadImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
+    
+        DispatchQueue.global().async {
+            guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
+                return
+            }
+            URLSession.shared.dataTask(with: url, completionHandler: {
+                (data, response, error) in
+                
+                if (error != nil){
+                    print("err")
+                    return
                 }
                 
-            } catch {
-                print("error")
-            }
-            
-            
-        }).resume()
+                guard let data = data else {
+                    return
+                }
+                
+                
+                let fileManager = FileManager.default
+                do{
+                    let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
+                    let filename = "\(Int(item.id).digitString()).png"
+                    let fileURL = documentDirectory.appendingPathComponent(filename)
+                    
+                    guard let image = UIImage(data: data) else {
+                        return
+                    }
+                    
+                    do{
+                        
+                        guard let imgdata = image.pngData() else {
+                            return
+                        }
+                        
+                        try imgdata.write(to: fileURL)
+                        
+                        
+                        if let callback = callback{
+                            callback(image,filename)
+                        }
+                        
+                        
+                        print("getting image from github success!",item.id)
+                        
+                        
+                    } catch {
+                        print("write failed")
+                    }
+                    
+                } catch {
+                    print("error")
+                }
+                
+                
+            }).resume()
+        }
     }
-    
-}
+        
+        
+    }
+
+

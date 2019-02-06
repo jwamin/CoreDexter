@@ -9,11 +9,13 @@
 import UIKit
 import CoreData
 
+// MARK: - (V)iew
+
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
-    var viewModel:Initialiser!
+    var viewModel:PokemonViewModel!
     var scrollLoading = false
     
     override func viewDidLoad() {
@@ -21,10 +23,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
         
-        let initialiser = Initialiser()
+        let initialiser = PokemonModel()
         initialiser.managedObjectContext = self.managedObjectContext
         initialiser.checkAndLoadData()
-        viewModel = initialiser
+        viewModel = PokemonViewModel(dependency: initialiser)
+        
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
@@ -73,7 +76,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 
                 controller.detailItem = object
                 controller.title = object.name?.capitalized
-                controller.img = selectedCell.imgview.image
+                controller.labelText = viewModel.pokemonLabelString(id: object.objectID)
+                viewModel.getImageforID(id: object.objectID, callback: { (img) in
+                    controller.img = img
+                })
                 
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
@@ -140,12 +146,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         DispatchQueue.global(qos: .background).async {
-            let obj = self.fetchedResultsController.object(at: indexPath)
-            if(obj.front_sprite_filename == nil){
-                self.scrollLoading = true
-                print("no image data for cell \(indexPath), attempting background load")
-                self.getImage(indexPath: indexPath)
-            }
+            
+            //asynchronously requests image if there is none
+            
+            
+            self.getImage(indexPath: indexPath)
         }
     }
     
@@ -161,44 +166,36 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
         let pokeCell = cell as! PokeCellTableViewCell
         
-            if let sprite_filename = pokemon.front_sprite_filename{
-                let filepaths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
-                if let dirpath = filepaths.first{
-                    let imageurl = URL(fileURLWithPath: dirpath).appendingPathComponent(sprite_filename)
-                    
-                    var boolPointer = ObjCBool(booleanLiteral: false)
-                    
-                    if (FileManager.default.fileExists(atPath: imageurl.path, isDirectory: &boolPointer)){
-                        print("using existing file")
-                        let img = UIImage(contentsOfFile: imageurl.path)
-                        print("loading cell image", imageurl.path)
-                        pokeCell.imgview.image = img
-                        
-                    }
-                    
-                }
-            } else {
-                print("no filename")
-            }
+//        viewModel.getImageforID(id: pokemon.objectID) { (image:UIImage) in
+//            print("got image back from vm",image)
+//            DispatchQueue.main.async { [unowned pokeCell] in
+//                pokeCell.imgview.image = image
+//            }
+//        }
         
         pokeCell.mainLabel.text =  "\(Int(pokemon.region_id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
     
     public func getImage(indexPath:IndexPath){
         
-        let item = self.fetchedResultsController.object(at: indexPath)
-        
-        viewModel.getImage(item: item) { img,filename in
+        let obj = self.fetchedResultsController.object(at: indexPath)
+  
+            self.scrollLoading = true
+            let id = obj.objectID
             
-            DispatchQueue.main.async {
-                guard let cell = self.tableView.cellForRow(at: indexPath) as? PokeCellTableViewCell else {
-                    print("no cell at \(indexPath) ?")
-                    return
+            viewModel.getImageforID(id: id){ [unowned self] (img:UIImage) in
+                
+                DispatchQueue.main.async {
+                    
+                    //cell might have moved out of view, so we test
+                    guard let cell = self.tableView.cellForRow(at: indexPath) as? PokeCellTableViewCell else {
+                        print("no cell at \(indexPath) ?")
+                        return
+                    }
+                    
+                    cell.imgview.image = img
                 }
-                item.front_sprite_filename = filename
-                cell.imgview.image = img
             }
-        }
         
         
     }

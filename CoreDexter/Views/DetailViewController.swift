@@ -27,6 +27,12 @@ class DetailViewController: UIViewController {
             configureView()
         }
     }
+    
+    var labelText:String = ""{
+        didSet{
+            configureView()
+        }
+    }
 
     //Actions
     @objc func tap(_ sender:UITapGestureRecognizer){
@@ -37,8 +43,7 @@ class DetailViewController: UIViewController {
             return
         }
         
-       tapAnimation()
-        
+       tapGrowlAnimation()
         
     }
     
@@ -46,27 +51,8 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        configureView()
-    }
-    
-    private func configureView() {
-        // Update the user interface for the detail item.
-        
-        if let detail = detailItem {
-            if let label = detailDescriptionLabel {
-                label.numberOfLines = 0
-                label.textAlignment = .center
-                print(detail)
-                let id = Int(detail.id).digitString()
-                let regionId = Int(detail.region_id).digitString()
-                label.text = "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(detail.region!.name ?? "")\n\(detail.type1 ?? "")\n\(detail.initialDesc ?? "")"//detail.timestamp!.description
-            } else {
-                return
-            }
-        } else {
-            return
-        }
-        
+        detailDescriptionLabel.numberOfLines = 0
+        detailDescriptionLabel.textAlignment = .center
         
         imageview = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 300, height: 300)))
         imageview.translatesAutoresizingMaskIntoConstraints = false
@@ -84,11 +70,26 @@ class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate(constraints)
         
-        
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
+     
+        configureView()
+    }
+    
+    private func configureView() {
+        // Update the user interface for the detail item.
         
+        if let detail = detailItem {
+            if let label = detailDescriptionLabel {
+                
+                label.text = self.labelText
+            } else {
+                return
+            }
+        } else {
+            return
+        }
         
     }
     
@@ -99,12 +100,17 @@ class DetailViewController: UIViewController {
         imageview.image = img
     }
     
-    private func tapAnimation(){
+    private func tapGrowlAnimation(){
+        
         if(animating){
+            
             return
+            
         } else {
+            
             print("will anim")
             animating = true
+            
         }
         
         guard let imageview = imageview else {
@@ -152,7 +158,6 @@ class DetailViewController: UIViewController {
         pathAnimation.duration = 0.5
         pathAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         
-        
         let basicAnimation = CABasicAnimation(keyPath: "position")
         basicAnimation.fromValue = end
         basicAnimation.toValue = start
@@ -178,13 +183,6 @@ class DetailViewController: UIViewController {
         
         //commit animation
         CATransaction.commit()
-    }
-    
-    func getImage(){
-        if let detail = detailItem, let sprite = detail.front_sprite{
-            self.imageview.image = UIImage(data: sprite)
-        }
-        
     }
 
 }

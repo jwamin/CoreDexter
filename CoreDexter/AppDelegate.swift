@@ -7,7 +7,7 @@
 //
 
 #if DEBUG
-    let debug = false
+    let debug = true
 #else
     let debug = false
 #endif
