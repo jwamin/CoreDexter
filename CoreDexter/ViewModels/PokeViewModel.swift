@@ -10,11 +10,11 @@ import Foundation
 import CoreData
 import UIKit
 
-final class PokemonViewModel{
+final class PokeViewModel{
     
-    let pokeModel:PokemonModel
+    let pokeModel:PokeModel
     
-    init(dependency:PokemonModel) {
+    init(dependency:PokeModel) {
         pokeModel = dependency
     }
     

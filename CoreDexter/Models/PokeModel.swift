@@ -18,7 +18,7 @@ struct PokeData {
     let nationalIndex:String
 }
 
-class PokemonModel{
+class PokeModel{
 
     let region:RegionIndex
     

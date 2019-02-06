@@ -17,7 +17,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
-    var viewModel:PokemonViewModel!
+    var viewModel:PokeViewModel!
     var scrollLoading = false
     
     // MARK: - ViewController Lifecycle
@@ -27,11 +27,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
         
-        let initialiser = PokemonModel(APP_REGION)
+        let initialiser = PokeModel(APP_REGION)
         initialiser.managedObjectContext = self.managedObjectContext
         initialiser.checkAndLoadData()
         
-        viewModel = PokemonViewModel(dependency: initialiser)
+        viewModel = PokeViewModel(dependency: initialiser)
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!

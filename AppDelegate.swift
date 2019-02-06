@@ -7,7 +7,7 @@
 //
 
 #if DEBUG
-    let debug = true
+    let debug = false
 #else
     let debug = false
 #endif
@@ -36,7 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
         
-        if(debug){
+        let reset = UserDefaults.standard.object(forKey: "reset") as? Bool ?? false
+        print("reset",reset)
+        if(debug||reset){
+            UserDefaults.standard.set(false, forKey: "reset")
             deleteAllData("Pokemon")
             deleteAllData("Region")
             clearAllFilesFromTempDirectory()
