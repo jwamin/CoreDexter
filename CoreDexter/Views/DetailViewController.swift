@@ -21,12 +21,12 @@ class DetailViewController: UIViewController {
         }
     }
     
-    var detailItem: Pokemon? {
-        didSet {
-            // Update the view.
-            configureView()
-        }
-    }
+//    var detailItem: Pokemon? {
+//        didSet {
+//            // Update the view.
+//            configureView()
+//        }
+//    }
     
     var labelText:String = ""{
         didSet{
@@ -80,16 +80,14 @@ class DetailViewController: UIViewController {
     private func configureView() {
         // Update the user interface for the detail item.
         
-        if let detail = detailItem {
+        
             if let label = detailDescriptionLabel {
                 
-                label.text = self.labelText
+                label.text = labelText
             } else {
                 return
             }
-        } else {
-            return
-        }
+
         
     }
     

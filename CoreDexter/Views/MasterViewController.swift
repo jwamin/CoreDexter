@@ -13,10 +13,14 @@ import CoreData
 
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
+    // MARK: - IVars
+    
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
     var viewModel:PokemonViewModel!
     var scrollLoading = false
+    
+    // MARK: - ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +51,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         super.viewWillAppear(animated)
     }
     
-
+    // MARK: - Actions
+    
     @objc
     func fileinfo(_ sender:Any){
         
@@ -72,9 +77,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             if let indexPath = tableView.indexPathForSelectedRow {
                 let object = fetchedResultsController.object(at: indexPath)
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-                let selectedCell = tableView.cellForRow(at: tableView.indexPathForSelectedRow!) as! PokeCellTableViewCell
-                
-                controller.detailItem = object
+
                 controller.title = object.name?.capitalized
                 controller.labelText = viewModel.pokemonLabelString(id: object.objectID)
                 viewModel.getImageforID(id: object.objectID, callback: { (img) in
@@ -88,12 +91,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
     }
     
-    // MARK: - Scroll view
     
-    //    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    //
-    //
-    //    }
+    // MARK: - Scroll view
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         endScroll()
@@ -148,9 +147,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         DispatchQueue.global(qos: .background).async {
             
             //asynchronously requests image if there is none
+            self.getImageForCell(at: indexPath)
             
-            
-            self.getImage(indexPath: indexPath)
         }
     }
     
@@ -160,23 +158,21 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         cell.prepareForReuse()
     }
     
-    
-    // MARK: - Custom
-    
     func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
         let pokeCell = cell as! PokeCellTableViewCell
         
-//        viewModel.getImageforID(id: pokemon.objectID) { (image:UIImage) in
-//            print("got image back from vm",image)
-//            DispatchQueue.main.async { [unowned pokeCell] in
-//                pokeCell.imgview.image = image
-//            }
-//        }
+        //leave image loading to willDisplay
         
         pokeCell.mainLabel.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
     
-    public func getImage(indexPath:IndexPath){
+    // MARK: - Custom
+    
+
+    
+    public func getImageForCell(at indexPath:IndexPath){
+        
+        //send message to model to retrieve or request image for cell
         
         let obj = self.fetchedResultsController.object(at: indexPath)
   
