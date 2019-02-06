@@ -23,11 +23,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
         
-        let initialiser = PokemonModel()
+        let initialiser = PokemonModel(APP_REGION)
         initialiser.managedObjectContext = self.managedObjectContext
         initialiser.checkAndLoadData()
-        viewModel = PokemonViewModel(dependency: initialiser)
         
+        viewModel = PokemonViewModel(dependency: initialiser)
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
@@ -173,7 +173,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 //            }
 //        }
         
-        pokeCell.mainLabel.text =  "\(Int(pokemon.region_id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
+        pokeCell.mainLabel.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
     }
     
     public func getImage(indexPath:IndexPath){

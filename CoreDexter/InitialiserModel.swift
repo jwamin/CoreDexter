@@ -19,18 +19,17 @@ struct PokeData {
 }
 
 class PokemonModel{
-    
-    static let region:RegionIndex = .national
 
-    let region = PokemonModel.region
+    let region:RegionIndex
     
     let dispatchGroup = DispatchGroup.init()
     var pokeArray:[PokeData] = []
     
     weak var managedObjectContext:NSManagedObjectContext!
     
-    init(){
-     
+    init(_ injectedRegion:RegionIndex){
+        
+            region = injectedRegion
             print("initialised")
 
         
@@ -198,7 +197,7 @@ class PokemonModel{
             let number = String(pokeDict["id"] as! Int)
             let generationDict = pokeDict["generation"] as! [String:String]
             let generation = generationDict["name"] ?? ""
-            let region = PokemonModel.region.string()
+            let region = self.region.string()
             let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number)
             self.pokeArray.append(poke)
             //print(poke)
