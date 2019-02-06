@@ -20,7 +20,7 @@ struct PokeData {
 
 class PokemonModel{
     
-    static let region:RegionIndex = .jhoto
+    static let region:RegionIndex = .national
 
     let region = PokemonModel.region
     
