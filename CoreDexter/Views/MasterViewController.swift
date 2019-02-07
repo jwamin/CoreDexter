@@ -11,7 +11,7 @@ import CoreData
 
 // MARK: - (V)iew
 
-class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol {
     
     // MARK: - IVars
     
@@ -66,7 +66,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             alert.message = fileURLs.count.digitString()+" sprites cached"
             alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: {(action) in
-                self.reset()
+                self.callReset()
             }))
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
@@ -76,21 +76,21 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
     }
     
-    func reset(){
+    func callReset(){
         print("reset done")
         
         viewModel = nil
         let delegate = UIApplication.shared.delegate as! AppDelegate
         delegate.resetAll()
         initialise()
-        
+        viewModel.pokeModel.delegate = self
         _fetchedResultsController = nil
         print(fetchedResultsController)
-        try! fetchedResultsController.performFetch()
+        
 //        do{
 //
 //            NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "Master")
-//
+//            try fetchedResultsController.performFetch()
 //
 //            print("success?")
 //            print(fetchedResultsController.fetchedObjects)
@@ -100,6 +100,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         fetchedResultsController.delegate = self
         tableView.reloadData()
         print("reloaded")
+    }
+    
+    func resetDone() {
+         viewModel.pokeModel.delegate = nil
+        tableView.reloadData()
     }
     
     // MARK: - Segues

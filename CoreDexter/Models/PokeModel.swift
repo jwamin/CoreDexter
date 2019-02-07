@@ -18,10 +18,14 @@ struct PokeData {
     let nationalIndex:String
 }
 
+protocol ResetProtocol {
+    func resetDone()
+}
+
 class PokeModel{
 
     let region:RegionIndex
-    
+    var delegate:ResetProtocol?
     let dispatchGroup = DispatchGroup.init()
     var pokeArray:[PokeData] = []
     
@@ -85,6 +89,7 @@ class PokeModel{
         do {
             try context.save()
             print("context saved")
+            delegate?.resetDone()
         } catch {
             // Replace this implementation with code to handle the error appropriately.
             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
