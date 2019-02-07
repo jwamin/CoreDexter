@@ -11,7 +11,7 @@ import CoreData
 
 // MARK: - (V)iew
 
-class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol {
     
     // MARK: - IVars
     
@@ -27,11 +27,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
         
-        let initialiser = PokeModel(APP_REGION)
-        initialiser.managedObjectContext = self.managedObjectContext
-        initialiser.checkAndLoadData()
-        
-        viewModel = PokeViewModel(dependency: initialiser)
+        self.initialise()
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
@@ -51,6 +47,13 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         super.viewWillAppear(animated)
     }
     
+    func initialise(){
+        let initialiser = PokeModel(APP_REGION)
+        initialiser.managedObjectContext = fetchedResultsController.managedObjectContext
+        initialiser.checkAndLoadData()
+        viewModel = PokeViewModel(dependency: initialiser)
+    }
+    
     // MARK: - Actions
     
     @objc
@@ -62,12 +65,46 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         do{
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             alert.message = fileURLs.count.digitString()+" sprites cached"
+            alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: {(action) in
+                self.callReset()
+            }))
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } catch {
             print("nah")
         }
         
+    }
+    
+    func callReset(){
+        print("reset done")
+        
+        viewModel = nil
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        delegate.resetAll()
+        initialise()
+        viewModel.pokeModel.delegate = self
+        _fetchedResultsController = nil
+        print(fetchedResultsController)
+        
+//        do{
+//
+//            NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "Master")
+//            try fetchedResultsController.performFetch()
+//
+//            print("success?")
+//            print(fetchedResultsController.fetchedObjects)
+//        } catch {
+//            fatalError()
+//        }
+        fetchedResultsController.delegate = self
+        tableView.reloadData()
+        print("reloaded")
+    }
+    
+    func resetDone() {
+         viewModel.pokeModel.delegate = nil
+        tableView.reloadData()
     }
     
     // MARK: - Segues
@@ -154,7 +191,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        print("\(indexPath) will prepare for reuse")
         cell.prepareForReuse()
     }
     
@@ -202,7 +238,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         if _fetchedResultsController != nil {
             return _fetchedResultsController!
         }
-        
+        print("loading frc")
         let fetchRequest: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
         
         // Set the batch size to a suitable number.

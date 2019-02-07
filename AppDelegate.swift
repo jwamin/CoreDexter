@@ -39,10 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let reset = UserDefaults.standard.object(forKey: "reset") as? Bool ?? false
         print("reset",reset)
         if(debug||reset){
-            UserDefaults.standard.set(false, forKey: "reset")
-            deleteAllData("Pokemon")
-            deleteAllData("Region")
-            clearAllFilesFromTempDirectory()
+            resetAll()
         }
         
         return true
@@ -130,6 +127,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
     }
 
+    func resetAll(){
+        UserDefaults.standard.set(false, forKey: "reset")
+        deleteAllData("Pokemon")
+        deleteAllData("Region")
+        clearAllFilesFromTempDirectory()
+    }
+    
     func clearAllFilesFromTempDirectory(){
         
         
