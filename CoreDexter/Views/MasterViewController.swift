@@ -36,7 +36,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
         ]
-        let addButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(fileinfo(_:)))
+        let addButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(fileinfo(_:)))
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
@@ -61,7 +61,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do{
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
-            alert.message = fileURLs.count.digitString()
+            alert.message = fileURLs.count.digitString()+" sprites cached"
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } catch {
