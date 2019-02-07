@@ -13,6 +13,7 @@
 
 ### TODO
 * Unit Tests
+* caching screen, progress indicator for initial load / reset
 * Make detail view more detailed
 * Make cell views richer
 * Save images in a more organised way.

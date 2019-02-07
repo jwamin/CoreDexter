@@ -85,7 +85,6 @@
 				3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */,
 				3D2BE750220248E400E28519 /* .gitignore */,
 				3D2BE73F220231F200E28519 /* Main.storyboard */,
-				3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */,
 				3D2BE742220231F300E28519 /* Assets.xcassets */,
 				3D2BE744220231F300E28519 /* LaunchScreen.storyboard */,
 				3D2BE747220231F300E28519 /* Info.plist */,
@@ -99,6 +98,7 @@
 			children = (
 				3D2BE73B220231F200E28519 /* MasterViewController.swift */,
 				3D2BE73D220231F200E28519 /* DetailViewController.swift */,
+				3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

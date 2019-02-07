@@ -24,7 +24,6 @@ class PokeCellTableViewCell: UITableViewCell {
     }
 
     override func prepareForReuse() {
-        print("reusing cell")
         self.imgview.image = nil
         self.mainLabel.text = nil
         super.prepareForReuse()

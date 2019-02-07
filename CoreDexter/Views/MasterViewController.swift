@@ -27,16 +27,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
         
-        let initialiser = PokeModel(APP_REGION)
-        initialiser.managedObjectContext = self.managedObjectContext
-        initialiser.checkAndLoadData()
-        
-        viewModel = PokeViewModel(dependency: initialiser)
+        self.initialise()
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
         ]
-        let addButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(fileinfo(_:)))
+        let addButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(fileinfo(_:)))
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
@@ -51,6 +47,13 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         super.viewWillAppear(animated)
     }
     
+    func initialise(){
+        let initialiser = PokeModel(APP_REGION)
+        initialiser.managedObjectContext = fetchedResultsController.managedObjectContext
+        initialiser.checkAndLoadData()
+        viewModel = PokeViewModel(dependency: initialiser)
+    }
+    
     // MARK: - Actions
     
     @objc
@@ -61,13 +64,42 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do{
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
-            alert.message = fileURLs.count.digitString()
+            alert.message = fileURLs.count.digitString()+" sprites cached"
+            alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: {(action) in
+                self.reset()
+            }))
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } catch {
             print("nah")
         }
         
+    }
+    
+    func reset(){
+        print("reset done")
+        
+        viewModel = nil
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        delegate.resetAll()
+        initialise()
+        
+        _fetchedResultsController = nil
+        print(fetchedResultsController)
+        try! fetchedResultsController.performFetch()
+//        do{
+//
+//            NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "Master")
+//
+//
+//            print("success?")
+//            print(fetchedResultsController.fetchedObjects)
+//        } catch {
+//            fatalError()
+//        }
+        fetchedResultsController.delegate = self
+        tableView.reloadData()
+        print("reloaded")
     }
     
     // MARK: - Segues
@@ -154,7 +186,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     
     override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        print("\(indexPath) will prepare for reuse")
         cell.prepareForReuse()
     }
     
@@ -202,7 +233,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         if _fetchedResultsController != nil {
             return _fetchedResultsController!
         }
-        
+        print("loading frc")
         let fetchRequest: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
         
         // Set the batch size to a suitable number.
