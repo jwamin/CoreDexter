@@ -200,9 +200,7 @@ class PokeModel{
             do{
                 pokeDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
             } catch {
-                print(error.localizedDescription)
-                self.dispatchGroup.leave()
-                return
+                fatalError()
             }
             //print(pokeDict)
             
