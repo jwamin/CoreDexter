@@ -54,14 +54,11 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
+        print("vdl, instantiating video player")
         let myurl = URL(string: criesBaseUrl+self.title!.lowercased()+criesUrlSuffix)!
         player = AVPlayer(url: myurl)
         player.actionAtItemEnd = .pause
-        NotificationCenter.default.addObserver(forName: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil, queue: nil) { (_) in
-            print("did end playing")
-            self.player.seek(to: .zero)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         
         detailDescriptionLabel.numberOfLines = 0
         detailDescriptionLabel.textAlignment = .center
@@ -102,8 +99,18 @@ class DetailViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
+    @objc
+    func resetPlayer(_ notification:NSNotification){
+        print("did end playing")
+        self.player.seek(to: .zero)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         print(imageview.frame)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
     }
     
     private func configureView() {
