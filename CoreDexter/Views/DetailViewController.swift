@@ -7,13 +7,13 @@
 //
 
 import UIKit
-
-//https://play.pokemonshowdown.com/audio/cries/_pokemon_name_lowercase_.mp3 ?
+import AVFoundation
 
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var detailDescriptionLabel: UILabel!
+    var player:AVPlayer!
     var imageview:UIImageView!
     
     @IBOutlet weak var contentView: UIView!
@@ -55,8 +55,12 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        let myurl = URL(string: criesBaseUrl+self.title!.lowercased()+criesUrlSuffix)!
+        player = AVPlayer(url: myurl)
+        
         detailDescriptionLabel.numberOfLines = 0
         detailDescriptionLabel.textAlignment = .center
+        detailDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         imageview = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 300, height: 300)))
         imageview.translatesAutoresizingMaskIntoConstraints = false
@@ -77,15 +81,24 @@ class DetailViewController: UIViewController {
         
         var constraints = [NSLayoutConstraint]()
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imageview(<=300)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imageview]-[label(>=100)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[label]-0-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
         
-        NSLayoutConstraint(item: imageview, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
-        
-        imageview.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        
-        NSLayoutConstraint(item: imageview, attribute: .height, relatedBy: .equal, toItem: imageview, attribute: .width, multiplier: 1.0, constant: 0).isActive = true
+        constraints += [
+            NSLayoutConstraint(item: imageview, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
+            NSLayoutConstraint(item: imageview, attribute: .height, relatedBy: .equal, toItem: imageview, attribute: .width, multiplier: 1.0, constant: 0),
+            NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0),
+            NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
+            imageview.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageview.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
+
+        ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print(imageview.frame)
     }
     
     private func configureView() {
@@ -192,6 +205,9 @@ class DetailViewController: UIViewController {
         
         //commit animation
         CATransaction.commit()
+        
+        //play player
+        player.play()
     }
 
 }

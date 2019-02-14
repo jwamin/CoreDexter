@@ -9,3 +9,7 @@
 import Foundation
 
 let APP_REGION:RegionIndex = .national
+
+let criesBaseUrl = "https://play.pokemonshowdown.com/audio/cries/"
+
+let criesUrlSuffix = ".mp3"
