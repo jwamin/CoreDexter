@@ -8,11 +8,15 @@
 
 import UIKit
 
+//https://play.pokemonshowdown.com/audio/cries/_pokemon_name_lowercase_.mp3 ?
+
 class DetailViewController: UIViewController {
 
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     var imageview:UIImageView!
     
+    @IBOutlet weak var contentView: UIView!
     private var animating = false
     
     var img:UIImage?{
@@ -58,23 +62,30 @@ class DetailViewController: UIViewController {
         imageview.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(imageview)
         setImage()
-        let views:[String:UIView] = ["imageview":imageview,"label":detailDescriptionLabel]
         
-        var constraints = [NSLayoutConstraint]()
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imageview(<=300)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imageview]-[label]", options: [], metrics: nil, views: views)
-        
-        NSLayoutConstraint(item: imageview, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
-        imageview.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        NSLayoutConstraint(item: imageview, attribute: .height, relatedBy: .equal, toItem: imageview, attribute: .width, multiplier: 1.0, constant: 0).isActive = true
-        
-        NSLayoutConstraint.activate(constraints)
+        layoutConstraints()
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
      
         configureView()
+    }
+    
+    private func layoutConstraints(){
+        let views:[String:UIView] = ["imageview":imageview,"label":detailDescriptionLabel,"contentView":contentView]
+        
+        var constraints = [NSLayoutConstraint]()
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imageview(<=300)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imageview]-[label(>=100)]", options: [], metrics: nil, views: views)
+        
+        NSLayoutConstraint(item: imageview, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1.0, constant: 0).isActive = true
+        
+        imageview.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        
+        NSLayoutConstraint(item: imageview, attribute: .height, relatedBy: .equal, toItem: imageview, attribute: .width, multiplier: 1.0, constant: 0).isActive = true
+        
+        NSLayoutConstraint.activate(constraints)
     }
     
     private func configureView() {
@@ -185,3 +196,6 @@ class DetailViewController: UIViewController {
 
 }
 
+extension DetailViewController : UIScrollViewDelegate{
+    
+}
