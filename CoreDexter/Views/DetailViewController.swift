@@ -55,7 +55,7 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         print("vdl, instantiating video player")
-        let myurl = URL(string: criesBaseUrl+self.title!.lowercased()+criesUrlSuffix)!
+        let myurl = URL(string: criesBaseUrl+self.title!.lowercased().replacingOccurrences(of: "-", with: "")+criesUrlSuffix)!
         player = AVPlayer(url: myurl)
         player.actionAtItemEnd = .pause
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
