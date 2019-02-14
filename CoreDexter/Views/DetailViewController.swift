@@ -57,6 +57,11 @@ class DetailViewController: UIViewController {
         
         let myurl = URL(string: criesBaseUrl+self.title!.lowercased()+criesUrlSuffix)!
         player = AVPlayer(url: myurl)
+        player.actionAtItemEnd = .pause
+        NotificationCenter.default.addObserver(forName: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil, queue: nil) { (_) in
+            print("did end playing")
+            self.player.seek(to: .zero)
+        }
         
         detailDescriptionLabel.numberOfLines = 0
         detailDescriptionLabel.textAlignment = .center
@@ -144,6 +149,8 @@ class DetailViewController: UIViewController {
         CATransaction.setDisableActions(true)
         CATransaction.setCompletionBlock {
             self.animating = false
+            
+            
         }
         
         let animationGroup = CAAnimationGroup()
