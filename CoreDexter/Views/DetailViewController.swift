@@ -10,13 +10,14 @@ import UIKit
 import AVFoundation
 
 class DetailViewController: UIViewController {
-
+    
+    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var detailDescriptionLabel: UILabel!
+    
     var player:AVPlayer!
     var imageview:UIImageView!
     
-    @IBOutlet weak var contentView: UIView!
     private var animating = false
     
     var img:UIImage?{
@@ -25,39 +26,24 @@ class DetailViewController: UIViewController {
         }
     }
     
-//    var detailItem: Pokemon? {
-//        didSet {
-//            // Update the view.
-//            configureView()
-//        }
-//    }
     
     var labelText:String = ""{
         didSet{
             configureView()
         }
     }
+    
 
-    //Actions
-    @objc func tap(_ sender:UITapGestureRecognizer){
-        
-
-        if(sender.state != .ended){
-            print("!ended")
-            return
-        }
-        
-       tapGrowlAnimation()
-        
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         print("vdl, instantiating video player")
+        
         let myurl = URL(string: criesBaseUrl+self.title!.lowercased().replacingOccurrences(of: "-", with: "")+criesUrlSuffix)!
         player = AVPlayer(url: myurl)
         player.actionAtItemEnd = .pause
+        
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         
         detailDescriptionLabel.numberOfLines = 0
@@ -74,8 +60,16 @@ class DetailViewController: UIViewController {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
-     
+        
         configureView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print(imageview.frame)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
     }
     
     private func layoutConstraints(){
@@ -93,10 +87,23 @@ class DetailViewController: UIViewController {
             NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
             imageview.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageview.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
-
+            
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    //Actions
+    @objc func tap(_ sender:UITapGestureRecognizer){
+        
+        
+        if(sender.state != .ended){
+            print("!ended")
+            return
+        }
+        
+        tapGrowlAnimation()
+        
     }
     
     @objc
@@ -105,25 +112,19 @@ class DetailViewController: UIViewController {
         self.player.seek(to: .zero)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        print(imageview.frame)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
-    }
+
     
     private func configureView() {
         // Update the user interface for the detail item.
         
         
-            if let label = detailDescriptionLabel {
-                
-                label.text = labelText
-            } else {
-                return
-            }
-
+        if let label = detailDescriptionLabel {
+            
+            label.text = labelText
+        } else {
+            return
+        }
+        
         
     }
     
@@ -155,14 +156,14 @@ class DetailViewController: UIViewController {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         CATransaction.setCompletionBlock {
+            //reset flag on completion
             self.animating = false
-            
-            
         }
         
+        //group animations to run concurrently
         let animationGroup = CAAnimationGroup()
         
-        //tap animation
+        //scale animation, shrink from fullsize and then grow to 1.3x
         let keyframeAnimation = CAKeyframeAnimation(keyPath: "transform")
         
         keyframeAnimation.values = [
@@ -175,25 +176,28 @@ class DetailViewController: UIViewController {
         keyframeAnimation.duration = 0.5
         keyframeAnimation.fillMode =  .forwards
         
+        //animation position on a bezier curve, position naturally curves so it looks more like a pounce!
         let pathAnimation = CAKeyframeAnimation(keyPath: "position")
         let bezier = UIBezierPath()
         
         let start = imageview.layer.position
         let end = CGPoint(x: imageview.layer.position.x, y: imageview.layer.position.y+50.0)
-        bezier.move(to: imageview.layer.position)
         
-        // Calculate the control points
+        // Calculate the control points of the curve
         let c1 = CGPoint(x: start.x , y: start.y)
         let c2 = CGPoint(x: end.x, y: end.y - 128)
         
+        bezier.move(to: start)
         bezier.addCurve(to: end, controlPoint1: c1, controlPoint2: c2)
         
+        //add the curve to the path "position" animation
         pathAnimation.path = bezier.cgPath
         pathAnimation.fillMode = .forwards
         pathAnimation.isRemovedOnCompletion = false
         pathAnimation.duration = 0.5
         pathAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         
+        //animate the translated layer back to the starting position
         let basicAnimation = CABasicAnimation(keyPath: "position")
         basicAnimation.fromValue = end
         basicAnimation.toValue = start
@@ -202,6 +206,7 @@ class DetailViewController: UIViewController {
         basicAnimation.beginTime = 0.5;
         basicAnimation.duration = 0.25;
         
+        //scale the layer back to 1
         let scaleBasicAnimation = CABasicAnimation(keyPath: "transform")
         scaleBasicAnimation.fromValue = CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1.3, y: 1.3))
         scaleBasicAnimation.toValue = CATransform3DMakeAffineTransform(CGAffineTransform(scaleX: 1, y: 1))
@@ -210,11 +215,12 @@ class DetailViewController: UIViewController {
         scaleBasicAnimation.beginTime = 0.5;
         scaleBasicAnimation.duration = 0.25;
         
+        //add animations to group, use beginTime attribute to stagger starts
         animationGroup.animations = [keyframeAnimation,pathAnimation,basicAnimation,scaleBasicAnimation]
         animationGroup.duration = 0.75
         animationGroup.fillMode = .forwards
         
-        //add animation
+        //add animation to layer
         imageview.layer.add(animationGroup, forKey: "animation")
         
         //commit animation
@@ -223,7 +229,7 @@ class DetailViewController: UIViewController {
         //play player
         player.play()
     }
-
+    
 }
 
 extension DetailViewController : UIScrollViewDelegate{
