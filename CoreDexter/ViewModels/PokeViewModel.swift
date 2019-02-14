@@ -41,7 +41,7 @@ final class PokeViewModel{
         let detail = pokeModel.getItem(id: id)
         let id = Int(detail.id).digitString()
         let regionId = Int(detail.region_id).digitString()
-        return "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(detail.region!.name ?? "")\n\(detail.type1 ?? "")\n\(detail.initialDesc ?? "")"
+        return "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(detail.region!.name ?? "")\n\(detail.type1 ?? "")\n\(detail.type2 ?? "")\n\n\(detail.initialDesc ?? "")"
     }
     
 }

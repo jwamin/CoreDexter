@@ -16,6 +16,9 @@ struct PokeData {
     let generation:String
     let index:String
     let nationalIndex:String
+    var type1:String?
+    var type2:String?
+    var description:String?
 }
 
 protocol ResetProtocol {
@@ -53,7 +56,7 @@ class PokeModel{
         returnTask()?.resume()
         
         dispatchGroup.notify(queue: .main) {
-            print("loaded")
+            print("loaded",self.pokeArray.first!)
             print(self.pokeArray.count)
             self.coreDataProcess()
         }
@@ -78,7 +81,9 @@ class PokeModel{
             pokemon.region = region
             pokemon.id = Int16(pokemen.nationalIndex)!
             pokemon.region_id = Int16(pokemen.index)!
-            //getImage(id: pokemon.objectID)
+            pokemon.type1 = pokemen.type1 ?? nil
+            pokemon.type2 = pokemen.type2 ?? nil
+            pokemon.initialDesc = pokemen.description ?? ""
             
             //add as set to region
             region.pokemon?.adding(pokemon)
@@ -160,7 +165,7 @@ class PokeModel{
                 let speciesInfo = pokeAny["pokemon_species"] as! [String:String]
                 let regionNumber = index+1
                 if let urlString = speciesInfo["url"]{
-                    self.getDataforPokemon(urlString: urlString,regionIndex:regionNumber)
+                    self.getSpeciesDataforPokemon(urlString: urlString,regionIndex:regionNumber)
                 }
             }
             
@@ -172,8 +177,74 @@ class PokeModel{
         return task
     }
     
+    private func getDataforPokemon(regionIndex:Int){
+        
+        let urlString = "https://pokeapi.co/api/v2/pokemon/"+String(regionIndex)
+        
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        URLSession.shared.dataTask(with: url, completionHandler: {
+            (data, response, error) in
+            
+            if (error != nil){
+                print("err")
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            let pokeDict:[String:Any]
+            do{
+                pokeDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
+            } catch {
+                print(error.localizedDescription)
+                self.dispatchGroup.leave()
+                return
+            }
+            //print(pokeDict)
+            
+            var thisPokeIndex = 0
+            
+            for (index, poke) in self.pokeArray.enumerated(){
+                if(poke.index == String(regionIndex)){
+                    thisPokeIndex = index
+                    break
+                }
+            }
+            
+            let typesarray = pokeDict["types"] as! [[String:Any]]
+            
+            for type in typesarray{
+                let stringDict = type as! [String:Any]
+               
+                switch stringDict["slot"] as! Int{
+                case 1:
+                    self.pokeArray[thisPokeIndex].type1 = (stringDict["type"] as! [String:String])["name"]!
+                case 2:
+                    self.pokeArray[thisPokeIndex].type2 = (stringDict["type"] as! [String:String])["name"]!
+                default:
+                    continue
+                }
+            }
+            //print(self.pokeArray[thisPokeIndex])
+            
+            //print(poke)
+            
+            //process pokedata and
+            self.dispatchGroup.leave()
+            
+            
+            
+            
+        }).resume()
+        
+        
+    }
     
-    private func getDataforPokemon(urlString:String,regionIndex:Int){
+    private func getSpeciesDataforPokemon(urlString:String,regionIndex:Int){
         
         dispatchGroup.enter()
         
@@ -198,19 +269,22 @@ class PokeModel{
             } catch {
                 fatalError()
             }
-
+            //print(pokeDict)
             let name = pokeDict["name"] as! String
             let number = String(pokeDict["id"] as! Int)
             let generationDict = pokeDict["generation"] as! [String:String]
             let generation = generationDict["name"] ?? ""
             let region = self.region.string()
-            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number)
+            let textEntriesDict = pokeDict["flavor_text_entries"] as! [[String:Any]]
+            let message = textEntriesDict[textEntriesDict.count-1]["flavor_text"] as! String
+            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number, type1: nil, type2: nil, description: message)
             self.pokeArray.append(poke)
             //print(poke)
             
-            self.dispatchGroup.leave()
+            //process pokedata and
+            self.getDataforPokemon(regionIndex: regionIndex)
             
-                //process pokedata and
+            
   
             
         }).resume()

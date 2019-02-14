@@ -15,6 +15,7 @@
 
 ### TODO
 * Unit Tests
+* Search controller
 * progress indicator for initial load / reset
 * Make detail view more detailed
 * Make cell views richer
