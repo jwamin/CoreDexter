@@ -18,7 +18,7 @@ class DetailViewController: UIViewController {
     var player:AVPlayer!
     var imageview:UIImageView!
     
-    private var animating = false
+    private var animating = true
     
     var img:UIImage?{
         didSet{
@@ -40,10 +40,16 @@ class DetailViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         print("vdl, instantiating video player")
         
+        let activity = UIActivityIndicatorView(style: .gray)
+        activity.hidesWhenStopped = true
+        activity.startAnimating()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activity)
+        
         let myurl = URL(string: criesBaseUrl+self.title!.lowercased().replacingOccurrences(of: "-", with: "")+criesUrlSuffix)!
         player = AVPlayer(url: myurl)
         player.actionAtItemEnd = .pause
         
+        player.currentItem!.addObserver(self, forKeyPath: "status", options: [], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         
         detailDescriptionLabel.numberOfLines = 0
@@ -62,6 +68,35 @@ class DetailViewController: UIViewController {
         imageview.addGestureRecognizer(gesture)
         
         configureView()
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        if(object is AVPlayerItem && keyPath == "status"){
+            let item = object as! AVPlayerItem
+            switch(item.status){
+            case AVPlayerItem.Status.readyToPlay:
+                animating = false
+                (navigationItem.rightBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
+                item.removeObserver(self, forKeyPath: "status")
+                print("ready?")
+                return
+            case AVPlayerItem.Status.failed:
+                print("fail?")
+                let label = UILabel()
+                label.numberOfLines = 1
+                label.text = "❌"
+                navigationItem.rightBarButtonItem = UIBarButtonItem(customView: label)
+                animating = false
+                item.removeObserver(self, forKeyPath: "status")
+                return
+            default:
+                print("something else happeend",player.status)
+                return
+            }
+            
+            
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
