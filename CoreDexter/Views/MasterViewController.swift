@@ -27,7 +27,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
         
-        
+        tableView.scrollsToTop = true
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
@@ -138,6 +138,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     
     // MARK: - Scroll view
+    
+    override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        print("should scroll to top?")
+        return true
+    }
+    
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if(!scrollView.isTracking){
