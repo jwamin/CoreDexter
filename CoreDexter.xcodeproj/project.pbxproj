@@ -78,10 +78,10 @@
 		3D2BE735220231F200E28519 /* CoreDexter */ = {
 			isa = PBXGroup;
 			children = (
-				3D2C3432220B6CB200282C38 /* Extensions */,
 				3D2C3431220B6C9100282C38 /* Models */,
 				3D2C3430220B6C8200282C38 /* ViewModels */,
 				3D2C342D220B4A4500282C38 /* Views */,
+				3D2C3432220B6CB200282C38 /* Extensions */,
 				3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */,
 				3D2BE750220248E400E28519 /* .gitignore */,
 				3D2BE73F220231F200E28519 /* Main.storyboard */,

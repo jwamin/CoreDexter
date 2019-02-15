@@ -70,6 +70,8 @@ class DetailViewController: UIViewController {
         configureView()
     }
     
+    //MARK: KVO for AVPlayer Item ready state
+    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         if(object is AVPlayerItem && keyPath == "status"){

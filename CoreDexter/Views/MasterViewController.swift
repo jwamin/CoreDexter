@@ -140,11 +140,20 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     // MARK: - Scroll view
     
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        endScroll()
+        if(!scrollView.isTracking){
+            print("did end decelerating and not tracking")
+             endScroll()
+        }
     }
     
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        endScroll()
+        if(decelerate){
+            print("did end tracking and is still scrolling")
+        } else {
+            print("did end tracking and is stopped")
+            endScroll()
+        }
+        
     }
     
     func endScroll(){
