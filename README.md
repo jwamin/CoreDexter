@@ -14,6 +14,7 @@
 * extremely quick and dirty pokemon cries complete with KVO for `AVPlayerItem.Status` and error handling.
 
 ### TODO
+* Handle `fatalError`s in initial load code, handle drops in connection. Present Alert View, flush and restart.
 * `Codeable` - map json responses to structs
 * Initial load error handling
 * Unit Tests

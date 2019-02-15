@@ -88,6 +88,9 @@ class DetailViewController: UIViewController {
                 let label = UILabel()
                 label.numberOfLines = 1
                 label.text = "❌"
+                label.isUserInteractionEnabled = true
+                let tapper = UITapGestureRecognizer(target: self, action: #selector(errorTap))
+                label.addGestureRecognizer(tapper)
                 navigationItem.rightBarButtonItem = UIBarButtonItem(customView: label)
                 animating = false
                 item.removeObserver(self, forKeyPath: "status")
@@ -98,6 +101,16 @@ class DetailViewController: UIViewController {
             }
             
             
+        }
+    }
+    
+    @objc
+    func errorTap(){
+        print("error tap")
+        if(player.currentItem?.status == .failed){
+            let alert = UIAlertController(title: "Unable to load cry for \(self.title!)", message: "Please connect to the internet and try again", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
