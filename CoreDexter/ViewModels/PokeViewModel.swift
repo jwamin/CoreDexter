@@ -12,7 +12,7 @@ import UIKit
 
 final class PokeViewModel{
     
-    let pokeModel:PokeModel
+    private let pokeModel:PokeModel
     
     init(dependency:PokeModel) {
         pokeModel = dependency
@@ -35,6 +35,14 @@ final class PokeViewModel{
             
         }
         
+    }
+    
+    public func assignDelegate(delegate:ResetProtocol){
+        pokeModel.delegate = delegate
+    }
+    
+    public func resetDelegate(){
+        pokeModel.delegate = nil
     }
     
     public func pokemonLabelString(id:NSManagedObjectID)->String{

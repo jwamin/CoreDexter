@@ -14,6 +14,7 @@
 * extremely quick and dirty pokemon cries...
 
 ### TODO
+* `Codeable` - map json responses to structs
 * Unit Tests
 * Search controller
 * progress indicator for initial load / reset

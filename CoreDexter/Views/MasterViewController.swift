@@ -27,11 +27,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
         
-        self.initialise()
+        
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
         ]
+        
         let addButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(fileinfo(_:)))
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
@@ -39,6 +40,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         
+        let activityview = UIActivityIndicatorView(style: .gray)
+        activityview.hidesWhenStopped = true
+        let addActivityView = UIBarButtonItem(customView: activityview)
+        navigationItem.leftBarButtonItem = addActivityView
+        activityview.startAnimating()
+        self.initialise()
         
     }
     
@@ -78,12 +85,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     func callReset(){
         print("reset done")
-        
+        (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).startAnimating()
         viewModel = nil
         let delegate = UIApplication.shared.delegate as! AppDelegate
         delegate.resetAll()
         initialise()
-        viewModel.pokeModel.delegate = self
+        viewModel.assignDelegate(delegate:self)
         _fetchedResultsController = nil
         print(fetchedResultsController)
         
@@ -103,8 +110,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
     
     func resetDone() {
-         viewModel.pokeModel.delegate = nil
+        viewModel.resetDelegate()
         tableView.reloadData()
+        (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
     }
     
     // MARK: - Segues
@@ -181,6 +189,13 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if(indexPath.row == tableView.indexPathsForVisibleRows!.last!.row){
+            //end of loading
+            (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
+        }
+
+        
         DispatchQueue.global(qos: .background).async {
             
             //asynchronously requests image if there is none
@@ -312,6 +327,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
             tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
+        
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -319,6 +335,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             return
         }
         tableView.endUpdates()
+        
     }
     
     /*

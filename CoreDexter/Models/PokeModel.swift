@@ -216,13 +216,13 @@ class PokeModel{
             let typesarray = pokeDict["types"] as! [[String:Any]]
             
             for type in typesarray{
-                let stringDict = type as! [String:Any]
+                
                
-                switch stringDict["slot"] as! Int{
+                switch type["slot"] as! Int{
                 case 1:
-                    self.pokeArray[thisPokeIndex].type1 = (stringDict["type"] as! [String:String])["name"]!
+                    self.pokeArray[thisPokeIndex].type1 = (type["type"] as! [String:String])["name"]!
                 case 2:
-                    self.pokeArray[thisPokeIndex].type2 = (stringDict["type"] as! [String:String])["name"]!
+                    self.pokeArray[thisPokeIndex].type2 = (type["type"] as! [String:String])["name"]!
                 default:
                     continue
                 }
@@ -319,7 +319,7 @@ class PokeModel{
                 
                     
                 }
-                print("file doesnt exist",item.front_sprite_filename)
+                print("file doesnt exist \(item.front_sprite_filename!)")
                 return
             }
             print("no callback, so pointless")
