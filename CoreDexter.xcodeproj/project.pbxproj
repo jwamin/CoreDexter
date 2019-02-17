@@ -21,6 +21,11 @@
 		3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */; };
 		3D4060F92204E63100196626 /* MajorMonoDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */; };
 		3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4060FA2204E93300196626 /* ExtensionsEtx.swift */; };
+		578F89922219AA0C001B1B97 /* VisualiserScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F89912219AA0C001B1B97 /* VisualiserScene.swift */; };
+		578F899A2219AA7E001B1B97 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F89992219AA7E001B1B97 /* AppDelegate.swift */; };
+		578F899F2219AA7E001B1B97 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 578F899D2219AA7E001B1B97 /* Main.storyboard */; };
+		578F89A12219AA80001B1B97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 578F89A02219AA80001B1B97 /* Assets.xcassets */; };
+		578F89A62219AA9D001B1B97 /* VisualiserScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F89912219AA0C001B1B97 /* VisualiserScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,10 +47,24 @@
 		3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeCellTableViewCell.swift; sourceTree = "<group>"; };
 		3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MajorMonoDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		3D4060FA2204E93300196626 /* ExtensionsEtx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEtx.swift; sourceTree = "<group>"; };
+		578F89912219AA0C001B1B97 /* VisualiserScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualiserScene.swift; sourceTree = "<group>"; };
+		578F89972219AA7E001B1B97 /* PokeScene.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeScene.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		578F89992219AA7E001B1B97 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		578F899B2219AA7E001B1B97 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		578F899E2219AA7E001B1B97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		578F89A02219AA80001B1B97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		578F89A22219AA80001B1B97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		3D2BE730220231F200E28519 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		578F89942219AA7E001B1B97 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -58,11 +77,13 @@
 		3D2BE72A220231F200E28519 = {
 			isa = PBXGroup;
 			children = (
+				578F89902219A9EC001B1B97 /* VisualizerScene */,
 				3D2BE74F2202487600E28519 /* README.md */,
 				3D2C342E220B64CB00282C38 /* Settings.swift */,
 				3D2BE736220231F200E28519 /* AppDelegate.swift */,
 				3D2C3433220B6FF300282C38 /* Settings.bundle */,
 				3D2BE735220231F200E28519 /* CoreDexter */,
+				578F89982219AA7E001B1B97 /* PokeScene */,
 				3D2BE734220231F200E28519 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				3D2BE733220231F200E28519 /* CoreDexter.app */,
+				578F89972219AA7E001B1B97 /* PokeScene.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,6 +149,26 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		578F89902219A9EC001B1B97 /* VisualizerScene */ = {
+			isa = PBXGroup;
+			children = (
+				578F89912219AA0C001B1B97 /* VisualiserScene.swift */,
+			);
+			path = VisualizerScene;
+			sourceTree = "<group>";
+		};
+		578F89982219AA7E001B1B97 /* PokeScene */ = {
+			isa = PBXGroup;
+			children = (
+				578F89992219AA7E001B1B97 /* AppDelegate.swift */,
+				578F899B2219AA7E001B1B97 /* ViewController.swift */,
+				578F899D2219AA7E001B1B97 /* Main.storyboard */,
+				578F89A02219AA80001B1B97 /* Assets.xcassets */,
+				578F89A22219AA80001B1B97 /* Info.plist */,
+			);
+			path = PokeScene;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -147,6 +189,23 @@
 			productReference = 3D2BE733220231F200E28519 /* CoreDexter.app */;
 			productType = "com.apple.product-type.application";
 		};
+		578F89962219AA7E001B1B97 /* PokeScene */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 578F89A32219AA80001B1B97 /* Build configuration list for PBXNativeTarget "PokeScene" */;
+			buildPhases = (
+				578F89932219AA7E001B1B97 /* Sources */,
+				578F89942219AA7E001B1B97 /* Frameworks */,
+				578F89952219AA7E001B1B97 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PokeScene;
+			productName = PokeScene;
+			productReference = 578F89972219AA7E001B1B97 /* PokeScene.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -158,6 +217,9 @@
 				ORGANIZATIONNAME = "Joss Manger";
 				TargetAttributes = {
 					3D2BE732220231F200E28519 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					578F89962219AA7E001B1B97 = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
@@ -176,6 +238,7 @@
 			projectRoot = "";
 			targets = (
 				3D2BE732220231F200E28519 /* CoreDexter */,
+				578F89962219AA7E001B1B97 /* PokeScene */,
 			);
 		};
 /* End PBXProject section */
@@ -193,6 +256,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		578F89952219AA7E001B1B97 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				578F89A12219AA80001B1B97 /* Assets.xcassets in Resources */,
+				578F899F2219AA7E001B1B97 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -203,12 +275,22 @@
 				3D2BE73A220231F200E28519 /* CoreDexter.xcdatamodeld in Sources */,
 				3D2BE737220231F200E28519 /* AppDelegate.swift in Sources */,
 				3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */,
+				578F89922219AA0C001B1B97 /* VisualiserScene.swift in Sources */,
 				3D2BE73C220231F200E28519 /* MasterViewController.swift in Sources */,
 				3D2BE74E220238D400E28519 /* PokeModel.swift in Sources */,
 				3D2BE73E220231F200E28519 /* DetailViewController.swift in Sources */,
 				3D2C342F220B64CB00282C38 /* Settings.swift in Sources */,
 				3D2C342C220B32E300282C38 /* PokeViewModel.swift in Sources */,
 				3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		578F89932219AA7E001B1B97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				578F899A2219AA7E001B1B97 /* AppDelegate.swift in Sources */,
+				578F89A62219AA9D001B1B97 /* VisualiserScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +311,14 @@
 				3D2BE745220231F300E28519 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		578F899D2219AA7E001B1B97 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				578F899E2219AA7E001B1B97 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -388,6 +478,48 @@
 			};
 			name = Release;
 		};
+		578F89A42219AA80001B1B97 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3C42F7N9CQ;
+				INFOPLIST_FILE = PokeScene/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.jossy.PokeScene;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+			};
+			name = Debug;
+		};
+		578F89A52219AA80001B1B97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3C42F7N9CQ;
+				INFOPLIST_FILE = PokeScene/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = co.jossy.PokeScene;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -405,6 +537,15 @@
 			buildConfigurations = (
 				3D2BE74B220231F300E28519 /* Debug */,
 				3D2BE74C220231F300E28519 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		578F89A32219AA80001B1B97 /* Build configuration list for PBXNativeTarget "PokeScene" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				578F89A42219AA80001B1B97 /* Debug */,
+				578F89A52219AA80001B1B97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
