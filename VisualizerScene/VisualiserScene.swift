@@ -16,14 +16,14 @@ import SceneKit
 import Cocoa
 typealias Color = NSColor
 typealias Image = NSImage
-typealias ViewController = NSViewController
+public typealias ViewController = NSViewController
 typealias View = NSView
 typealias Rect = NSRect
 #else
 import UIKit
 typealias Color = UIColor
 typealias Image = UIImage
-typealias ViewController = UIViewController
+public typealias ViewController = UIViewController
 typealias View = UIView
 typealias Rect = CGRect
 #endif
@@ -47,7 +47,7 @@ struct PokemonSpriteData{
     var img:Image?
 }
 
-class SKViewController:ViewController, SCNSceneRendererDelegate, CAAnimationDelegate {
+public class SKViewController:ViewController, SCNSceneRendererDelegate, CAAnimationDelegate {
     
     var scene:SCNScene!
     var scnView:SCNView!
@@ -56,7 +56,7 @@ class SKViewController:ViewController, SCNSceneRendererDelegate, CAAnimationDele
     var pokedex:[Int:PokemonSpriteData] = [:]
     var layers:[CAAnimationGroup:SCNNode] = [:]
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         
         super.viewDidLoad()
         

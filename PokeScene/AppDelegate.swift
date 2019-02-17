@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PokemonVisualiser_tvos
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let screen = UIScreen.main.bounds
+        window = UIWindow(frame: screen)
+        guard let window = self.window else {
+            return false
+        }
+        window.rootViewController = SKViewController(nibName: nil, bundle: nil)
+        window.makeKeyAndVisible()
         return true
     }
 
