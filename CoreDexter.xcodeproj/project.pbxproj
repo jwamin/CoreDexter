@@ -21,12 +21,39 @@
 		3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */; };
 		3D4060F92204E63100196626 /* MajorMonoDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */; };
 		3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4060FA2204E93300196626 /* ExtensionsEtx.swift */; };
+		5751DC6B221A253400BC804B /* PokemonVisualiser_tvos.h in Headers */ = {isa = PBXBuildFile; fileRef = 5751DC69221A253400BC804B /* PokemonVisualiser_tvos.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5751DC74221A253C00BC804B /* VisualiserScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F89912219AA0C001B1B97 /* VisualiserScene.swift */; };
+		5751DC75221A259C00BC804B /* PokemonVisualiser_tvos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5751DC67221A253400BC804B /* PokemonVisualiser_tvos.framework */; };
+		5751DC76221A259C00BC804B /* PokemonVisualiser_tvos.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5751DC67221A253400BC804B /* PokemonVisualiser_tvos.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		578F89922219AA0C001B1B97 /* VisualiserScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F89912219AA0C001B1B97 /* VisualiserScene.swift */; };
 		578F899A2219AA7E001B1B97 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F89992219AA7E001B1B97 /* AppDelegate.swift */; };
 		578F899F2219AA7E001B1B97 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 578F899D2219AA7E001B1B97 /* Main.storyboard */; };
 		578F89A12219AA80001B1B97 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 578F89A02219AA80001B1B97 /* Assets.xcassets */; };
-		578F89A62219AA9D001B1B97 /* VisualiserScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578F89912219AA0C001B1B97 /* VisualiserScene.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5751DC77221A259C00BC804B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3D2BE72B220231F200E28519 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5751DC66221A253400BC804B;
+			remoteInfo = "PokemonVisualiser-tvos";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5751DC79221A259C00BC804B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				5751DC76221A259C00BC804B /* PokemonVisualiser_tvos.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3D2BE733220231F200E28519 /* CoreDexter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDexter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,6 +74,9 @@
 		3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeCellTableViewCell.swift; sourceTree = "<group>"; };
 		3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MajorMonoDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		3D4060FA2204E93300196626 /* ExtensionsEtx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEtx.swift; sourceTree = "<group>"; };
+		5751DC67221A253400BC804B /* PokemonVisualiser_tvos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PokemonVisualiser_tvos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5751DC69221A253400BC804B /* PokemonVisualiser_tvos.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PokemonVisualiser_tvos.h; sourceTree = "<group>"; };
+		5751DC6A221A253400BC804B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		578F89912219AA0C001B1B97 /* VisualiserScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualiserScene.swift; sourceTree = "<group>"; };
 		578F89972219AA7E001B1B97 /* PokeScene.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeScene.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		578F89992219AA7E001B1B97 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -63,10 +93,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5751DC64221A253400BC804B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		578F89942219AA7E001B1B97 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5751DC75221A259C00BC804B /* PokemonVisualiser_tvos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +121,7 @@
 				3D2C3433220B6FF300282C38 /* Settings.bundle */,
 				3D2BE735220231F200E28519 /* CoreDexter */,
 				578F89982219AA7E001B1B97 /* PokeScene */,
+				5751DC68221A253400BC804B /* PokemonVisualiser-tvos */,
 				3D2BE734220231F200E28519 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,6 +131,7 @@
 			children = (
 				3D2BE733220231F200E28519 /* CoreDexter.app */,
 				578F89972219AA7E001B1B97 /* PokeScene.app */,
+				5751DC67221A253400BC804B /* PokemonVisualiser_tvos.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -148,6 +188,15 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		5751DC68221A253400BC804B /* PokemonVisualiser-tvos */ = {
+			isa = PBXGroup;
+			children = (
+				5751DC69221A253400BC804B /* PokemonVisualiser_tvos.h */,
+				5751DC6A221A253400BC804B /* Info.plist */,
+			);
+			path = "PokemonVisualiser-tvos";
+			sourceTree = "<group>";
+		};
 		578F89902219A9EC001B1B97 /* VisualizerScene */ = {
 			isa = PBXGroup;
 			children = (
@@ -169,6 +218,17 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		5751DC62221A253400BC804B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5751DC6B221A253400BC804B /* PokemonVisualiser_tvos.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		3D2BE732220231F200E28519 /* CoreDexter */ = {
 			isa = PBXNativeTarget;
@@ -187,6 +247,24 @@
 			productReference = 3D2BE733220231F200E28519 /* CoreDexter.app */;
 			productType = "com.apple.product-type.application";
 		};
+		5751DC66221A253400BC804B /* PokemonVisualiser-tvos */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5751DC72221A253400BC804B /* Build configuration list for PBXNativeTarget "PokemonVisualiser-tvos" */;
+			buildPhases = (
+				5751DC62221A253400BC804B /* Headers */,
+				5751DC63221A253400BC804B /* Sources */,
+				5751DC64221A253400BC804B /* Frameworks */,
+				5751DC65221A253400BC804B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PokemonVisualiser-tvos";
+			productName = "PokemonVisualiser-tvos";
+			productReference = 5751DC67221A253400BC804B /* PokemonVisualiser_tvos.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		578F89962219AA7E001B1B97 /* PokeScene */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 578F89A32219AA80001B1B97 /* Build configuration list for PBXNativeTarget "PokeScene" */;
@@ -194,10 +272,12 @@
 				578F89932219AA7E001B1B97 /* Sources */,
 				578F89942219AA7E001B1B97 /* Frameworks */,
 				578F89952219AA7E001B1B97 /* Resources */,
+				5751DC79221A259C00BC804B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				5751DC78221A259C00BC804B /* PBXTargetDependency */,
 			);
 			name = PokeScene;
 			productName = PokeScene;
@@ -215,6 +295,9 @@
 				ORGANIZATIONNAME = "Joss Manger";
 				TargetAttributes = {
 					3D2BE732220231F200E28519 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					5751DC66221A253400BC804B = {
 						CreatedOnToolsVersion = 10.1;
 					};
 					578F89962219AA7E001B1B97 = {
@@ -237,6 +320,7 @@
 			targets = (
 				3D2BE732220231F200E28519 /* CoreDexter */,
 				578F89962219AA7E001B1B97 /* PokeScene */,
+				5751DC66221A253400BC804B /* PokemonVisualiser-tvos */,
 			);
 		};
 /* End PBXProject section */
@@ -251,6 +335,13 @@
 				3D2C3434220B6FF400282C38 /* Settings.bundle in Resources */,
 				3D2BE741220231F200E28519 /* Main.storyboard in Resources */,
 				3D4060F92204E63100196626 /* MajorMonoDisplay-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5751DC65221A253400BC804B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,16 +374,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5751DC63221A253400BC804B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5751DC74221A253C00BC804B /* VisualiserScene.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		578F89932219AA7E001B1B97 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				578F899A2219AA7E001B1B97 /* AppDelegate.swift in Sources */,
-				578F89A62219AA9D001B1B97 /* VisualiserScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5751DC78221A259C00BC804B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5751DC66221A253400BC804B /* PokemonVisualiser-tvos */;
+			targetProxy = 5751DC77221A259C00BC804B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		3D2BE73F220231F200E28519 /* Main.storyboard */ = {
@@ -476,9 +582,70 @@
 			};
 			name = Release;
 		};
+		5751DC70221A253400BC804B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 3C42F7N9CQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "PokemonVisualiser-tvos/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "co.jossy.PokemonVisualiser-tvos";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		5751DC71221A253400BC804B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 3C42F7N9CQ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "PokemonVisualiser-tvos/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "co.jossy.PokemonVisualiser-tvos";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		578F89A42219AA80001B1B97 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
@@ -500,6 +667,7 @@
 		578F89A52219AA80001B1B97 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
@@ -535,6 +703,15 @@
 			buildConfigurations = (
 				3D2BE74B220231F300E28519 /* Debug */,
 				3D2BE74C220231F300E28519 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5751DC72221A253400BC804B /* Build configuration list for PBXNativeTarget "PokemonVisualiser-tvos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5751DC70221A253400BC804B /* Debug */,
+				5751DC71221A253400BC804B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
