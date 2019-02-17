@@ -50,7 +50,6 @@
 		578F89912219AA0C001B1B97 /* VisualiserScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualiserScene.swift; sourceTree = "<group>"; };
 		578F89972219AA7E001B1B97 /* PokeScene.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeScene.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		578F89992219AA7E001B1B97 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		578F899B2219AA7E001B1B97 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		578F899E2219AA7E001B1B97 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		578F89A02219AA80001B1B97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		578F89A22219AA80001B1B97 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -161,7 +160,6 @@
 			isa = PBXGroup;
 			children = (
 				578F89992219AA7E001B1B97 /* AppDelegate.swift */,
-				578F899B2219AA7E001B1B97 /* ViewController.swift */,
 				578F899D2219AA7E001B1B97 /* Main.storyboard */,
 				578F89A02219AA80001B1B97 /* Assets.xcassets */,
 				578F89A22219AA80001B1B97 /* Info.plist */,
