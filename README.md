@@ -12,21 +12,22 @@
 * Tap animation utilising `CAKeyframesAnimation`
 * Int extension to create 3-digit pokemon index strings
 * extremely quick and dirty pokemon cries complete with KVO for `AVPlayerItem.Status` and error handling.
+* Self sizing cells with Dynamic Type
 
 ### TODO
-* Handle `fatalError`s in initial load code, handle drops in connection. Present Alert View, flush and restart.
-* `Codeable` - map json responses to structs
 * Initial load error handling
+    * Handle `fatalError`s in initial load code, handle drops in connection. Present Alert View, flush and restart.
+    * `Codeable` - map json responses to structs
 * Unit Tests
-* Search controller
-* Make detail view more detailed
-* Make cell views richer
-* Save images in a more organised way.
-* Segmented / Tab View for alternative regions
+* Master View Controller
+    * Search controller
+    * Make cell views richer
+* Detail View Controller
+    * Dynamic Type
+* Save images in a more organised way (Sub directories of .documentDirectory)
+* Segmented / Tab View for alternative regions?
 * More Info From API -Actual initial region?
 * Fix to CD Region object propagation.
-* Dynamic Text
-* Dynamic height cells
 
 ### Bugs
 * Custom font not set on detail view for iPad.
