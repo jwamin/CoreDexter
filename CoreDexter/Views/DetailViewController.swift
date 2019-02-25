@@ -15,6 +15,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     
+    @IBOutlet var layerColor:UIColor!
+    
     var player:AVPlayer!
     var imageview:UIImageView!
     
@@ -56,16 +58,22 @@ class DetailViewController: UIViewController {
         detailDescriptionLabel.textAlignment = .center
         detailDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        imageview = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 300, height: 300)))
-        imageview.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(imageview)
+        let sharedFrame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
+        
+        let imgcontainer = UIView(frame: sharedFrame)
+        imgcontainer.translatesAutoresizingMaskIntoConstraints = false
+        imgcontainer.isUserInteractionEnabled = true
+        imageview = UIImageView(frame: sharedFrame)
+        //imageview.translatesAutoresizingMaskIntoConstraints = false
+        imgcontainer.addSubview(imageview)
+        contentView.addSubview(imgcontainer)
         setImage()
         
         layoutConstraints()
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
-        imageview.isUserInteractionEnabled = true
-        imageview.addGestureRecognizer(gesture)
+        imgcontainer.isUserInteractionEnabled = true
+        imgcontainer.addGestureRecognizer(gesture)
         
         configureView()
     }
@@ -122,21 +130,41 @@ class DetailViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
     }
     
+    override func viewDidLayoutSubviews() {
+        guard let container = imageview.superview else {
+            return
+        }
+        
+        container.layer.backgroundColor = layerColor.cgColor
+        container.layer.borderColor = UIColor.black.cgColor
+        container.layer.borderWidth = 5.0
+        container.layer.cornerRadius = container.bounds.width / 2
+        
+    }
+    
     private func layoutConstraints(){
-        let views:[String:UIView] = ["imageview":imageview,"label":detailDescriptionLabel,"contentView":contentView]
+        
+        guard let container = imageview.superview else {
+            return
+        }
+        
+        let views:[String:UIView] = ["imgcontainer":container,"imgview":imageview,"label":detailDescriptionLabel,"contentView":contentView]
         
         var constraints = [NSLayoutConstraint]()
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imageview(<=300)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[label]-0-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
         
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[imgview]-0-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[imgview]-0-|", options: [], metrics: nil, views: views)
+        
         constraints += [
-            NSLayoutConstraint(item: imageview, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
-            NSLayoutConstraint(item: imageview, attribute: .height, relatedBy: .equal, toItem: imageview, attribute: .width, multiplier: 1.0, constant: 0),
+            NSLayoutConstraint(item: container, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
+            NSLayoutConstraint(item: container, attribute: .height, relatedBy: .equal, toItem: container, attribute: .width, multiplier: 1.0, constant: 0),
             NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0),
             NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
-            imageview.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageview.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
+            container.topAnchor.constraint(equalTo: contentView.topAnchor),
+            container.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
             
         ]
         

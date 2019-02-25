@@ -35,8 +35,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             fatalError()
         }
         
+        //refactor this to IB?
         self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font:UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
+            NSAttributedString.Key.font:UIFontMetrics(forTextStyle: .headline).scaledFont(for:font),
+            NSAttributedString.Key.foregroundColor:UIColor.yellow
         ]
         
         
