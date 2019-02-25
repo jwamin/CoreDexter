@@ -64,6 +64,7 @@ class DetailViewController: UIViewController {
         imgcontainer.translatesAutoresizingMaskIntoConstraints = false
         imgcontainer.isUserInteractionEnabled = true
         imageview = UIImageView(frame: sharedFrame)
+        
         //imageview.translatesAutoresizingMaskIntoConstraints = false
         imgcontainer.addSubview(imageview)
         contentView.addSubview(imgcontainer)
@@ -72,8 +73,8 @@ class DetailViewController: UIViewController {
         layoutConstraints()
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
-        imgcontainer.isUserInteractionEnabled = true
-        imgcontainer.addGestureRecognizer(gesture)
+        imageview.isUserInteractionEnabled = true
+        imageview.addGestureRecognizer(gesture)
         
         configureView()
     }
@@ -138,8 +139,13 @@ class DetailViewController: UIViewController {
         container.layer.backgroundColor = layerColor.cgColor
         container.layer.borderColor = UIColor.black.cgColor
         container.layer.borderWidth = 5.0
-        container.layer.cornerRadius = container.bounds.width / 2
+    
+        //borderwidth composites above the layer contents... interesting
         
+        container.layer.cornerRadius = container.bounds.width / 2
+        container.layer.zPosition = -1
+        container.layer.masksToBounds = true
+        imageview.layer.zPosition = 2
     }
     
     private func layoutConstraints(){
@@ -236,6 +242,7 @@ class DetailViewController: UIViewController {
         CATransaction.setCompletionBlock {
             //reset flag on completion
             self.animating = false
+            imageview.layer.zPosition = 1
         }
         
         //group animations to run concurrently
@@ -298,6 +305,7 @@ class DetailViewController: UIViewController {
         animationGroup.duration = 0.75
         animationGroup.fillMode = .forwards
         
+        imageview.layer.zPosition = 2
         //add animation to layer
         imageview.layer.add(animationGroup, forKey: "animation")
         
