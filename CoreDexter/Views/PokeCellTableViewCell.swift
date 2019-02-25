@@ -15,7 +15,21 @@ class PokeCellTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        
+        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
+            fatalError()
+        }
+        print(imgview.bounds)
+        imgview.layer.borderWidth = 1.0
+        imgview.layer.borderColor = UIColor.black.cgColor
+        imgview.layer.cornerRadius = (imageView?.bounds.height)! / 2
+        
+        mainLabel.font = UIFontMetrics(forTextStyle: .headline).scaledFont(for: font)
+        mainLabel.adjustsFontForContentSizeCategory = true
     }
+    
+    
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

@@ -28,10 +28,18 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //navigationItem.leftBarButtonItem = editButtonItem
         
         tableView.scrollsToTop = true
+        tableView.estimatedRowHeight = 85.0
+        tableView.rowHeight = UITableView.automaticDimension
+        
+        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
+            fatalError()
+        }
         
         self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font:UIFont(name: "MajorMonoDisplay-Regular", size: 21)!
+            NSAttributedString.Key.font:UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
         ]
+        
+        
         
         let addButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(fileinfo(_:)))
         navigationItem.rightBarButtonItem = addButton
@@ -191,6 +199,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let poke = fetchedResultsController.object(at: indexPath)
         print("loading cell \(indexPath)")
         configureCell(cell, withPokemon: poke)
+        cell.layoutIfNeeded()
         return cell
     }
     
@@ -199,9 +208,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return true
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 40.0
-    }
+//    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 40.0
+//    }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
@@ -228,8 +237,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let pokeCell = cell as! PokeCellTableViewCell
         
         //leave image loading to willDisplay
-        
-        pokeCell.mainLabel.text =  "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"//event.timestamp!.description
+        let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
+        pokeCell.mainLabel.text = labeltext //event.timestamp!.description
+        cell.layoutIfNeeded()
     }
     
     // MARK: - Custom
@@ -256,6 +266,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                     }
                     
                     cell.imgview.image = img
+                    cell.layoutIfNeeded()
                 }
             }
         
