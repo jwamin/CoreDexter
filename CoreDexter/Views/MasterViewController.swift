@@ -219,7 +219,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
         }
 
-        
+        cell.layoutIfNeeded()
+        let pokeCell = cell as! PokeCellTableViewCell
+        pokeCell.imgview.layer.cornerRadius = pokeCell.imgview.bounds.height / 2
         DispatchQueue.global(qos: .background).async {
             
             //asynchronously requests image if there is none
@@ -239,11 +241,16 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //leave image loading to willDisplay
         let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
         pokeCell.mainLabel.text = labeltext //event.timestamp!.description
-        cell.layoutIfNeeded()
+        
+        pokeCell.mainLabel.sizeToFit()
+        
     }
     
     // MARK: - Custom
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 
     
     public func getImageForCell(at indexPath:IndexPath){

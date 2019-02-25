@@ -124,12 +124,14 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4O9-ww-IM5">
                                             <rect key="frame" x="16" y="8" width="27.5" height="27.5"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" priority="499" constant="27.5" id="pFT-ng-N5X"/>
                                                 <constraint firstAttribute="width" secondItem="4O9-ww-IM5" secondAttribute="height" multiplier="1:1" id="qx0-7R-4LU"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="751" verticalHuggingPriority="751" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="751" verticalHuggingPriority="751" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
                                             <rect key="frame" x="51.5" y="8" width="307.5" height="27.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="307.5" id="0T7-Ag-9f4"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -138,7 +140,8 @@
                                     <constraints>
                                         <constraint firstAttribute="bottom" secondItem="NDO-eV-HRb" secondAttribute="bottom" constant="8" id="GGi-zw-Omm"/>
                                         <constraint firstAttribute="trailing" secondItem="NDO-eV-HRb" secondAttribute="trailing" constant="16" id="R24-ss-MhD"/>
-                                        <constraint firstAttribute="bottom" secondItem="4O9-ww-IM5" secondAttribute="bottom" constant="8" id="W2a-fU-LzK"/>
+                                        <constraint firstItem="NDO-eV-HRb" firstAttribute="height" relation="greaterThanOrEqual" secondItem="4O9-ww-IM5" secondAttribute="height" id="VLw-iU-Rev"/>
+                                        <constraint firstAttribute="bottom" secondItem="4O9-ww-IM5" secondAttribute="bottom" priority="100" constant="8" id="W2a-fU-LzK"/>
                                         <constraint firstItem="4O9-ww-IM5" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" constant="16" id="YjS-Lb-uqV"/>
                                         <constraint firstItem="NDO-eV-HRb" firstAttribute="leading" secondItem="4O9-ww-IM5" secondAttribute="trailing" constant="8" id="dvN-e8-AaT"/>
                                         <constraint firstItem="NDO-eV-HRb" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" constant="8" id="vnZ-us-F6F"/>

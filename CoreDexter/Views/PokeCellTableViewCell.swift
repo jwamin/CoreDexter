@@ -23,7 +23,9 @@ class PokeCellTableViewCell: UITableViewCell {
         print(imgview.bounds)
         imgview.layer.borderWidth = 1.0
         imgview.layer.borderColor = UIColor.black.cgColor
-        imgview.layer.cornerRadius = (imageView?.bounds.height)! / 2
+        
+        mainLabel.numberOfLines = 0
+        mainLabel.lineBreakMode = .byWordWrapping
         
         mainLabel.font = UIFontMetrics(forTextStyle: .headline).scaledFont(for: font)
         mainLabel.adjustsFontForContentSizeCategory = true
