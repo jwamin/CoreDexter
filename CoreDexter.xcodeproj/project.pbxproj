@@ -21,7 +21,21 @@
 		3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */; };
 		3D4060F92204E63100196626 /* MajorMonoDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */; };
 		3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4060FA2204E93300196626 /* ExtensionsEtx.swift */; };
+		57A859F5223ABACD00926BF7 /* PokeAPIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */; };
+		57A859FA223ABB8600926BF7 /* libPokeAPIKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		57A859F0223ABACD00926BF7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3D2BE733220231F200E28519 /* CoreDexter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreDexter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,10 +56,20 @@
 		3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeCellTableViewCell.swift; sourceTree = "<group>"; };
 		3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MajorMonoDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		3D4060FA2204E93300196626 /* ExtensionsEtx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEtx.swift; sourceTree = "<group>"; };
+		57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPokeAPIKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeAPIKit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		3D2BE730220231F200E28519 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57A859FA223ABB8600926BF7 /* libPokeAPIKit.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57A859EF223ABACD00926BF7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -63,7 +87,9 @@
 				3D2BE736220231F200E28519 /* AppDelegate.swift */,
 				3D2C3433220B6FF300282C38 /* Settings.bundle */,
 				3D2BE735220231F200E28519 /* CoreDexter */,
+				57A859F3223ABACD00926BF7 /* PokeAPIKit */,
 				3D2BE734220231F200E28519 /* Products */,
+				57A859F9223ABB8600926BF7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				3D2BE733220231F200E28519 /* CoreDexter.app */,
+				57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,6 +154,21 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		57A859F3223ABACD00926BF7 /* PokeAPIKit */ = {
+			isa = PBXGroup;
+			children = (
+				57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */,
+			);
+			path = PokeAPIKit;
+			sourceTree = "<group>";
+		};
+		57A859F9223ABB8600926BF7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -147,6 +189,23 @@
 			productReference = 3D2BE733220231F200E28519 /* CoreDexter.app */;
 			productType = "com.apple.product-type.application";
 		};
+		57A859F1223ABACD00926BF7 /* PokeAPIKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 57A859F8223ABACD00926BF7 /* Build configuration list for PBXNativeTarget "PokeAPIKit" */;
+			buildPhases = (
+				57A859EE223ABACD00926BF7 /* Sources */,
+				57A859EF223ABACD00926BF7 /* Frameworks */,
+				57A859F0223ABACD00926BF7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PokeAPIKit;
+			productName = PokeAPIKit;
+			productReference = 57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -158,6 +217,9 @@
 				ORGANIZATIONNAME = "Joss Manger";
 				TargetAttributes = {
 					3D2BE732220231F200E28519 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					57A859F1223ABACD00926BF7 = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
@@ -176,6 +238,7 @@
 			projectRoot = "";
 			targets = (
 				3D2BE732220231F200E28519 /* CoreDexter */,
+				57A859F1223ABACD00926BF7 /* PokeAPIKit */,
 			);
 		};
 /* End PBXProject section */
@@ -209,6 +272,14 @@
 				3D2C342F220B64CB00282C38 /* Settings.swift in Sources */,
 				3D2C342C220B32E300282C38 /* PokeViewModel.swift in Sources */,
 				3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57A859EE223ABACD00926BF7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57A859F5223ABACD00926BF7 /* PokeAPIKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +459,32 @@
 			};
 			name = Release;
 		};
+		57A859F6223ABACD00926BF7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3C42F7N9CQ;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		57A859F7223ABACD00926BF7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3C42F7N9CQ;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -405,6 +502,15 @@
 			buildConfigurations = (
 				3D2BE74B220231F300E28519 /* Debug */,
 				3D2BE74C220231F300E28519 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		57A859F8223ABACD00926BF7 /* Build configuration list for PBXNativeTarget "PokeAPIKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57A859F6223ABACD00926BF7 /* Debug */,
+				57A859F7223ABACD00926BF7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

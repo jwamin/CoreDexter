@@ -9,6 +9,7 @@
 import UIKit
 import Foundation
 import CoreData
+import PokeAPIKit
 
 struct PokeData {
     let name:String
@@ -149,24 +150,32 @@ class PokeModel{
             guard let data = data else {
                 fatalError("no data")
             }
+
+            let decoder = JSONDecoder()
             
-            //let dexString = String(bytes: data, encoding: .utf8)!
-            let dexDict:[String:Any]
+            var pokedex:Pokedex
+            
             do{
-            dexDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
+                pokedex = try decoder.decode(Pokedex.self, from: data)
             } catch {
-                fatalError()
+                fatalError(error.localizedDescription)
             }
             
-            let pokeDict = dexDict["pokemon_entries"] as! [Any]
+//            //let dexString = String(bytes: data, encoding: .utf8)!
+//            let dexDict:[String:Any]
+//            do{
+//            dexDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
+//            } catch {
+//                fatalError()
+//            }
+            
+            let pokeDict = pokedex.pokemon_entries
             self.pokeArray = []
-            for (index,poke) in pokeDict.enumerated(){
-                let pokeAny = poke as! [String:Any]
-                let speciesInfo = pokeAny["pokemon_species"] as! [String:String]
-                let regionNumber = index+1
-                if let urlString = speciesInfo["url"]{
-                    self.getSpeciesDataforPokemon(urlString: urlString,regionIndex:regionNumber)
-                }
+            
+            for poke in pokeDict{
+                let regionNumber = poke.entry_number
+                let urlString = poke.pokemon_species.url.absoluteString
+                self.getSpeciesDataforPokemon(urlString: urlString,regionIndex:regionNumber)
             }
             
 
@@ -185,7 +194,7 @@ class PokeModel{
             return
         }
         URLSession.shared.dataTask(with: url, completionHandler: {
-            (data, response, error) in
+            [unowned self] (data, response, error) in
             
             if (error != nil){
                 print("err")
@@ -196,13 +205,13 @@ class PokeModel{
                 return
             }
             
-            let pokeDict:[String:Any]
-            do{
-                pokeDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
+            let decoder = JSONDecoder()
+            let pokemon:PokemonStruct
+            do {
+                pokemon = try decoder.decode(PokemonStruct.self, from: data)
             } catch {
-                fatalError()
+                fatalError(error.localizedDescription)
             }
-            //print(pokeDict)
             
             var thisPokeIndex = 0
             
@@ -213,27 +222,26 @@ class PokeModel{
                 }
             }
             
-            let typesarray = pokeDict["types"] as! [[String:Any]]
+            let typesarray = pokemon.types
             
             for type in typesarray{
                 
-               
-                switch type["slot"] as! Int{
+                //err not so sure about this?
+                switch type.slot{
                 case 1:
-                    self.pokeArray[thisPokeIndex].type1 = (type["type"] as! [String:String])["name"]!
+                    self.pokeArray[thisPokeIndex].type1 = type.type.name
                 case 2:
-                    self.pokeArray[thisPokeIndex].type2 = (type["type"] as! [String:String])["name"]!
+                    self.pokeArray[thisPokeIndex].type2 = type.type.name
                 default:
                     continue
                 }
+                
             }
-            //print(self.pokeArray[thisPokeIndex])
-            
-            //print(poke)
+
             
             //process pokedata and
             self.dispatchGroup.leave()
-            
+            //..the dispatch group
             
             
             
@@ -261,20 +269,22 @@ class PokeModel{
                 return
             }
             
-            let pokeDict:[String:Any]
-            do{
-                pokeDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
+            let speciesInfo:Species
+            let decoder = JSONDecoder()
+            
+            do {
+                speciesInfo = try decoder.decode(Species.self, from: data)
             } catch {
-                fatalError()
+                fatalError(error.localizedDescription)
             }
+            
             //print(pokeDict)
-            let name = pokeDict["name"] as! String
-            let number = String(pokeDict["id"] as! Int)
-            let generationDict = pokeDict["generation"] as! [String:String]
-            let generation = generationDict["name"] ?? ""
+            let name = speciesInfo.name
+            let number = String(speciesInfo.id)
+            let generation = speciesInfo.generation.name
             let region = self.region.string()
-            let textEntriesDict = pokeDict["flavor_text_entries"] as! [[String:Any]]
-            let message = textEntriesDict[textEntriesDict.count-1]["flavor_text"] as! String
+            
+            let message = speciesInfo.flavor_text_entries[speciesInfo.flavor_text_entries.count-1].flavor_text
             let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number, type1: nil, type2: nil, description: message)
             self.pokeArray.append(poke)
             //print(poke)
