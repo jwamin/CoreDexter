@@ -343,26 +343,24 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        if(scrollLoading){
-            return
-        }
-        switch type {
-        case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
-        case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
-        case .update:
-            print("updating row")
-            guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-                print("problem with indexpath and/or cell")
-                return
+        if(!scrollLoading){
+            switch type {
+            case .insert:
+                tableView.insertRows(at: [newIndexPath!], with: .fade)
+            case .delete:
+                tableView.deleteRows(at: [indexPath!], with: .fade)
+            case .update:
+                print("updating row")
+                guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
+                    print("problem with indexpath and/or cell")
+                    return
+                }
+                self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
+            case .move:
+                configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
+                tableView.moveRow(at: indexPath!, to: newIndexPath!)
             }
-            self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
-        case .move:
-            configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
-            tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
-        
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {

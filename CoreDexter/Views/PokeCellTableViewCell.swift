@@ -31,8 +31,16 @@ class PokeCellTableViewCell: UITableViewCell {
         mainLabel.adjustsFontForContentSizeCategory = true
     }
     
+    override func safeAreaInsetsDidChange() {
+        print("safe area insets changed!")
+        
+    }
     
-
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.imgview.layer.cornerRadius = self.imgview.bounds.height / 2
+    }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
