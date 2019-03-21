@@ -20,6 +20,8 @@ class DetailViewController: UIViewController {
     var player:AVPlayer!
     var imageview:UIImageView!
     
+    var constraints:[NSLayoutConstraint] = []
+    
     private var animating = true
     
     var img:UIImage?{
@@ -34,8 +36,6 @@ class DetailViewController: UIViewController {
             configureView()
         }
     }
-    
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,18 +65,31 @@ class DetailViewController: UIViewController {
         imgcontainer.isUserInteractionEnabled = true
         imageview = UIImageView(frame: sharedFrame)
         
-        //imageview.translatesAutoresizingMaskIntoConstraints = false
+        imageview.translatesAutoresizingMaskIntoConstraints = false
         imgcontainer.addSubview(imageview)
         contentView.addSubview(imgcontainer)
         setImage()
+        configureView()
+        imgcontainer.layer.backgroundColor = layerColor.cgColor
+        imgcontainer.layer.borderColor = UIColor.black.cgColor
         
-        layoutConstraints()
+        //borderwidth composites above the layer contents... interesting
+        imgcontainer.layer.borderWidth = 5.0
+        imgcontainer.layer.zPosition = -1
+        imgcontainer.layer.masksToBounds = true
+        imageview.layer.zPosition = 2
+        
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
         
-        configureView()
+        
+        
+        layoutConstraints()
+        
+        
+       
     }
     
     //MARK: KVO for AVPlayer Item ready state
@@ -130,23 +143,27 @@ class DetailViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
     }
+
     
-    override func viewDidLayoutSubviews() {
+    override func viewSafeAreaInsetsDidChange() {
+
+        super.viewSafeAreaInsetsDidChange()
+        layoutConstraints()
+
+    }
+
+
+    
+    private func updateRadius(){
         guard let container = imageview.superview else {
             return
         }
-        
-        container.layer.backgroundColor = layerColor.cgColor
-        container.layer.borderColor = UIColor.black.cgColor
-        container.layer.borderWidth = 5.0
-    
-        //borderwidth composites above the layer contents... interesting
-        
+        container.layoutIfNeeded()
         container.layer.cornerRadius = container.bounds.width / 2
-        container.layer.zPosition = -1
-        container.layer.masksToBounds = true
-        imageview.layer.zPosition = 2
+        
+        print("updated radius to \(container.layer.cornerRadius)")
     }
+    
     
     private func layoutConstraints(){
         
@@ -154,9 +171,17 @@ class DetailViewController: UIViewController {
             return
         }
         
+        if (!constraints.isEmpty){
+            print("regenerating constraints")
+            NSLayoutConstraint.deactivate(constraints)
+            constraints.removeAll()
+        } else {
+            print("generating constraints for the first time")
+        }
+        
         let views:[String:UIView] = ["imgcontainer":container,"imgview":imageview,"label":detailDescriptionLabel,"contentView":contentView]
         
-        var constraints = [NSLayoutConstraint]()
+        
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[label]-0-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
@@ -175,6 +200,7 @@ class DetailViewController: UIViewController {
         ]
         
         NSLayoutConstraint.activate(constraints)
+         updateRadius()
     }
     
     //Actions
