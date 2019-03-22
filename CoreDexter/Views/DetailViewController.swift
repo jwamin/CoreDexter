@@ -54,9 +54,15 @@ class DetailViewController: UIViewController {
         player.currentItem!.addObserver(self, forKeyPath: "status", options: [], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         
+        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
+            fatalError()
+        }
+        
         detailDescriptionLabel.numberOfLines = 0
         detailDescriptionLabel.textAlignment = .center
         detailDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        detailDescriptionLabel.font = UIFontMetrics(forTextStyle: UIFont.TextStyle.body).scaledFont(for: font)
         
         let sharedFrame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
         
@@ -137,6 +143,7 @@ class DetailViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        print("view will appear")
         print(imageview.frame)
     }
     
@@ -152,16 +159,20 @@ class DetailViewController: UIViewController {
 
     }
 
+//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//        super.traitCollectionDidChange(previousTraitCollection)
+//        layoutConstraints()
+//    }
 
     
     private func updateRadius(){
         guard let container = imageview.superview else {
             return
         }
-        container.layoutIfNeeded()
-        container.layer.cornerRadius = container.bounds.width / 2
         
-        print("updated radius to \(container.layer.cornerRadius)")
+        container.layer.cornerRadius = container.bounds.width / 2
+        return
+        
     }
     
     
@@ -182,24 +193,32 @@ class DetailViewController: UIViewController {
         let views:[String:UIView] = ["imgcontainer":container,"imgview":imageview,"label":detailDescriptionLabel,"contentView":contentView]
         
         
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(==300)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[label]-0-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
         
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[imgview]-0-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[imgview]-0-|", options: [], metrics: nil, views: views)
         
+        
+        let centerYConstraint = NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0)
+        centerYConstraint.priority = UILayoutPriority(rawValue: 750)
+        
         constraints += [
+            
             NSLayoutConstraint(item: container, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
             NSLayoutConstraint(item: container, attribute: .height, relatedBy: .equal, toItem: container, attribute: .width, multiplier: 1.0, constant: 0),
-            NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0),
+            centerYConstraint,
+            
             NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
+            
             container.topAnchor.constraint(equalTo: contentView.topAnchor),
             container.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
             
         ]
         
         NSLayoutConstraint.activate(constraints)
+        view.layoutIfNeeded()
          updateRadius()
     }
     
