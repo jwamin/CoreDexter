@@ -73,10 +73,10 @@
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailing" id="9I1-b3-YsQ"/>
                                     <constraint firstItem="svH-Pt-448" firstAttribute="width" secondItem="BYN-fF-3oH" secondAttribute="width" id="Iiy-tS-zUC"/>
+                                    <constraint firstItem="svH-Pt-448" firstAttribute="height" secondItem="BYN-fF-3oH" secondAttribute="height" priority="100" id="Ntp-Qe-F6a"/>
                                     <constraint firstItem="svH-Pt-448" firstAttribute="leading" secondItem="BYN-fF-3oH" secondAttribute="leading" id="SSm-QH-b1z"/>
                                     <constraint firstAttribute="bottom" secondItem="svH-Pt-448" secondAttribute="bottom" id="fwa-Jn-x9m"/>
                                     <constraint firstItem="svH-Pt-448" firstAttribute="top" secondItem="BYN-fF-3oH" secondAttribute="top" id="mbu-RO-rWN"/>
-                                    <constraint firstItem="svH-Pt-448" firstAttribute="height" secondItem="BYN-fF-3oH" secondAttribute="height" priority="100" id="r3W-ko-le6"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="delegate" destination="JEX-9P-axG" id="Joz-oy-rNW"/>
@@ -85,10 +85,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="BYN-fF-3oH" firstAttribute="top" secondItem="dtN-G1-2L3" secondAttribute="top" id="8sj-Kf-lCH"/>
                             <constraint firstItem="BYN-fF-3oH" firstAttribute="leading" secondItem="dtN-G1-2L3" secondAttribute="leading" id="XW8-Si-34b"/>
                             <constraint firstItem="BYN-fF-3oH" firstAttribute="bottom" secondItem="gZp-dr-iWj" secondAttribute="bottom" id="gis-bW-jCB"/>
                             <constraint firstItem="BYN-fF-3oH" firstAttribute="trailing" secondItem="dtN-G1-2L3" secondAttribute="trailing" id="vh2-s8-yad"/>
-                            <constraint firstItem="BYN-fF-3oH" firstAttribute="top" secondItem="dtN-G1-2L3" secondAttribute="top" id="zHe-XQ-3ov"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dtN-G1-2L3"/>
                     </view>

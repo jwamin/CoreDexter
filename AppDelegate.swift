@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
         let masterNavigationController = splitViewController.viewControllers[0] as! UINavigationController
         let controller = masterNavigationController.topViewController as! MasterViewController
-        controller.managedObjectContext = self.persistentContainer.viewContext
+        controller.managedObjectContext = persistentContainer.viewContext
         
         let reset = UserDefaults.standard.object(forKey: "reset") as? Bool ?? false
         print("reset",reset)
@@ -129,12 +129,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     func resetAll(){
         UserDefaults.standard.set(false, forKey: "reset")
-        deleteAllData("Pokemon")
-        deleteAllData("Region")
-        clearAllFilesFromTempDirectory()
+        AppDelegate.deleteAllData("Pokemon",persistentContainer: persistentContainer)
+        AppDelegate.deleteAllData("Region",persistentContainer: persistentContainer)
+        AppDelegate.clearAllFilesFromTempDirectory()
     }
     
-    func clearAllFilesFromTempDirectory(){
+    class func clearAllFilesFromTempDirectory(){
         
         
         let fileManager = FileManager.default
@@ -156,7 +156,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         }
     }
     
-    func deleteAllData(_ entity:String) {
+    class func deleteAllData(_ entity:String,persistentContainer:NSPersistentContainer) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
         fetchRequest.returnsObjectsAsFaults = false
         do {

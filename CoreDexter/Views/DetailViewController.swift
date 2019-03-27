@@ -192,13 +192,21 @@ class DetailViewController: UIViewController {
         
         let views:[String:UIView] = ["imgcontainer":container,"imgview":imageview,"label":detailDescriptionLabel,"contentView":contentView]
         
+        //Content Hugging Priority - The higher this priority is, the more a view resists growing larger than its intrinsic content size.
+        //Content Compression Resistance Priority - The higher this priority is, the more a view resists shrinking smaller than its intrinsic content size.
         
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(==300)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[label]-0-|", options: [], metrics: nil, views: views)
+        container.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
+        container.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .vertical)
+        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
+        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+        
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(>=150)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[label]-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
         
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[imgview]-0-|", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[imgview]-0-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgview]-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imgview]-|", options: [], metrics: nil, views: views)
         
         
         let centerYConstraint = NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0)

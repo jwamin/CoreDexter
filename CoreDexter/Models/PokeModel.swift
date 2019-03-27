@@ -161,14 +161,6 @@ class PokeModel{
                 fatalError(error.localizedDescription)
             }
             
-//            //let dexString = String(bytes: data, encoding: .utf8)!
-//            let dexDict:[String:Any]
-//            do{
-//            dexDict = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any]
-//            } catch {
-//                fatalError()
-//            }
-            
             let pokeDict = pokedex.pokemon_entries
             self.pokeArray = []
             
