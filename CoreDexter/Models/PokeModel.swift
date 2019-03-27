@@ -329,13 +329,13 @@ class PokeModel{
             }
         } else {
             print("no filename, will load",item.id)
-           loadImage(item: item, callback: callback)
+           loadImage(item: item, callback: callback,nil)
         }
         
        
 }
 
-    private func loadImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
+    public func loadImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?,_ secondaryCallback:(()->Void)?){
     
         DispatchQueue.global().async {
             guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
@@ -375,6 +375,10 @@ class PokeModel{
                         
                         if let callback = callback{
                             callback(image,filename)
+                        }
+                        
+                        if let secondaryCallback = secondaryCallback{
+                            secondaryCallback()
                         }
                         
                         

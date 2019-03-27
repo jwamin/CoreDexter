@@ -27,13 +27,27 @@ class FilesystemOperationTests: XCTestCase {
         initialiser = PokeModel(APP_REGION)
         initialiser.managedObjectContext = stack.viewContext
         initialiser.checkAndLoadData()
-        
+         let imagesLoaded = expectation(description: "Images loaded")
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pokemon")
         do{
             let pokemons = try stack.viewContext.fetch(fetchRequest) as! [Pokemon]
             
+           
+            
+            let dispatchq = DispatchGroup()
+            
+ 
+            
             for pokemon in pokemons{
-                initialiser.getImage(item: pokemon, callback: nil)
+                dispatchq.enter()
+                initialiser.loadImage(item: pokemon, callback: nil) {
+                    dispatchq.leave()
+                }
+            }
+            
+            dispatchq.notify(queue: .main) {
+                imagesLoaded.fulfill()
+                print("dispatchq done")
             }
             
         } catch {
@@ -41,6 +55,8 @@ class FilesystemOperationTests: XCTestCase {
             
         }
         
+        wait(for: [imagesLoaded], timeout: 10)
+        print("ready")
     }
     
     override func tearDown() {
@@ -49,38 +65,43 @@ class FilesystemOperationTests: XCTestCase {
     
     func testImagesLoad() {
         // This is an example of a functional test case.
-        
+        print("test started")
         let promise = expectation(description: "there are no files in the directory")
-        
+        var contents:[URL] = []
         let fileManager = FileManager.default
         do{
             let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
             print("something")
-            let contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
+            contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
             print(contents.count)
             if(contents.count>0){
                 print(contents)
                 promise.fulfill()
+            } else {
+                XCTFail("Nothing in document directory")
             }
-             XCTFail("Nothing in document directory")
+            
         } catch {
             XCTFail("Failed to get document directory")
         }
         wait(for: [promise], timeout: 10)
+        XCTAssertGreaterThan(contents.count, 0)
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
-    func testImagesGetUnloaded(){
+    func testZImagesGetUnloaded(){
         
         
         AppDelegate.clearAllFilesFromTempDirectory()
         
         let promise = expectation(description: "there are no files in the directory")
         
+        var contents:[URL] = []
+        
         let fileManager = FileManager.default
         do{
             let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-            let contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
+                contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
             if(contents.count==0){
                 promise.fulfill()
             }
@@ -88,7 +109,8 @@ class FilesystemOperationTests: XCTestCase {
         } catch {
             XCTFail("Failed to get document directory")
         }
-        wait(for: [promise], timeout: 1000)
+        wait(for: [promise], timeout: 10)
+        XCTAssertEqual(contents.count, 0)
     }
     
 }
