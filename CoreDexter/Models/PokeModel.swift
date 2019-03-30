@@ -197,8 +197,9 @@ class PokeModel{
             (data, response, error) in
             
             if (error != nil){
-                print(error?.localizedDescription, "\(regionIndex) dropped from species info")
-                self.dispatchGroup.leave()
+                print(error?.localizedDescription, "\(regionIndex) dropped from species info, retrying..")
+                self.getSpeciesDataforPokemon(urlString: urlString, regionIndex: regionIndex)
+                //self.dispatchGroup.leave()
                 return
             }
             
@@ -259,8 +260,9 @@ class PokeModel{
             [unowned self] (data, response, error) in
             
             if (error != nil){
-                print(error?.localizedDescription, "\(regionIndex) dropped from deep pokemon info")
-                self.dispatchGroup.leave()
+                print(error?.localizedDescription, "\(regionIndex) dropped from deep pokemon info, retrying...")
+                self.getDataforPokemon(regionIndex: regionIndex)
+                //self.dispatchGroup.leave()
                 return
             }
             

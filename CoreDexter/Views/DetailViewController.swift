@@ -20,6 +20,8 @@ class DetailViewController: UIViewController {
     var player:AVPlayer!
     var imageview:UIImageView!
     
+    var viewIsSetup:Bool = false
+    
     var constraints:[NSLayoutConstraint] = []
     
     private var animating = true
@@ -40,7 +42,54 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        print("vdl, instantiating video player")
+       
+        print("view did load")
+        
+    
+       
+    }
+    
+    //MARK: KVO for AVPlayer Item ready state
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        if(object is AVPlayerItem && keyPath == "status"){
+            let item = object as! AVPlayerItem
+            switch(item.status){
+            case AVPlayerItem.Status.readyToPlay:
+                animating = false
+                (navigationItem.rightBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
+                item.removeObserver(self, forKeyPath: "status")
+                print("ready?")
+                return
+            case AVPlayerItem.Status.failed:
+                print("fail?")
+                let label = UILabel()
+                label.numberOfLines = 1
+                label.text = "❌"
+                label.isUserInteractionEnabled = true
+                let tapper = UITapGestureRecognizer(target: self, action: #selector(errorTap))
+                label.addGestureRecognizer(tapper)
+                navigationItem.rightBarButtonItem = UIBarButtonItem(customView: label)
+                animating = false
+                item.removeObserver(self, forKeyPath: "status")
+                return
+            default:
+                print("something else happeend",player.status)
+                return
+            }
+            
+            
+        }
+    };
+    
+    func setupView(){
+        
+        if viewIsSetup {
+            return;
+        }
+        
+        print("instantiating video player")
         
         let activity = UIActivityIndicatorView(style: .gray)
         activity.hidesWhenStopped = true
@@ -90,46 +139,9 @@ class DetailViewController: UIViewController {
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
         
-        
-        
         layoutConstraints()
+        viewIsSetup = true
         
-        
-       
-    }
-    
-    //MARK: KVO for AVPlayer Item ready state
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        
-        if(object is AVPlayerItem && keyPath == "status"){
-            let item = object as! AVPlayerItem
-            switch(item.status){
-            case AVPlayerItem.Status.readyToPlay:
-                animating = false
-                (navigationItem.rightBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
-                item.removeObserver(self, forKeyPath: "status")
-                print("ready?")
-                return
-            case AVPlayerItem.Status.failed:
-                print("fail?")
-                let label = UILabel()
-                label.numberOfLines = 1
-                label.text = "❌"
-                label.isUserInteractionEnabled = true
-                let tapper = UITapGestureRecognizer(target: self, action: #selector(errorTap))
-                label.addGestureRecognizer(tapper)
-                navigationItem.rightBarButtonItem = UIBarButtonItem(customView: label)
-                animating = false
-                item.removeObserver(self, forKeyPath: "status")
-                return
-            default:
-                print("something else happeend",player.status)
-                return
-            }
-            
-            
-        }
     }
     
     @objc
@@ -144,7 +156,9 @@ class DetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         print("view will appear")
-        print(imageview.frame)
+        if let _ = self.img{
+            setupView()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -155,7 +169,9 @@ class DetailViewController: UIViewController {
     override func viewSafeAreaInsetsDidChange() {
 
         super.viewSafeAreaInsetsDidChange()
-        layoutConstraints()
+        if let _ = self.img{
+            layoutConstraints()
+        }
 
     }
 

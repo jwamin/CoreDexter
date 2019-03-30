@@ -61,6 +61,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     override func viewWillAppear(_ animated: Bool) {
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
+        self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
         super.viewWillAppear(animated)
     }
     
@@ -104,16 +105,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         _fetchedResultsController = nil
         print(fetchedResultsController)
         
-//        do{
-//
-//            NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "Master")
-//            try fetchedResultsController.performFetch()
-//
-//            print("success?")
-//            print(fetchedResultsController.fetchedObjects)
-//        } catch {
-//            fatalError()
-//        }
         fetchedResultsController.delegate = self
         tableView.reloadData()
         print("reloaded")
@@ -136,15 +127,26 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 let object = fetchedResultsController.object(at: indexPath)
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
 
+                
                 controller.title = object.name?.capitalized
                 controller.labelText = viewModel.pokemonLabelString(id: object.objectID)
+                
                 viewModel.getImageforID(id: object.objectID, callback: { (img) in
                     controller.img = img
                 })
                 
+                if(self.splitViewController?.displayMode == UISplitViewController.DisplayMode.primaryOverlay){
+                    UIView.animate(withDuration: 0.3, animations: {
+                        self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.primaryHidden
+                    }) { (complete) in
+                        self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
+                    }
+                }
+      
+                
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
-                
+                //controller.setupView()
             }
         }
     }
