@@ -245,25 +245,29 @@ class DetailViewController: UIViewController {
         //Content Hugging Priority - The higher this priority is, the more a view resists growing larger than its intrinsic content size.
         //Content Compression Resistance Priority - The higher this priority is, the more a view resists shrinking smaller than its intrinsic content size.
         
-        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
-        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .vertical)
+        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .horizontal)
+        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .vertical)
+        
+        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
+        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+        
         
         imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
         imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
         
         //imgcontainer height and width
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(>=150)]", options: [], metrics: nil, views: views)
+        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
+        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(>=150)]", options: [], metrics: nil, views: views)
         
         //fix img container to the top of the safe area with standard spacing
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imgcontainer]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@250-[imgcontainer]", options: [], metrics: nil, views: views)
         
         //imageview inside the uiview - costrain to match container
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgview]-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imgview]-|", options: [], metrics: nil, views: views)
         
         
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgcontainer]-[stackView]-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@250-[imgcontainer]-8@250-[stackView]-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stackView]", options: [], metrics: nil, views: views)
 
  
@@ -299,6 +303,8 @@ class DetailViewController: UIViewController {
          updateRadius()
     }
     
+    var centeriseConstraints:[NSLayoutConstraint] = []
+    var viewActive = false
     //Actions
     @objc func tap(_ sender:UITapGestureRecognizer){
         
@@ -308,7 +314,48 @@ class DetailViewController: UIViewController {
             return
         }
         
-        tapGrowlAnimation()
+        
+            
+            if(centeriseConstraints.isEmpty){
+            let layoutGuides = view.safeAreaLayoutGuide
+            let widthConstraint =  min(self.view.frame.height, self.view.frame.width)
+            print(widthConstraint)
+            let imageContainer = imageview.superview!
+            let vXConstraint = imageContainer.centerXAnchor.constraint(equalTo: layoutGuides.centerXAnchor)
+            let vYConstraint = imageContainer.centerYAnchor.constraint(equalTo: layoutGuides.centerYAnchor)
+            let arConstraint = imageContainer.heightAnchor.constraint(equalTo: imageContainer.widthAnchor)
+            arConstraint.priority = UILayoutPriority(rawValue: 999)
+            vYConstraint.priority = UILayoutPriority(rawValue: 1000)
+            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@700-[container(<=\(widthConstraint))]-8@700-|", options: [], metrics: nil, views: ["container":imageContainer])
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@700-[container(<=\(widthConstraint))]-8@700-|", options: [], metrics: nil, views: ["container":imageContainer])
+            
+            centeriseConstraints += [vXConstraint,vYConstraint,arConstraint]
+            }
+            
+        
+        
+
+        
+        UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 10, options: [], animations: { [weak self] in
+            if(!self!.viewActive){
+                NSLayoutConstraint.activate(self!.centeriseConstraints)
+                
+            } else {
+                NSLayoutConstraint.deactivate(self!.centeriseConstraints)
+            }
+            
+            self!.view.layoutIfNeeded()
+            self!.updateRadius()
+        }) { [weak self] (complete) in
+            if(complete){
+                self!.viewActive = !self!.viewActive
+            }
+        }
+        
+        
+        
+        
+        //tapGrowlAnimation()
         
     }
     
