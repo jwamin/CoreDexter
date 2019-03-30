@@ -55,7 +55,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let addActivityView = UIBarButtonItem(customView: activityview)
         navigationItem.leftBarButtonItem = addActivityView
         activityview.startAnimating()
-        self.initialise()
+        self.initialiseModel()
         
     }
     
@@ -64,7 +64,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         super.viewWillAppear(animated)
     }
     
-    func initialise(){
+    func initialiseModel(){
         let initialiser = PokeModel(APP_REGION)
         initialiser.managedObjectContext = fetchedResultsController.managedObjectContext
         initialiser.checkAndLoadData()
@@ -99,7 +99,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         viewModel = nil
         let delegate = UIApplication.shared.delegate as! AppDelegate
         delegate.resetAll()
-        initialise()
+        initialiseModel()
         viewModel.assignDelegate(delegate:self)
         _fetchedResultsController = nil
         print(fetchedResultsController)
@@ -130,6 +130,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
+                
+                //if there's nothing selected, none of this works
+                
                 let object = fetchedResultsController.object(at: indexPath)
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
 
@@ -348,7 +351,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             case .insert:
                 tableView.insertRows(at: [newIndexPath!], with: .fade)
             case .delete:
-                tableView.deleteRows(at: [indexPath!], with: .fade)
+                if let indexPath = indexPath{
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                }
             case .update:
                 print("updating row")
                 guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {

@@ -152,7 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                 }
             }
         } else {
-            print("Could not retrieve directory: \(dirPath)")
+            print("\(dirPath) is empty")
         }
     }
     

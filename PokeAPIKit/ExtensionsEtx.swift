@@ -23,7 +23,38 @@ public extension Int{
     
 }
 
-enum RegionIndex:Int{
+public enum GenerationRegionBridge:String{
+    
+    case gen1 = "generation-i"
+    case gen2 = "generation-ii"
+    case gen3 = "generation-iii"
+    case gen4 = "generation-iv"
+    case gen5 = "generation-v"
+    case gen6 = "generation-vi"
+    
+    public func getRegion()->RegionIndex{
+        switch self {
+        case .gen1:
+            return .kanto
+        case .gen2:
+            return .jhoto
+        case .gen3:
+            return .hoenn
+        case .gen4:
+            return .sinnoh
+        case .gen5:
+            return .unova
+        case .gen6:
+            return .kalos
+        //this isnt perfect since where does Alola appear?
+//        default:
+//            return.national
+        }
+    }
+}
+
+
+public enum RegionIndex:Int{
     case national = 1
     case kanto = 2
     case jhoto = 3
@@ -32,7 +63,7 @@ enum RegionIndex:Int{
     case unova = 8
     case kalos = 12
     case alola
-    func string() -> String{
+    public func string() -> String{
         switch self {
         case .kanto:
             return "Kanto"
@@ -52,7 +83,7 @@ enum RegionIndex:Int{
             return "National"
         }
     }
-    func startIndex(index:Int)->String{
+    public func startIndex(index:Int)->String{
         var str = 0
         switch self {
         case .jhoto:
@@ -71,7 +102,7 @@ enum RegionIndex:Int{
         
         return String(str)
     }
-    func physicalRegion() -> String{
+    public func physicalRegion() -> String{
         switch self {
         case .kanto:
             return "Japan; Greater Tokyo and bay area."

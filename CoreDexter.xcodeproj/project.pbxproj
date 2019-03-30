@@ -20,11 +20,11 @@
 		3D2C3434220B6FF400282C38 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3D2C3433220B6FF300282C38 /* Settings.bundle */; };
 		3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */; };
 		3D4060F92204E63100196626 /* MajorMonoDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */; };
-		3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4060FA2204E93300196626 /* ExtensionsEtx.swift */; };
 		5710A59D224BF92F004F196F /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5710A59C224BF92F004F196F /* CoreDataTests.swift */; };
 		5773AF81224C15D700C90641 /* FilesystemOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5773AF80224C15D700C90641 /* FilesystemOperationTests.swift */; };
 		57A859F5223ABACD00926BF7 /* PokeAPIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */; };
 		57A859FA223ABB8600926BF7 /* libPokeAPIKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */; };
+		57BBE9F1224F9B130062E6DA /* ExtensionsEtx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4060FA2204E93300196626 /* ExtensionsEtx.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,7 +133,6 @@
 				3D2C3431220B6C9100282C38 /* Models */,
 				3D2C3430220B6C8200282C38 /* ViewModels */,
 				3D2C342D220B4A4500282C38 /* Views */,
-				3D2C3432220B6CB200282C38 /* Extensions */,
 				3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */,
 				3D2BE750220248E400E28519 /* .gitignore */,
 				3D2BE73F220231F200E28519 /* Main.storyboard */,
@@ -171,14 +170,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		3D2C3432220B6CB200282C38 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				3D4060FA2204E93300196626 /* ExtensionsEtx.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		5710A59B224BF92F004F196F /* CoreDexterTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */,
+				3D4060FA2204E93300196626 /* ExtensionsEtx.swift */,
 			);
 			path = PokeAPIKit;
 			sourceTree = "<group>";
@@ -336,7 +328,6 @@
 				3D2BE73E220231F200E28519 /* DetailViewController.swift in Sources */,
 				3D2C342F220B64CB00282C38 /* Settings.swift in Sources */,
 				3D2C342C220B32E300282C38 /* PokeViewModel.swift in Sources */,
-				3D4060FB2204E93300196626 /* ExtensionsEtx.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				57A859F5223ABACD00926BF7 /* PokeAPIKit.swift in Sources */,
+				57BBE9F1224F9B130062E6DA /* ExtensionsEtx.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

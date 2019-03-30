@@ -22,15 +22,19 @@ struct PokeData {
     var description:String?
 }
 
+// MARK: - Protocol
+
 protocol ResetProtocol {
     func resetDone()
 }
+
+// MARK: - Model
 
 class PokeModel{
 
     let region:RegionIndex
     var delegate:ResetProtocol?
-    let dispatchGroup = DispatchGroup.init()
+    var dispatchGroup:DispatchGroup!
     var pokeArray:[PokeData] = []
     
     weak var managedObjectContext:NSManagedObjectContext!
@@ -39,7 +43,6 @@ class PokeModel{
         
             region = injectedRegion
             print("initialised")
-
         
     }
     
@@ -53,11 +56,13 @@ class PokeModel{
             return
         }
         
-        print("no pokedata")
+        dispatchGroup = DispatchGroup()
+        
+        print("no pokedata, reloading from PokeAPI")
         returnTask()?.resume()
         
         dispatchGroup.notify(queue: .main) {
-            print("loaded",self.pokeArray.first!)
+            print("loaded",self.pokeArray.first)
             print(self.pokeArray.count)
             self.coreDataProcess()
         }
@@ -72,7 +77,7 @@ class PokeModel{
         //create region object
         let region = Region(context: context)
         // do this. loop through and find regions. if region exists, add pokemon, if not, create region and add pokemon
-        
+        //print(pokeArray)
         //loop through pokemenz
         for pokemen in pokeArray{
             
@@ -140,13 +145,15 @@ class PokeModel{
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokedex/"+String(region.rawValue)) else {
             return nil
         }
+        
         self.dispatchGroup.enter()
+        
         let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
             
             if(error != nil){
                 fatalError()
             }
-            
+            print("inside return callback")
             guard let data = data else {
                 fatalError("no data")
             }
@@ -171,12 +178,75 @@ class PokeModel{
             }
             
 
-                self.dispatchGroup.leave()
             
+             self.dispatchGroup.leave()
             
             })
         return task
     }
+    
+    private func getSpeciesDataforPokemon(urlString:String,regionIndex:Int){
+        
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        
+        self.dispatchGroup.enter()
+        
+        URLSession.shared.dataTask(with: url, completionHandler: {
+            (data, response, error) in
+            
+            if (error != nil){
+                print(error?.localizedDescription, "\(regionIndex) dropped from species info")
+                self.dispatchGroup.leave()
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            let speciesInfo:Species
+            let decoder = JSONDecoder()
+            
+            do {
+                speciesInfo = try decoder.decode(Species.self, from: data)
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+            
+            let name = speciesInfo.name
+            let number = String(speciesInfo.id)
+            let generation = speciesInfo.generation.name
+            let region = self.region.string()
+            
+            print(region)
+            
+            //let message = speciesInfo.flavor_text_entries[speciesInfo.flavor_text_entries.count-1].flavor_text
+            var message:String = ""
+            
+            for entry in speciesInfo.flavor_text_entries{
+                if(entry.language.name=="en"){
+                    message = entry.flavor_text
+                    break
+                }
+            }
+            
+            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number, type1: nil, type2: nil, description: message)
+            self.pokeArray.append(poke)
+            //print(poke)
+            print(regionIndex)
+            //process pokedata and
+            self.getDataforPokemon(regionIndex: regionIndex)
+            
+            
+            
+            
+        }).resume()
+        
+        
+    }
+    
     
     private func getDataforPokemon(regionIndex:Int){
         
@@ -189,7 +259,8 @@ class PokeModel{
             [unowned self] (data, response, error) in
             
             if (error != nil){
-                print("err")
+                print(error?.localizedDescription, "\(regionIndex) dropped from deep pokemon info")
+                self.dispatchGroup.leave()
                 return
             }
             
@@ -242,55 +313,7 @@ class PokeModel{
         
     }
     
-    private func getSpeciesDataforPokemon(urlString:String,regionIndex:Int){
-        
-        dispatchGroup.enter()
-        
-        guard let url = URL(string: urlString) else {
-            return
-        }
-        URLSession.shared.dataTask(with: url, completionHandler: {
-            (data, response, error) in
-            
-            if (error != nil){
-                print("err")
-                return
-            }
-            
-            guard let data = data else {
-                return
-            }
-            
-            let speciesInfo:Species
-            let decoder = JSONDecoder()
-            
-            do {
-                speciesInfo = try decoder.decode(Species.self, from: data)
-            } catch {
-                fatalError(error.localizedDescription)
-            }
-            
-            //print(pokeDict)
-            let name = speciesInfo.name
-            let number = String(speciesInfo.id)
-            let generation = speciesInfo.generation.name
-            let region = self.region.string()
-            
-            let message = speciesInfo.flavor_text_entries[speciesInfo.flavor_text_entries.count-1].flavor_text
-            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number, type1: nil, type2: nil, description: message)
-            self.pokeArray.append(poke)
-            //print(poke)
-            
-            //process pokedata and
-            self.getDataforPokemon(regionIndex: regionIndex)
-            
-            
-  
-            
-        }).resume()
-    
-        
-    }
+
     
     public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
         
@@ -345,7 +368,8 @@ class PokeModel{
                 (data, response, error) in
                 
                 if (error != nil){
-                    print("err")
+                    print(error?.localizedDescription)
+                    self.dispatchGroup.leave()
                     return
                 }
                 

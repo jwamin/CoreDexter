@@ -16,7 +16,7 @@ class CoreDexterTests: XCTestCase {
     var initialiser:PokeModel!
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        print("set uop")
+        print("set up")
         stack = NSPersistentContainer(name: "CoreDexter")
         stack.loadPersistentStores { (description, error) in
             if (error != nil) {

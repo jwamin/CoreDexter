@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PokeAPIKit
 
 let APP_REGION:RegionIndex = .national
 
