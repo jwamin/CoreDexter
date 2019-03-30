@@ -104,7 +104,7 @@
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="contentView" destination="svH-Pt-448" id="7pJ-Hb-EcP"/>
-                        <outlet property="detailDescriptionLabel" destination="0XM-y9-sOw" id="deQ-Na-JPF"/>
+                        <outlet property="descriptionLabel" destination="0XM-y9-sOw" id="sdK-sh-2RL"/>
                         <outlet property="scrollView" destination="BYN-fF-3oH" id="54i-GI-6Zt"/>
                     </connections>
                 </viewController>

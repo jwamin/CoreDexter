@@ -13,7 +13,16 @@ class DetailViewController: UIViewController {
     
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
+    
+    var font:UIFont!
+    
+    var pokemonData:PokemonViewStruct?
+    
+    var nameLabel:UILabel!
+    var numberLabel:UILabel!
+    
+    var detailStackView:UIStackView!
     
     @IBOutlet var layerColor:UIColor!
     
@@ -60,10 +69,10 @@ class DetailViewController: UIViewController {
                 animating = false
                 (navigationItem.rightBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
                 item.removeObserver(self, forKeyPath: "status")
-                print("ready?")
+                print("cry is ready")
                 return
             case AVPlayerItem.Status.failed:
-                print("fail?")
+                print("couldn't get cry")
                 let label = UILabel()
                 label.numberOfLines = 1
                 label.text = "❌"
@@ -103,15 +112,33 @@ class DetailViewController: UIViewController {
         player.currentItem!.addObserver(self, forKeyPath: "status", options: [], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         
-        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
-            fatalError()
-        }
         
-        detailDescriptionLabel.numberOfLines = 0
-        detailDescriptionLabel.textAlignment = .center
-        detailDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        detailDescriptionLabel.font = UIFontMetrics(forTextStyle: UIFont.TextStyle.body).scaledFont(for: font)
+        self.font = MasterViewController.font
+        
+        numberLabel = UILabel()
+        numberLabel.translatesAutoresizingMaskIntoConstraints = false
+        numberLabel.text = "001"
+        numberLabel.font = font
+        nameLabel = UILabel()
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.text = "Bulbasaur"
+        nameLabel.font = font
+        
+        detailStackView = UIStackView()
+        detailStackView.translatesAutoresizingMaskIntoConstraints = false
+        detailStackView.axis = .vertical
+        
+        detailStackView.addArrangedSubview(numberLabel)
+        detailStackView.addArrangedSubview(nameLabel)
+        
+        contentView.addSubview(detailStackView)
+        
+        descriptionLabel.numberOfLines = 0
+        descriptionLabel.textAlignment = .center
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        descriptionLabel.font = UIFontMetrics(forTextStyle: UIFont.TextStyle.body).scaledFont(for: font)
         
         let sharedFrame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
         
@@ -158,6 +185,13 @@ class DetailViewController: UIViewController {
         print("view will appear")
         if let _ = self.img{
             setupView()
+            guard let pokemonData = self.pokemonData else{
+                return
+            }
+            //refactor to function
+            numberLabel.text = pokemonData.idString
+            nameLabel.text = pokemonData.name
+            descriptionLabel.text = pokemonData.description
         }
     }
     
@@ -194,7 +228,7 @@ class DetailViewController: UIViewController {
     
     private func layoutConstraints(){
         
-        guard let container = imageview.superview else {
+        guard let imageContainer = imageview.superview else {
             return
         }
         
@@ -206,38 +240,57 @@ class DetailViewController: UIViewController {
             print("generating constraints for the first time")
         }
         
-        let views:[String:UIView] = ["imgcontainer":container,"imgview":imageview,"label":detailDescriptionLabel,"contentView":contentView]
+        let views:[String:UIView] = ["imgcontainer":imageContainer,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView]
         
         //Content Hugging Priority - The higher this priority is, the more a view resists growing larger than its intrinsic content size.
         //Content Compression Resistance Priority - The higher this priority is, the more a view resists shrinking smaller than its intrinsic content size.
         
-        container.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
-        container.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .vertical)
+        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .horizontal)
+        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 750), for: .vertical)
+        
         imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
         imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
         
+        //imgcontainer height and width
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(>=150)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[label]-|", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
         
+        //fix img container to the top of the safe area with standard spacing
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imgcontainer]", options: [], metrics: nil, views: views)
+        
+        //imageview inside the uiview - costrain to match container
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgview]-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imgview]-|", options: [], metrics: nil, views: views)
         
         
-        let centerYConstraint = NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0)
-        centerYConstraint.priority = UILayoutPriority(rawValue: 750)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgcontainer]-[stackView]-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stackView]", options: [], metrics: nil, views: views)
+
+ 
+        
+        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stackView]", options: [], metrics: nil, views: views)
+        
+        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
+        
+
+        
+        //stackView
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[label(>=stackView)]-|", options: [], metrics: nil, views: views)
+
+        
+        //let centerYConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0)
+        //centerYConstraint.priority = UILayoutPriority(rawValue: 750)
         
         constraints += [
             
-            NSLayoutConstraint(item: container, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
-            NSLayoutConstraint(item: container, attribute: .height, relatedBy: .equal, toItem: container, attribute: .width, multiplier: 1.0, constant: 0),
-            centerYConstraint,
+            /*NSLayoutConstraint(item: imageContainer, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),*/
+            NSLayoutConstraint(item: imageContainer, attribute: .height, relatedBy: .equal, toItem: imageContainer, attribute: .width, multiplier: 1.0, constant: 0)//,
+            //centerYConstraint,
             
-            NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
+            //NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
             
-            container.topAnchor.constraint(equalTo: contentView.topAnchor),
-            container.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
+            //imageContainer.topAnchor.constraint(equalTo: contentView.topAnchor)//,
+            //imageContainer.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
             
         ]
         
@@ -271,7 +324,7 @@ class DetailViewController: UIViewController {
         // Update the user interface for the detail item.
         
         
-        if let label = detailDescriptionLabel {
+        if let label = descriptionLabel {
             
             label.text = labelText
         } else {

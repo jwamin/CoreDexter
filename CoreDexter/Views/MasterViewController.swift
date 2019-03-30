@@ -14,6 +14,12 @@ import CoreData
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol {
     
     // MARK: - IVars
+    static var font:UIFont = {
+        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
+            fatalError()
+        }
+        return font
+    }()
     
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
@@ -129,10 +135,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
                 
                 controller.title = object.name?.capitalized
-                controller.labelText = viewModel.pokemonLabelString(id: object.objectID)
+                controller.pokemonData = viewModel.pokemonViewModel(id: object.objectID)
                 
-                viewModel.getImageforID(id: object.objectID, callback: { (img) in
-                    controller.img = img
+                viewModel.getImageforID(id: object.objectID, callback: { [weak controller] (img) in
+                    controller?.img = img
                 })
                 
                 if(self.splitViewController?.displayMode == UISplitViewController.DisplayMode.primaryOverlay){

@@ -46,12 +46,36 @@ final class PokeViewModel{
         pokeModel.delegate = nil
     }
     
-    public func pokemonLabelString(id:NSManagedObjectID)->String{
+    public func pokemonViewModel(id:NSManagedObjectID)->PokemonViewStruct?{
+        
         let detail = pokeModel.getItem(id: id)
         let id = Int(detail.id).digitString()
         let regionId = Int(detail.region_id).digitString()
         let physicalRegion = GenerationRegionBridge(rawValue: detail.generation!)
-        return "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(physicalRegion?.getRegion().string() ?? "")\n\(detail.type1 ?? "")\n\(detail.type2 ?? "")\n\n\(detail.initialDesc ?? "")"
+        
+        guard let generation = detail.generation, let name = detail.name, let physicalRegionString = physicalRegion?.getRegion().string(), let type1 = detail.type1, let type2 = detail.type2, let description = detail.initialDesc else {
+            return nil
+        }
+        
+        let debugString = "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(physicalRegion?.getRegion().string() ?? "")\n\(detail.type1 ?? "")\n\(detail.type2 ?? "")\n\n\(detail.initialDesc ?? "")"
+        
+        let returnItem = PokemonViewStruct(name: name, idString: id, regionId: "\(regionId)", description: description, type1: type1, type2: type2, generation: generation, region: physicalRegionString, debugString: debugString)
+        
+        return returnItem
+        
     }
     
+}
+
+
+struct PokemonViewStruct{
+    let name:String
+    let idString:String
+    let regionId:String
+    let description:String
+    let type1:String
+    let type2:String
+    let generation:String
+    let region:String
+    let debugString:String?
 }

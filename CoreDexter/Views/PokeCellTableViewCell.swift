@@ -12,6 +12,7 @@ class PokeCellTableViewCell: UITableViewCell {
 
     @IBOutlet weak var imgview: UIImageView!
     @IBOutlet weak var mainLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
