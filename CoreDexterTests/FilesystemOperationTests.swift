@@ -17,7 +17,7 @@ class FilesystemOperationTests: XCTestCase {
     var initialiser:PokeModel!
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        print("set uop")
+        print("set up")
         stack = NSPersistentContainer(name: "CoreDexter")
         stack.loadPersistentStores { (description, error) in
             if (error != nil) {
@@ -57,6 +57,7 @@ class FilesystemOperationTests: XCTestCase {
         
         wait(for: [imagesLoaded], timeout: 10)
         print("ready")
+        
     }
     
     override func tearDown() {
@@ -65,7 +66,7 @@ class FilesystemOperationTests: XCTestCase {
     
     func testImagesLoad() {
         // This is an example of a functional test case.
-        print("test started")
+        print("images present test started")
         let promise = expectation(description: "there are no files in the directory")
         var contents:[URL] = []
         let fileManager = FileManager.default
@@ -75,7 +76,6 @@ class FilesystemOperationTests: XCTestCase {
             contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
             print(contents.count)
             if(contents.count>0){
-                print(contents)
                 promise.fulfill()
             } else {
                 XCTFail("Nothing in document directory")
@@ -84,7 +84,7 @@ class FilesystemOperationTests: XCTestCase {
         } catch {
             XCTFail("Failed to get document directory")
         }
-        wait(for: [promise], timeout: 10)
+        wait(for: [promise], timeout: 15)
         XCTAssertGreaterThan(contents.count, 0)
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
