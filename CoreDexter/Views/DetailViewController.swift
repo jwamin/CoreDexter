@@ -134,9 +134,16 @@ class DetailViewController: UIViewController {
         
         contentView.addSubview(detailStackView)
         
+        guard let descriptionLabel = self.descriptionLabel else {
+            return
+        }
+        
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        descriptionLabel.removeFromSuperview()
+        
         
         descriptionLabel.font = UIFontMetrics(forTextStyle: UIFont.TextStyle.body).scaledFont(for: font)
         
@@ -150,6 +157,7 @@ class DetailViewController: UIViewController {
         imageview.translatesAutoresizingMaskIntoConstraints = false
         imgcontainer.addSubview(imageview)
         contentView.addSubview(imgcontainer)
+        contentView.addSubview(descriptionLabel)
         setImage()
         configureView()
         imgcontainer.layer.backgroundColor = layerColor.cgColor
@@ -182,18 +190,30 @@ class DetailViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         print("view will appear")
+        
+        
+        
         if let _ = self.img{
             setupView()
-            guard let pokemonData = self.pokemonData else{
-                return
-            }
-            //refactor to function
-            numberLabel.text = pokemonData.idString
-            nameLabel.text = pokemonData.name
-            descriptionLabel.text = pokemonData.description
+            setData()
+           
         }
     }
+    
+    func setData(){
+        
+        guard let pokemonData = self.pokemonData else{
+            return
+        }
+        
+        numberLabel.text = pokemonData.idString
+        nameLabel.text = pokemonData.name
+        descriptionLabel.text = pokemonData.description
+        
+    }
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
@@ -288,8 +308,9 @@ class DetailViewController: UIViewController {
 
         
         //stackView
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[label(>=stackView)]-|", options: [], metrics: nil, views: views)
-
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView]->=8@250-[label(>=stackView)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer]->=8@250-[label(>=imgcontainer)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[label(==contentView)]", options: [], metrics: nil, views: views)
         
         //let centerYConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0)
         //centerYConstraint.priority = UILayoutPriority(rawValue: 750)

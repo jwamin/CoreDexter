@@ -128,6 +128,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         if segue.identifier == "showDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 
+                print("prepare for segue")
                 //if there's nothing selected, none of this works
                 
                 let object = fetchedResultsController.object(at: indexPath)
@@ -135,10 +136,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
                 
                 controller.title = object.name?.capitalized
-                controller.pokemonData = viewModel.pokemonViewModel(id: object.objectID)
-                
-                viewModel.getImageforID(id: object.objectID, callback: { [weak controller] (img) in
-                    controller?.img = img
+
+                viewModel.getImageforID(id: object.objectID, callback: { [unowned controller,unowned self] (img) in
+                    controller.img = img
+                    let pokemonData = self.viewModel.pokemonViewModel(id: object.objectID)
+                    controller.pokemonData = pokemonData
                 })
                 
                 if(self.splitViewController?.displayMode == UISplitViewController.DisplayMode.primaryOverlay){
