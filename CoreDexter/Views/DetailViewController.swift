@@ -255,6 +255,14 @@ class DetailViewController: UIViewController {
         imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
         imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
         
+        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
+        
+        for arranged in detailStackView.arrangedSubviews{
+            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
+        }
+        
         //imgcontainer height and width
         //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
         //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(>=150)]", options: [], metrics: nil, views: views)
@@ -267,7 +275,8 @@ class DetailViewController: UIViewController {
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imgview]-|", options: [], metrics: nil, views: views)
         
         
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@250-[imgcontainer]-8@250-[stackView]-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgcontainer]-[stackView]-8@250-|", options: [], metrics: nil, views: views)
+        
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stackView]", options: [], metrics: nil, views: views)
 
  
