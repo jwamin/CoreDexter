@@ -181,8 +181,11 @@ class DetailViewController: UIViewController {
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setTitle("-", for: .normal)
         closeButton.layer.cornerRadius = 22
+        closeButton.layer.borderWidth = 5.0
+        closeButton.layer.borderColor = UIColor.black.cgColor
         closeButton.backgroundColor = UIColor.bulbasaurGreen
-        closeButton.titleLabel?.font = MasterViewController.font
+        closeButton.setTitleColor(UIColor.black, for: .normal)
+        closeButton.titleLabel?.font = MasterViewController.font.withSize(14)
         closeButton.clipsToBounds = false
         closeButton.addTarget(self, action: #selector(tap(_:)), for: .touchUpInside)
         view.addSubview(closeButton)
