@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public extension Int{
     
@@ -122,4 +123,13 @@ public enum RegionIndex:Int{
             return ""
         }
     }
+}
+
+
+extension UIColor {
+    
+    public static let bulbasaurGreen:UIColor = UIColor(red: 203/255, green: 253/255, blue: 134/255, alpha: 1.0)
+    
+    public static let squirtleBlue:UIColor = UIColor(red: 49/255, green: 181/255, blue: 222/255, alpha: 1.0)
+    
 }

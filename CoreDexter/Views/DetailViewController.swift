@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PokeAPIKit
 import AVFoundation
 
 class DetailViewController: UIViewController {
@@ -23,8 +24,6 @@ class DetailViewController: UIViewController {
     var numberLabel:UILabel!
     
     var detailStackView:UIStackView!
-    
-    @IBOutlet var layerColor:UIColor!
     
     var player:AVPlayer!
     var imageview:UIImageView!
@@ -47,6 +46,9 @@ class DetailViewController: UIViewController {
             configureView()
         }
     }
+    
+    var closeButton:UIButton!
+    var closeButtonBottomConstraint:NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,7 +99,7 @@ class DetailViewController: UIViewController {
         if viewIsSetup {
             return;
         }
-        
+        viewIsSetup = true
         print("instantiating video player")
         
         let activity = UIActivityIndicatorView(style: .gray)
@@ -160,7 +162,7 @@ class DetailViewController: UIViewController {
         contentView.addSubview(descriptionLabel)
         setImage()
         configureView()
-        imgcontainer.layer.backgroundColor = layerColor.cgColor
+        imgcontainer.layer.backgroundColor = UIColor.squirtleBlue.cgColor
         imgcontainer.layer.borderColor = UIColor.black.cgColor
         
         //borderwidth composites above the layer contents... interesting
@@ -174,8 +176,19 @@ class DetailViewController: UIViewController {
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
         
+        
+        closeButton = UIButton(type: .custom)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("-", for: .normal)
+        closeButton.layer.cornerRadius = 22
+        closeButton.backgroundColor = UIColor.bulbasaurGreen
+        closeButton.titleLabel?.font = MasterViewController.font
+        closeButton.clipsToBounds = false
+        closeButton.addTarget(self, action: #selector(tap(_:)), for: .touchUpInside)
+        view.addSubview(closeButton)
+        
         layoutConstraints()
-        viewIsSetup = true
+        
         
     }
     
@@ -189,18 +202,11 @@ class DetailViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        
-        print("view will appear")
-        
-        
-        
-        if let _ = self.img{
-            setupView()
-            setData()
-           
-        }
+    override func viewDidLayoutSubviews() {
+        setupView()
+        setData()
     }
+    
     
     func setData(){
         
@@ -223,7 +229,7 @@ class DetailViewController: UIViewController {
     override func viewSafeAreaInsetsDidChange() {
 
         super.viewSafeAreaInsetsDidChange()
-        if let _ = self.img{
+        if viewIsSetup {
             layoutConstraints()
         }
 
@@ -260,7 +266,7 @@ class DetailViewController: UIViewController {
             print("generating constraints for the first time")
         }
         
-        let views:[String:UIView] = ["imgcontainer":imageContainer,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView]
+        let views:[String:UIView] = ["imgcontainer":imageContainer,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton]
         
         //Content Hugging Priority - The higher this priority is, the more a view resists growing larger than its intrinsic content size.
         //Content Compression Resistance Priority - The higher this priority is, the more a view resists shrinking smaller than its intrinsic content size.
@@ -305,12 +311,23 @@ class DetailViewController: UIViewController {
         
         //constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
         
-
+        //closeButton
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[button(==44)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]", options: [], metrics: nil, views: views)
+        
+        closeButtonBottomConstraint = closeButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 44)
+        
+        constraints += [
+            
+        closeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        closeButtonBottomConstraint
+        
+        ]
         
         //stackView
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView]->=8@250-[label(>=stackView)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer]->=8@250-[label(>=imgcontainer)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[label(==contentView)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView]->=8@250-[label]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer]-8@251-[label]-0@250-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@751-[label]-8@751-|", options: [], metrics: nil, views: views)
         
         //let centerYConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0)
         //centerYConstraint.priority = UILayoutPriority(rawValue: 750)
@@ -336,17 +353,30 @@ class DetailViewController: UIViewController {
     var centeriseConstraints:[NSLayoutConstraint] = []
     var viewActive = false
     //Actions
-    @objc func tap(_ sender:UITapGestureRecognizer){
+    @objc func tap(_ sender:Any){
         
-        
-        if(sender.state != .ended){
-            print("!ended")
-            return
+        if(sender is UITapGestureRecognizer){
+            let gr = sender as! UITapGestureRecognizer
+            if(gr.state != .ended){
+                print("!ended")
+                return
+            }
+            if(!viewActive){
+                layoutInPopoverConfiguration()
+            } else {
+                tapGrowlAnimation()
+            }
+        } else if (sender is UIButton){
+            layoutInPopoverConfiguration()
         }
         
         
-            
-            if(centeriseConstraints.isEmpty){
+    }
+    
+    
+    func layoutInPopoverConfiguration(){
+        
+        if(centeriseConstraints.isEmpty){
             let layoutGuides = view.safeAreaLayoutGuide
             let widthConstraint =  min(self.view.frame.height, self.view.frame.width)
             print(widthConstraint)
@@ -360,18 +390,21 @@ class DetailViewController: UIViewController {
             centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@700-[container(<=\(widthConstraint))]-8@700-|", options: [], metrics: nil, views: ["container":imageContainer])
             
             centeriseConstraints += [vXConstraint,vYConstraint,arConstraint]
-            }
-            
+        }
         
         
-
+        
+        
         
         UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 10, options: [], animations: { [weak self] in
             if(!self!.viewActive){
                 NSLayoutConstraint.activate(self!.centeriseConstraints)
-                
+                self!.descriptionLabel.alpha = 0.0
+                self!.closeButtonBottomConstraint.constant = -100
             } else {
                 NSLayoutConstraint.deactivate(self!.centeriseConstraints)
+                self!.descriptionLabel.alpha = 1.0
+                self!.closeButtonBottomConstraint.constant = 44
             }
             
             self!.view.layoutIfNeeded()
@@ -381,13 +414,8 @@ class DetailViewController: UIViewController {
                 self!.viewActive = !self!.viewActive
             }
         }
-        
-        
-        
-        
-        //tapGrowlAnimation()
-        
     }
+    
     
     @objc
     func resetPlayer(_ notification:NSNotification){
