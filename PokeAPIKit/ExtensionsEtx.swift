@@ -125,11 +125,115 @@ public enum RegionIndex:Int{
     }
 }
 
+//Pallet Town
 
 extension UIColor {
     
-    public static let bulbasaurGreen:UIColor = UIColor(red: 203/255, green: 253/255, blue: 134/255, alpha: 1.0)
+    static func ezColor(r:CGFloat,g:CGFloat,b:CGFloat)->UIColor{
+        func decimalize(color:CGFloat)->CGFloat{
+            return color/255.0
+        }
+        
+        return UIColor(red: decimalize(color: r), green: decimalize(color: g), blue: decimalize(color: b), alpha: 1.0)
+        
+    }
     
-    public static let squirtleBlue:UIColor = UIColor(red: 49/255, green: 181/255, blue: 222/255, alpha: 1.0)
+    public static let bulbasaurGreen:UIColor = ezColor(r: 203, g: 253, b: 134)
     
+    public static let squirtleBlue:UIColor = ezColor(r: 49, g: 181, b: 222)
+    
+    public static let charmanderRed:UIColor = ezColor(r: 220, g: 148, b: 48)
+    
+    public static let koffingPurple:UIColor = ezColor(r: 90, g: 54, b: 150)
+    
+    public static let pikachuYellow:UIColor = ezColor(r: 248, g: 208, b: 48)
+    
+    public static let normalGrey:UIColor = ezColor(r: 168, g: 168, b: 120)
+    
+    public static let flyingPurple:UIColor = ezColor(r: 168, g: 144, b: 240)
+    
+    public static let fightingBrown:UIColor = ezColor(r: 192, g: 48, b: 40)
+    
+    public static let fairyPink:UIColor = ezColor(r: 238, g: 153, b: 172)
+    
+    public static let sandshrew:UIColor = ezColor(r: 224, g: 192, b: 104)
+    
+    public static let gengarPurple:UIColor = ezColor(r: 112, g: 88, b: 152)
+    
+    public static let caterpieGreen:UIColor = ezColor(r: 168, g: 184, b: 32)
+    
+    public static let geodude:UIColor = ezColor(r: 168, g: 184, b: 32)
+    
+    public static let dewgong:UIColor = ezColor(r: 152, g: 216, b: 216)
+ 
+    public static let gyarados:UIColor = ezColor(r: 112, g: 56, b: 248)
+    
+    public static let steelix:UIColor = ezColor(r: 184, g: 184, b: 208)
+    
+    public static let mewPink:UIColor = ezColor(r: 248, g: 88, b: 136)
+    
+    public static let darkType:UIColor = ezColor(r: 112, g: 88, b: 72)
+
+    
+}
+
+
+public enum ElementalType : String, Codable {
+    case fire = "fire"
+    case water = "water"
+    case grass = "grass"
+    case electric = "electric"
+    case bug = "bug"
+    case fairy = "fairy"
+    case poison = "poison"
+    case flying = "flying"
+    case rock = "rock"
+    case ground = "ground"
+    case normal = "normal"
+    case psychic = "psychic"
+    case ghost = "ghost"
+    case steel = "steel"
+    case dark = "dark"
+    case dragon = "dragon"
+    case ice = "ice"
+    
+    public func getColors()->(textColor:UIColor,backgroundColor:UIColor){
+        
+        switch self {
+        case .fire:
+            return(.white,.charmanderRed)
+        case .water:
+            return(.white,.squirtleBlue)
+        case .grass:
+            return(.white,.bulbasaurGreen)
+        case .bug:
+            return(.white,.caterpieGreen)
+        case .psychic:
+            return(.white,.mewPink)
+        case .dark:
+            return(.white,.darkType)
+        case .dragon:
+            return(.white,.gyarados)
+        case .rock:
+            return(.white,.geodude)
+        case .electric:
+            return(.white,.pikachuYellow)
+        case .fairy:
+            return(.white,.fairyPink)
+        case .ghost:
+            return(.white,.gengarPurple)
+        case .poison:
+            return(.white,.koffingPurple)
+        case .flying:
+            return(.white,.flyingPurple)
+        case .ground:
+            return(.white,.sandshrew)
+        case .ice:
+            return(.white,.dewgong)
+        case .normal:
+            return(.white,.normalGrey)
+        case .steel:
+            return(.white,.steelix)
+    }
+    }
 }

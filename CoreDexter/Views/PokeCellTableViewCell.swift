@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import PokeAPIKit
 
 class PokeCellTableViewCell: UITableViewCell {
 
     @IBOutlet weak var imgview: UIImageView!
     @IBOutlet weak var mainLabel: UILabel!
-    @IBOutlet weak var type1Label: UILabel!
-    @IBOutlet weak var type2Label: UILabel!
+    @IBOutlet weak var type1Label: ElementLabel!
+    @IBOutlet weak var type2Label: ElementLabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -54,6 +55,34 @@ class PokeCellTableViewCell: UITableViewCell {
         self.imgview.image = nil
         self.mainLabel.text = nil
         super.prepareForReuse()
+    }
+    
+}
+
+
+class ElementLabel : UILabel {
+    var typeString:String?{
+        didSet{
+            if let validString = typeString{
+                element = ElementalType(rawValue: validString)
+                return
+            }
+            self.text = ""
+            self.isHidden = true
+        }
+    }
+    private var element:ElementalType?{
+        didSet{
+            guard let element = element else {
+                return
+            }
+            let colors = element.getColors()
+            self.backgroundColor = colors.backgroundColor
+            self.textColor = colors.textColor
+            self.text = element.rawValue
+            self.sizeToFit()
+            self.isHidden = false
+        }
     }
     
 }

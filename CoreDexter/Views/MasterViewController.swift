@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PokeAPIKit
 import CoreData
 
 // MARK: - (V)iew
@@ -257,10 +258,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
         let labeltext = "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
         pokeCell.mainLabel.text = labeltext //event.timestamp!.description
-        pokeCell.type1Label.text = pokemon.type1
-        pokeCell.type1Label.sizeToFit()
-        pokeCell.type2Label.text = pokemon.type2
-        pokeCell.type2Label.sizeToFit()
+        pokeCell.type1Label.typeString = pokemon.type1
+        pokeCell.type2Label.typeString = pokemon.type2
         pokeCell.mainLabel.sizeToFit()
         
     }

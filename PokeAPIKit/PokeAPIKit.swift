@@ -173,3 +173,6 @@ public struct Species : Codable {
     public let shape:NameURL
     public let varieties:[Variety]
 }
+
+
+
