@@ -433,7 +433,6 @@ class PokeModel{
                 
                 if (error != nil){
                     print(error?.localizedDescription)
-                    self.dispatchGroup.leave()
                     return
                 }
                 
