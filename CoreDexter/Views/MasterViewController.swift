@@ -202,7 +202,22 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     // MARK: - Table View
     
     override func numberOfSections(in tableView: UITableView) -> Int {
+        
         return fetchedResultsController.sections?.count ?? 0
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if let regionContainer = fetchedResultsController.sections?[section], let objects = regionContainer.objects{
+            let header = UITableViewHeaderFooterView()
+            let pokemon = objects[0] as! Pokemon
+            print(pokemon.region?.name)
+            header.textLabel!.text = pokemon.region!.name
+            
+            return header
+        }
+       
+        return nil
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -317,7 +332,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
-        let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: nil, cacheName: "Master")
+        let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: "region", cacheName: "Master")
         aFetchedResultsController.delegate = self
         _fetchedResultsController = aFetchedResultsController
         

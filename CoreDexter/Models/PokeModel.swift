@@ -70,6 +70,33 @@ class PokeModel{
         
     }
     
+    private func getOrGenerateNextRegion(generation:String)->Region{
+        guard let regionEnum = Generation(rawValue: generation), let context = self.managedObjectContext else {
+            fatalError()
+        }
+        
+        let name = regionEnum.getRegion().string()
+        
+        let predicate = NSPredicate(format: "name==%@", argumentArray: [name])
+        let fetchRequest = NSFetchRequest<Region>(entityName: "Region")
+        fetchRequest.predicate = predicate
+        do{
+            let result = try context.fetch(fetchRequest)
+            print("number of \(name) regions now \(result.count)")
+            if let gotRegion = result.first {
+                
+                return gotRegion
+            }
+        } catch {
+            print("something happened, \(error)")
+        }
+        
+        let region = Region(context: context)
+        region.generation = generation
+        region.name = name
+        return region
+    }
+    
     private func coreDataProcess(){
         guard let context = self.managedObjectContext else{
             return
@@ -81,27 +108,18 @@ class PokeModel{
             fatalError()
         }
         
-        func generateNextRegion(generation:String)->Region{
-            guard let regionEnum = Generation(rawValue: generation) else {
-                fatalError()
-            }
-            
-            let name = regionEnum.getRegion().string()
-            let region = Region(context: context)
-            region.generation = generation
-            region.name = name
-            return region
-        }
         
-        var region = generateNextRegion(generation: pokefirst.generation)
+        
+        var region = getOrGenerateNextRegion(generation: pokefirst.generation)
         
         // do this. loop through and find regions. if region exists, add pokemon, if not, create region and add pokemon
         //print(pokeArray)
         //loop through pokemenz
         for pokemen in pokeArray{
             
-            if region.generation != pokemen.generation{
-                region = generateNextRegion(generation: pokemen.generation)
+            if region.generation! != pokemen.generation{
+                
+                region = getOrGenerateNextRegion(generation: pokemen.generation)
             }
             
             let pokemon = Pokemon(context: context)
