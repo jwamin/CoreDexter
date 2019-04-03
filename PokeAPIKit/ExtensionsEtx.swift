@@ -24,7 +24,7 @@ public extension Int{
     
 }
 
-public enum GenerationRegionBridge:String{
+public enum Generation:String{
     
     case gen1 = "generation-i"
     case gen2 = "generation-ii"
@@ -52,6 +52,51 @@ public enum GenerationRegionBridge:String{
 //            return.national
         }
     }
+    
+    public func getGenerationFromGame(gameString:String)->Generation{
+        switch gameString {
+        case "red":
+            return .gen1
+        case"blue":
+            return .gen1
+        case"gold":
+            return .gen2
+        case"silver":
+            return .gen2
+        case"ruby":
+             return .gen3
+        case"sapphire":
+             return .gen3
+        case"diamond":
+            return .gen3
+        case"pearl":
+            return .gen3
+        case"black":
+            return .gen3
+        case"white":
+            return .gen4
+        case"x":
+            return .gen6
+        case"y":
+            return .gen6
+        case"sun":
+            return .gen6
+        case"moon":
+            return .gen6
+        default:
+            fatalError("no matches, might as well knacker the whole lot")
+        }
+    }
+    
+    public static let games:[Generation:String] = [
+        .gen1:"red",
+        .gen2:"gold",
+        .gen3:"ruby",
+        .gen4:"diamond",
+        .gen5:"black",
+        .gen6:"x"
+    ]
+    
 }
 
 

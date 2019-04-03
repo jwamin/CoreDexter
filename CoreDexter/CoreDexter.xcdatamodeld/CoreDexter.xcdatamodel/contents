@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G5019" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Pokemon" representedClassName="Pokemon" syncable="YES" codeGenerationType="class">
         <attribute name="front_sprite" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="front_sprite_filename" optional="YES" attributeType="String" syncable="YES"/>
@@ -13,13 +13,12 @@
         <relationship name="region" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Region" inverseName="pokemon" inverseEntity="Region" syncable="YES"/>
     </entity>
     <entity name="Region" representedClassName="Region" syncable="YES" codeGenerationType="class">
-        <attribute name="generation" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="generation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="realWorldContinent" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="pokemon" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Pokemon" inverseName="region" inverseEntity="Pokemon" syncable="YES"/>
+        <relationship name="pokemon" toMany="YES" deletionRule="Nullify" destinationEntity="Pokemon" inverseName="region" inverseEntity="Pokemon" syncable="YES"/>
     </entity>
     <elements>
         <element name="Pokemon" positionX="-330.58203125" positionY="-164.1015625" width="128" height="195"/>
-        <element name="Region" positionX="-87.7109375" positionY="3.55078125" width="128" height="105"/>
+        <element name="Region" positionX="-87.7109375" positionY="3.55078125" width="128" height="90"/>
     </elements>
 </model>

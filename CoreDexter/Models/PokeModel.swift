@@ -16,6 +16,7 @@ struct PokeData {
     let region:String
     let generation:String
     let index:String
+    var regionIndex:String = ""
     let nationalIndex:String
     var type1:String?
     var type2:String?
@@ -75,18 +76,40 @@ class PokeModel{
         }
         
         //create region object
-        let region = Region(context: context)
+
+        guard let pokefirst = pokeArray.first else {
+            fatalError()
+        }
+        
+        func generateNextRegion(generation:String)->Region{
+            guard let regionEnum = Generation(rawValue: generation) else {
+                fatalError()
+            }
+            
+            let name = regionEnum.getRegion().string()
+            let region = Region(context: context)
+            region.generation = generation
+            region.name = name
+            return region
+        }
+        
+        var region = generateNextRegion(generation: pokefirst.generation)
+        
         // do this. loop through and find regions. if region exists, add pokemon, if not, create region and add pokemon
         //print(pokeArray)
         //loop through pokemenz
         for pokemen in pokeArray{
+            
+            if region.generation != pokemen.generation{
+                region = generateNextRegion(generation: pokemen.generation)
+            }
             
             let pokemon = Pokemon(context: context)
             pokemon.name = pokemen.name
             pokemon.generation = pokemen.generation
             pokemon.region = region
             pokemon.id = Int16(pokemen.nationalIndex)!
-            pokemon.region_id = Int16(pokemen.index)!
+            pokemon.region_id = Int16(pokemen.regionIndex)!
             pokemon.type1 = pokemen.type1 ?? nil
             pokemon.type2 = pokemen.type2 ?? nil
             pokemon.initialDesc = pokemen.description ?? ""
@@ -233,7 +256,7 @@ class PokeModel{
                 }
             }
             
-            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), nationalIndex: number, type1: nil, type2: nil, description: message)
+            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), regionIndex: "", nationalIndex: number, type1: nil, type2: nil, description: message)
             self.pokeArray.append(poke)
             //print(poke)
             print(regionIndex)
@@ -251,7 +274,7 @@ class PokeModel{
     
     private func getDataforPokemon(regionIndex:Int){
         
-        let urlString = "https://pokeapi.co/api/v2/pokemon/"+String(regionIndex)
+        let urlString = API_URL_ROOT+"pokemon/"+String(regionIndex)
         
         guard let url = URL(string: urlString) else {
             return
@@ -287,6 +310,27 @@ class PokeModel{
                 }
             }
             
+            var thisPokemon = self.pokeArray[thisPokeIndex]
+            
+            guard let generation = Generation(rawValue: thisPokemon.generation) else {
+                fatalError()
+            }
+            
+            
+            
+            guard let game = Generation.games[generation] else {
+                fatalError("no game")
+            }
+            
+            var gameIndex:Int = 0
+            for gameindices in pokemon.game_indices{
+                if(gameindices.version.name == game){
+                    gameIndex = gameindices.game_index
+                }
+            }
+            
+            thisPokemon.regionIndex = String(gameIndex)
+            
             let typesarray = pokemon.types
             
             for type in typesarray{
@@ -294,16 +338,16 @@ class PokeModel{
                 //err not so sure about this?
                 switch type.slot{
                 case 1:
-                    self.pokeArray[thisPokeIndex].type1 = type.type.name
+                    thisPokemon.type1 = type.type.name
                 case 2:
-                    self.pokeArray[thisPokeIndex].type2 = type.type.name
+                    thisPokemon.type2 = type.type.name
                 default:
                     continue
                 }
                 
             }
 
-            
+            self.pokeArray[thisPokeIndex] = thisPokemon
             //process pokedata and
             self.dispatchGroup.leave()
             //..the dispatch group
@@ -363,7 +407,7 @@ class PokeModel{
     public func loadImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?,_ secondaryCallback:(()->Void)?){
     
         DispatchQueue.global().async {
-            guard let url = URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+String(item.id)+".png") else {
+            guard let url = URL(string:IMAGE_URL+String(item.id)+".png") else {
                 return
             }
             URLSession.shared.dataTask(with: url, completionHandler: {

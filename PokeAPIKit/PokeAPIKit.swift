@@ -7,6 +7,10 @@
 //
 import Foundation
 
+public let API_URL_ROOT:String = "https://pokeapi.co/api/v2/"
+public let IMAGE_URL:String = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
+
+
 public struct Pokedex : Codable {
     public let descriptions:[Description]
     public let id:Int
@@ -50,6 +54,7 @@ public struct PokemonStruct : Codable {
     public let forms:[NameURL]
     public let species:NameURL
     public let types:[Type]
+    public let game_indices:[GameIndex]
     public let weight:Int
     public let order:Int
     public let name:String
@@ -72,7 +77,7 @@ public struct NameURL:Codable {
     public let url:URL
 }
 
-public struct GameIndex {
+public struct GameIndex: Codable {
     public let game_index:Int
     public let version:NameURL
 }

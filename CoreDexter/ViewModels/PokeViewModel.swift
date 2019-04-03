@@ -51,7 +51,7 @@ final class PokeViewModel{
         let detail = pokeModel.getItem(id: id)
         let id = Int(detail.id).digitString()
         let regionId = Int(detail.region_id).digitString()
-        let physicalRegion = GenerationRegionBridge(rawValue: detail.generation!)
+        let physicalRegion = Generation(rawValue: detail.generation!)
         
         guard let generation = detail.generation, let name = detail.name, let physicalRegionString = physicalRegion?.getRegion().string(), let type1 = detail.type1, let description = detail.initialDesc else {
             return nil

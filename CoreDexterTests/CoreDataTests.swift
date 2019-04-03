@@ -42,7 +42,7 @@ class CoreDexterTests: XCTestCase {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pokemon")
         do{
           let pokemon = try stack.viewContext.fetch(fetchRequest) as! [Pokemon]
-            print(pokemon.count)
+            print(pokemon.count,pokemon[256].region_id,pokemon[256].id)
             XCTAssertGreaterThan(pokemon.count, 0, "pokemon were returned")
         } catch {
             XCTFail("request unsuccessful")
@@ -58,7 +58,7 @@ class CoreDexterTests: XCTestCase {
         do{
             let region = try stack.viewContext.fetch(fetchRequest) as! [Region]
             print(region,region.count)
-            XCTAssertGreaterThan(region.count, 0, "there are regions returned")
+            XCTAssertGreaterThan(region.count, 0, "there are no regions returned")
         } catch {
             XCTFail("request unsuccessful")
             
