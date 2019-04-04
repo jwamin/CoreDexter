@@ -31,14 +31,23 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     // MARK: - ViewController Lifecycle
     
     func removeLoadingScreen(){
-        UIView.animate(withDuration: 5.0, animations: {
-            self.loadingView!.alpha = 0.0
-        }) { (complete) in
+        
+        UIView.animateKeyframes(withDuration: 1.0, delay: 0, options: [], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
+                self.loadingView!.alpha = 0.0
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.2, animations: {
+                self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.8, animations: {
+                self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+            })
+        }, completion: { (complete) in
             if(complete){
                 print(self.loadingView!.superview)
                 self.loadingView?.removeFromSuperview()
             }
-        }
+        })
     }
     
     override func viewDidLoad() {
