@@ -12,7 +12,7 @@ import CoreData
 
 // MARK: - (V)iew
 
-class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol {
+class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol {
     
     // MARK: - IVars
     static var font:UIFont = {
@@ -24,10 +24,22 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
+    weak var loadingView:UIView? = nil
     var viewModel:PokeViewModel!
     var scrollLoading = false
     
     // MARK: - ViewController Lifecycle
+    
+    func removeLoadingScreen(){
+        UIView.animate(withDuration: 5.0, animations: {
+            self.loadingView!.alpha = 0.0
+        }) { (complete) in
+            if(complete){
+                print(self.loadingView!.superview)
+                self.loadingView?.removeFromSuperview()
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +61,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         ]
         
         
-        
         let addButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(fileinfo(_:)))
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
@@ -62,7 +73,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let addActivityView = UIBarButtonItem(customView: activityview)
         navigationItem.leftBarButtonItem = addActivityView
         activityview.startAnimating()
-        self.initialiseModel()
+        
+        
+        viewModel = PokeViewModel(delegate:self)
         
     }
     
@@ -70,13 +83,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
         super.viewWillAppear(animated)
-    }
-    
-    func initialiseModel(){
-        let initialiser = PokeModel(APP_REGION)
-        initialiser.managedObjectContext = fetchedResultsController.managedObjectContext
-        initialiser.checkAndLoadData()
-        viewModel = PokeViewModel(dependency: initialiser)
     }
     
     // MARK: - Actions
@@ -107,7 +113,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         viewModel = nil
         let delegate = UIApplication.shared.delegate as! AppDelegate
         delegate.resetAll()
-        initialiseModel()
+        viewModel = PokeViewModel(delegate: nil)
         viewModel.assignDelegate(delegate:self)
         _fetchedResultsController = nil
         print(fetchedResultsController)
@@ -115,6 +121,18 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         fetchedResultsController.delegate = self
         tableView.reloadData()
         print("reloaded")
+    }
+    
+    
+    // MARK: - Delegate Methods
+    
+    func loadingInProgress() {
+        print("loading in progress")
+    }
+    
+    func loadingDone() {
+        print("loading done")
+        removeLoadingScreen()
     }
     
     func resetDone() {

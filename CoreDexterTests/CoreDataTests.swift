@@ -13,7 +13,7 @@ import CoreData
 class CoreDexterTests: XCTestCase {
 
     var stack:NSPersistentContainer!
-    var initialiser:PokeModel!
+    var initialiser:PokeLoader!
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         print("set up")
@@ -23,7 +23,7 @@ class CoreDexterTests: XCTestCase {
                 XCTFail()
             }
         }
-        initialiser = PokeModel(APP_REGION)
+        initialiser = PokeLoader(APP_REGION)
         initialiser.managedObjectContext = stack.viewContext
         initialiser.checkAndLoadData()
         

@@ -54,10 +54,15 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
        
-        print("view did load")
+        print("view did load",self.description)
         
     
        
+    }
+    
+    deinit {
+        //this runs on a new "prepareForSegue"
+        print("deinitialised detail view")
     }
     
     //MARK: KVO for AVPlayer Item ready state

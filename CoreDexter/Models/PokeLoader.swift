@@ -6,8 +6,8 @@
 //  Copyright © 2019 Joss Manger. All rights reserved.
 //
 
+//import UIKit
 import UIKit
-import Foundation
 import CoreData
 import PokeAPIKit
 
@@ -31,36 +31,44 @@ protocol ResetProtocol {
 
 // MARK: - Model
 
-class PokeModel{
+class PokeLoader{
 
     let region:RegionIndex
     var delegate:ResetProtocol?
+    var loadDelegate:LoadingProtocol?
     var dispatchGroup:DispatchGroup!
     var pokeArray:[PokeData] = []
+    var appDelegate:AppDelegate!
     
     weak var managedObjectContext:NSManagedObjectContext!
     
-    init(_ injectedRegion:RegionIndex){
+    init(_ injectedRegion:RegionIndex,_ appDelegate:AppDelegate?){
         
             region = injectedRegion
+            self.appDelegate = appDelegate ?? (UIApplication.shared.delegate as! AppDelegate)
+            managedObjectContext = self.appDelegate.persistentContainer.viewContext
             print("initialised")
         
+    }
+    
+    convenience init(_ injectedRegion:RegionIndex){
+        self.init(injectedRegion, nil)
+    }
+    
+    deinit {
+        print("pokemodel deinitialised")
     }
     
     func getItem(id:NSManagedObjectID)->Pokemon{
         return managedObjectContext.object(with: id) as! Pokemon
     }
     
-    func checkAndLoadData(){
-        
-        if(datasetCheck()){
-            return
-        }
+    func loadData(){
         
         dispatchGroup = DispatchGroup()
         
         print("no pokedata, reloading from PokeAPI")
-        returnTask()?.resume()
+        getPokedex()?.resume()
         
         dispatchGroup.notify(queue: .main) {
             print("loaded",self.pokeArray.first)
@@ -137,26 +145,16 @@ class PokeModel{
             
         }
         
-        //commit to cd
-        do {
-            try context.save()
-            print("context saved")
+            appDelegate.saveContext()
+            loadDelegate?.loadingDone()
             delegate?.resetDone()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
+        
         
     }
     
-    private func datasetCheck()->Bool{
+    static func datasetCheck()->Bool{
         
-        guard let context = self.managedObjectContext else {
-            print("no context")
-            return false
-        }
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         
         let regionFetch:NSFetchRequest<Region> = Region.fetchRequest()
         var regionList:[Region] = []
@@ -166,7 +164,7 @@ class PokeModel{
             fatalError()
         }
         
-        guard let kanto = regionList.first, let pokemon = kanto.pokemon else {
+        guard let isRegion = regionList.first, let pokemon = isRegion.pokemon else {
             return false
         }
         
@@ -181,7 +179,7 @@ class PokeModel{
         
     }
     
-    func returnTask() -> URLSessionDataTask?{
+    func getPokedex() -> URLSessionDataTask?{
         
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokedex/"+String(region.rawValue)) else {
             return nil

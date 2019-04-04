@@ -14,7 +14,7 @@ import UIKit
 class FilesystemOperationTests: XCTestCase {
     
     var stack:NSPersistentContainer!
-    var initialiser:PokeModel!
+    var initialiser:PokeLoader!
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         print("set up")
@@ -24,7 +24,7 @@ class FilesystemOperationTests: XCTestCase {
                 XCTFail()
             }
         }
-        initialiser = PokeModel(APP_REGION)
+        initialiser = PokeLoader(APP_REGION)
         initialiser.managedObjectContext = stack.viewContext
         initialiser.checkAndLoadData()
          let imagesLoaded = expectation(description: "Images loaded")

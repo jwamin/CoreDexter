@@ -11,12 +11,38 @@ import CoreData
 import UIKit
 import PokeAPIKit
 
+protocol LoadingProtocol{
+    func loadingInProgress()
+    func loadingDone()
+}
+
 final class PokeViewModel{
     
-    private let pokeModel:PokeModel
+    private let pokeModel:PokeLoader
     
-    init(dependency:PokeModel) {
-        pokeModel = dependency
+    var loadingDelegate:LoadingProtocol?
+    
+    init(delegate:LoadingProtocol?) {
+        
+        loadingDelegate = delegate
+        
+        let initialiser = PokeLoader(APP_REGION)
+        pokeModel = initialiser
+        
+        if(!PokeLoader.datasetCheck()){
+            pokeModel.loadData()
+            pokeModel.loadDelegate = loadingDelegate
+            loadingDelegate?.loadingInProgress()
+        } else {
+            loadingDelegate?.loadingDone()
+        }
+       
+        
+        
+    }
+    
+    deinit {
+        print("pokeviewmodel deallocated")
     }
     
     public func getImageforID(id:NSManagedObjectID, callback:@escaping ((UIImage)->())){
