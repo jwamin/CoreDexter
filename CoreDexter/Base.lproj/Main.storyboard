@@ -133,7 +133,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r7i-6Z-zg0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.98823529409999999" green="0.019657472870000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="sectionIndexColor" name="keyboardFocusIndicatorColor" catalog="System" colorSpace="catalog"/>
                         <color key="sectionIndexBackgroundColor" red="0.98823529409999999" green="0.019657472870000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
@@ -152,20 +152,23 @@
                                                 <constraint firstAttribute="width" secondItem="4O9-ww-IM5" secondAttribute="height" multiplier="1:1" id="qx0-7R-4LU"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="500" verticalHuggingPriority="751" horizontalCompressionResistancePriority="250" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
-                                            <rect key="frame" x="64" y="8" width="170" height="69.5"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="751" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
+                                            <rect key="frame" x="64" y="8" width="150" height="69.5"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" red="0.94509803921568625" green="0.72156862745098038" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9K0-el-Xyn" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
-                                            <rect key="frame" x="242" y="43" width="125" height="42.5"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9K0-el-Xyn" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
+                                            <rect key="frame" x="222" y="43" width="145" height="42.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" text="LabelLabelLabel" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qki-bh-2Xp" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
-                                            <rect key="frame" x="242" y="0.0" width="125" height="43"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="LabelLabelLabel" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qki-bh-2Xp" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
+                                            <rect key="frame" x="222" y="0.0" width="145" height="43"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" priority="500" constant="75" id="0kJ-gv-mYr"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
@@ -173,7 +176,6 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="qki-bh-2Xp" firstAttribute="leading" secondItem="NDO-eV-HRb" secondAttribute="trailing" priority="800" constant="8" id="1em-jD-0JD"/>
-                                        <constraint firstItem="9K0-el-Xyn" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" priority="100" constant="333" id="5IO-S5-2fq"/>
                                         <constraint firstAttribute="bottom" secondItem="9K0-el-Xyn" secondAttribute="bottom" id="A3a-su-fQd"/>
                                         <constraint firstAttribute="trailing" secondItem="9K0-el-Xyn" secondAttribute="trailing" constant="8" id="JsI-Gg-MlQ"/>
                                         <constraint firstItem="9K0-el-Xyn" firstAttribute="leading" secondItem="NDO-eV-HRb" secondAttribute="trailing" priority="800" constant="8" id="Le1-IK-Crc"/>
@@ -184,8 +186,7 @@
                                         <constraint firstAttribute="bottom" secondItem="NDO-eV-HRb" secondAttribute="bottom" priority="800" constant="8" id="pYU-M7-vT5"/>
                                         <constraint firstItem="qki-bh-2Xp" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" id="q2w-bf-fg8"/>
                                         <constraint firstItem="NDO-eV-HRb" firstAttribute="height" relation="greaterThanOrEqual" secondItem="4O9-ww-IM5" secondAttribute="height" id="sAY-WR-e55"/>
-                                        <constraint firstItem="qki-bh-2Xp" firstAttribute="width" secondItem="9K0-el-Xyn" secondAttribute="width" priority="752" id="sUF-Kc-izS"/>
-                                        <constraint firstItem="qki-bh-2Xp" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" priority="100" constant="333" id="siF-bR-n8v"/>
+                                        <constraint firstItem="qki-bh-2Xp" firstAttribute="width" secondItem="9K0-el-Xyn" secondAttribute="width" id="sUF-Kc-izS"/>
                                         <constraint firstItem="9K0-el-Xyn" firstAttribute="height" secondItem="37f-cq-3Eg" secondAttribute="height" multiplier="0.5" id="tD0-Ih-CWW"/>
                                         <constraint firstItem="NDO-eV-HRb" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" constant="8" id="vnZ-us-F6F"/>
                                         <constraint firstItem="4O9-ww-IM5" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" constant="8" id="w0a-uY-Ojd"/>

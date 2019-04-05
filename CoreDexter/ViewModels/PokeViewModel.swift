@@ -79,15 +79,15 @@ final class PokeViewModel{
         let regionId = Int(detail.region_id).digitString()
         let physicalRegion = Generation(rawValue: detail.generation!)
         
-        guard let generation = detail.generation, let name = detail.name, let physicalRegionString = physicalRegion?.getRegion().string(), let type1 = detail.type1, let description = detail.initialDesc else {
+        guard let generation = detail.generation, let name = detail.name, let physicalRegionString = physicalRegion?.getRegion().string(), let type1 = detail.type1, let description = detail.initialDesc, let genus = detail.genus else {
             return nil
         }
         
         let debugString = "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(physicalRegion?.getRegion().string() ?? "")\n\(detail.type1 ?? "")\n\(detail.type2 ?? "")\n\n\(detail.initialDesc ?? "")"
         
-        let returnItem = PokemonViewStruct(name: name, idString: id, regionId: "\(regionId)", description: description, type1: type1, type2: detail.type2, generation: generation, region: physicalRegionString, debugString: debugString)
+        let returnItem = PokemonViewStruct(name: name, idString: id, regionId: "\(regionId)", description: description, type1: type1, type2: detail.type2, generation: generation, region: physicalRegionString, debugString: debugString, genus: genus)
         
-        print("returning \(returnItem)")
+        print("returning \(returnItem.genus) \(detail.initialDesc)")
         
         return returnItem
         
@@ -106,4 +106,5 @@ struct PokemonViewStruct{
     let generation:String
     let region:String
     let debugString:String?
+    let genus:String?
 }

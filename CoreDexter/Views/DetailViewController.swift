@@ -20,7 +20,7 @@ class DetailViewController: UIViewController {
     
     var pokemonData:PokemonViewStruct?
     
-    var nameLabel:UILabel!
+    var genusLabel:UILabel!
     var numberLabel:UILabel!
     
     var detailStackView:UIStackView!
@@ -125,19 +125,41 @@ class DetailViewController: UIViewController {
         
         numberLabel = UILabel()
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
+        numberLabel.numberOfLines = 0
         numberLabel.text = "001"
         numberLabel.font = font
-        nameLabel = UILabel()
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.text = "Bulbasaur"
-        nameLabel.font = font
+        
+        genusLabel = UILabel()
+        genusLabel.translatesAutoresizingMaskIntoConstraints = false
+        genusLabel.text = "Seed Pokémon"
+        genusLabel.font = font
         
         detailStackView = UIStackView()
+        detailStackView.spacing = 8.0
         detailStackView.translatesAutoresizingMaskIntoConstraints = false
         detailStackView.axis = .vertical
         
         detailStackView.addArrangedSubview(numberLabel)
-        detailStackView.addArrangedSubview(nameLabel)
+        detailStackView.addArrangedSubview(genusLabel)
+        
+        let type1Label = ElementLabel()
+        let type2Label = ElementLabel()
+        
+        type1Label.typeString = pokemonData?.type1
+        type2Label.typeString = pokemonData?.type2
+        
+        detailStackView.addArrangedSubview(type1Label)
+        detailStackView.addArrangedSubview(type2Label)
+        
+        let generationLabel = UILabel()
+        generationLabel.font = MasterViewController.font
+        generationLabel.text = pokemonData?.generation
+        detailStackView.addArrangedSubview(generationLabel)
+        
+        let regionLabel = UILabel()
+        regionLabel.font = MasterViewController.font
+        regionLabel.text = pokemonData?.region
+        detailStackView.addArrangedSubview(regionLabel)
         
         contentView.addSubview(detailStackView)
         
@@ -222,8 +244,8 @@ class DetailViewController: UIViewController {
             return
         }
         
-        numberLabel.text = pokemonData.idString
-        nameLabel.text = pokemonData.name
+        numberLabel.text = "National: \(pokemonData.idString)\nRegional:\(pokemonData.regionId)"
+        genusLabel.text = pokemonData.genus
         descriptionLabel.text = pokemonData.description
         
     }

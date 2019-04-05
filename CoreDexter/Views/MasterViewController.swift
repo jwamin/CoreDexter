@@ -10,6 +10,8 @@ import UIKit
 import PokeAPIKit
 import CoreData
 
+//typealias font = MasterViewController.font
+
 // MARK: - (V)iew
 
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol {
@@ -287,7 +289,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         if let regionContainer = fetchedResultsController.sections?[section], let objects = regionContainer.objects{
-            let header = UITableViewHeaderFooterView()
+            let header = FontedHeaderView()
+            header.contentView.backgroundColor = .basicallyAwfulRed
+            header.textLabel?.font = MasterViewController.font.withSize(UIFont.labelFontSize)
+            //header.textLabel?.textColor = .yellow
             let pokemon = objects[0] as! Pokemon
             print(pokemon.region?.name)
             header.textLabel!.text = pokemon.region!.name

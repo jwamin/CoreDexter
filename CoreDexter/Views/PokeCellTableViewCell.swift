@@ -59,7 +59,7 @@ class PokeCellTableViewCell: UITableViewCell {
     
 }
 
-
+@IBDesignable
 class ElementLabel : UILabel {
     var typeString:String?{
         didSet{
@@ -79,10 +79,54 @@ class ElementLabel : UILabel {
             let colors = element.getColors()
             self.backgroundColor = colors.backgroundColor
             self.textColor = colors.textColor
-            self.text = element.rawValue
-            self.sizeToFit()
+            self.text = element.rawValue.capitalized
+            self.clipsToBounds = true
+            //self.sizeToFit()
             self.isHidden = false
+            fixupCorner()
         }
     }
     
+    var textInsets = UIEdgeInsets(top: 5,
+                                  left: 10,
+                                  bottom: 5,
+                                  right: 10) {
+        didSet { invalidateIntrinsicContentSize() }
+    }
+    
+    override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
+        let insetRect = bounds.inset(by: textInsets)
+        let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
+        let invertedInsets = UIEdgeInsets(top: -5,
+                                          left: -10,
+                                          bottom: -5,
+                                          right: -10)
+        return textRect.inset(by: invertedInsets)
+    }
+    
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: textInsets))
+    }
+    
+    override func prepareForInterfaceBuilder() {
+        invalidateIntrinsicContentSize()
+        fixupCorner()
+        
+    }
+    
+    private func fixupCorner(){
+        print("will fixup corner")
+        sizeToFit()
+        self.layer.cornerRadius = self.bounds.height / 2
+        
+    }
+    
+}
+
+
+class FontedHeaderView : UITableViewHeaderFooterView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.textLabel?.font = MasterViewController.font
+    }
 }

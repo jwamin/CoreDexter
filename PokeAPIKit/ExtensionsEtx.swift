@@ -38,7 +38,7 @@ public enum Generation:String{
         case .gen1:
             return .kanto
         case .gen2:
-            return .jhoto
+            return .johto
         case .gen3:
             return .hoenn
         case .gen4:
@@ -103,7 +103,7 @@ public enum Generation:String{
 public enum RegionIndex:Int{
     case national = 1
     case kanto = 2
-    case jhoto = 3
+    case johto = 3
     case hoenn = 4
     case sinnoh = 5
     case unova = 8
@@ -113,8 +113,8 @@ public enum RegionIndex:Int{
         switch self {
         case .kanto:
             return "Kanto"
-        case .jhoto:
-            return "Jhoto"
+        case .johto:
+            return "Johto"
         case .hoenn:
             return "Hoenn"
         case .sinnoh:
@@ -132,7 +132,7 @@ public enum RegionIndex:Int{
     public func startIndex(index:Int)->String{
         var str = 0
         switch self {
-        case .jhoto:
+        case .johto:
             str = index + 151
         case .hoenn:
             str = index + 251
@@ -152,7 +152,7 @@ public enum RegionIndex:Int{
         switch self {
         case .kanto:
             return "Japan; Greater Tokyo and bay area."
-        case .jhoto:
+        case .johto:
             return "Japan; Central western Honshu."
         case .hoenn:
             return "Japan; Kyushu and islands."
@@ -174,7 +174,8 @@ public enum RegionIndex:Int{
 
 extension UIColor {
     
-    static func ezColor(r:CGFloat,g:CGFloat,b:CGFloat)->UIColor{
+    class func ezColor(r:CGFloat,g:CGFloat,b:CGFloat)->UIColor{
+        
         func decimalize(color:CGFloat)->CGFloat{
             return color/255.0
         }
@@ -182,6 +183,8 @@ extension UIColor {
         return UIColor(red: decimalize(color: r), green: decimalize(color: g), blue: decimalize(color: b), alpha: 1.0)
         
     }
+    
+    public static let basicallyAwfulRed = ezColor(r: 252, g: 5, b: 0)
     
     public static let bulbasaurGreen:UIColor = ezColor(r: 203, g: 253, b: 134)
     

@@ -21,6 +21,7 @@ struct PokeData {
     var type1:String?
     var type2:String?
     var description:String?
+    var genus:String?
 }
 
 // MARK: - Protocol
@@ -139,6 +140,7 @@ class PokeLoader{
             pokemon.type1 = pokemen.type1 ?? nil
             pokemon.type2 = pokemen.type2 ?? nil
             pokemon.initialDesc = pokemen.description ?? ""
+            pokemon.genus = pokemen.genus ?? ""
             
             //add as set to region
             region.pokemon?.adding(pokemon)
@@ -258,9 +260,21 @@ class PokeLoader{
             let name = speciesInfo.name
             let number = String(speciesInfo.id)
             let generation = speciesInfo.generation.name
-            let region = self.region.string()
             
-            print(region)
+            guard let generationEnum = Generation(rawValue: generation) else {
+                fatalError()
+            }
+            
+            let region = generationEnum.getRegion().string()
+            
+            var gameIndex:Int = 0
+            for gameindices in speciesInfo.pokedex_numbers{
+                print(gameindices.pokedex.name,region,gameindices.pokedex.name == region)
+                if(gameindices.pokedex.name == region.lowercased() || gameindices.pokedex.name == "original-"+region.lowercased()){
+                    gameIndex = gameindices.entry_number
+                }
+            }
+            
             
             //let message = speciesInfo.flavor_text_entries[speciesInfo.flavor_text_entries.count-1].flavor_text
             var message:String = ""
@@ -272,12 +286,21 @@ class PokeLoader{
                 }
             }
             
-            let poke = PokeData(name: name, region: region, generation: generation, index: String(regionIndex), regionIndex: "", nationalIndex: number, type1: nil, type2: nil, description: message)
+            var genusEntry = ""
+            for genus in speciesInfo.genera{
+                if(genus.language.name=="en"){
+                    genusEntry = genus.genus
+                    break
+                }
+            }
+            
+            let poke = PokeData(name: name, region: region, generation: generation, index: String(speciesInfo.id), regionIndex: String(gameIndex), nationalIndex: number, type1: nil, type2: nil, description: message, genus: genusEntry)
+            
             self.pokeArray.append(poke)
             //print(poke)
-            print(regionIndex)
+            print(speciesInfo.id,poke.regionIndex)
             //process pokedata and
-            self.getDataforPokemon(regionIndex: regionIndex)
+            self.getDataforPokemon(regionIndex: speciesInfo.id)
             
             
             
@@ -328,24 +351,7 @@ class PokeLoader{
             
             var thisPokemon = self.pokeArray[thisPokeIndex]
             
-            guard let generation = Generation(rawValue: thisPokemon.generation) else {
-                fatalError()
-            }
             
-            
-            
-            guard let game = Generation.games[generation] else {
-                fatalError("no game")
-            }
-            
-            var gameIndex:Int = 0
-            for gameindices in pokemon.game_indices{
-                if(gameindices.version.name == game){
-                    gameIndex = gameindices.game_index
-                }
-            }
-            
-            thisPokemon.regionIndex = String(gameIndex)
             
             let typesarray = pokemon.types
             
