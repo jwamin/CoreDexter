@@ -29,23 +29,52 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     var scrollLoading = false
     
     // MARK: - ViewController Lifecycle
+    var isLoading:Bool = false
+    func animateLoading(){
+        guard let loadingView = self.loadingView, let pokedexImageView = loadingView.subviews[0] as? UIImageView else {
+            return
+        }
+        
+        UIView.animateKeyframes(withDuration: 0.5, delay: 1.0, options: [], animations: {
+            pokedexImageView.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
+        }) { (complete) in
+                UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 30, options: [.beginFromCurrentState], animations: {
+                    pokedexImageView.layer.transform = CATransform3DMakeScale(1.0, 1.0, 1.0)
+                    
+                }, completion: { (complete) in
+                    if(complete){
+                        if(self.isLoading){
+                            self.animateLoading()
+                        }
+                    }
+                })
+            
+        }
+    }
     
     func removeLoadingScreen(){
         
+        guard let loadingView = self.loadingView, let pokedexImageView = loadingView.subviews[0] as? UIImageView else {
+            return
+        }
+        
+        pokedexImageView.layer.removeAllAnimations()
+        
         UIView.animateKeyframes(withDuration: 1.0, delay: 0, options: [], animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.7, relativeDuration: 0.3, animations: {
                 self.loadingView!.alpha = 0.0
             })
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.2, animations: {
                 self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
             })
-            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.8, animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.7, animations: {
                 self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             })
         }, completion: { (complete) in
             if(complete){
                 print(self.loadingView!.superview)
                 self.loadingView?.removeFromSuperview()
+                self.loadingView = nil
             }
         })
     }
@@ -120,16 +149,30 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         print("reset done")
         (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).startAnimating()
         viewModel = nil
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        delegate.resetAll()
-        viewModel = PokeViewModel(delegate: nil)
-        viewModel.assignDelegate(delegate:self)
-        _fetchedResultsController = nil
-        print(fetchedResultsController)
         
-        fetchedResultsController.delegate = self
-        tableView.reloadData()
-        print("reloaded")
+        let storyboard = UIStoryboard(name: "LaunchScreen", bundle: Bundle.main)
+        let loadingScreen = storyboard.instantiateViewController(withIdentifier: "loadingScreen")
+        self.loadingView = loadingScreen.view
+        loadingScreen.view.alpha = 0.0
+        self.navigationController?.view.addSubview(loadingScreen.view)
+        
+        UIView.animate(withDuration: 0.5, animations: {
+           
+                loadingScreen.view.alpha = 1.0
+            
+        }) { [unowned self] (complete) in
+            let delegate = UIApplication.shared.delegate as! AppDelegate
+            delegate.resetAll()
+            self.viewModel = PokeViewModel(delegate: self)
+            self.viewModel.assignDelegate(delegate:self)
+            self._fetchedResultsController = nil
+            print(self.fetchedResultsController)
+            self.fetchedResultsController.delegate = self
+            self.tableView.reloadData()
+            print("reloaded")
+        }
+        
+
     }
     
     
@@ -137,10 +180,18 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     func loadingInProgress() {
         print("loading in progress")
+        
+        isLoading = true
+        animateLoading()
+        
+        
+
+        
     }
     
     func loadingDone() {
         print("loading done")
+        isLoading = false
         removeLoadingScreen()
     }
     
