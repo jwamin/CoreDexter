@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -97,11 +98,6 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="color" keyPath="layerColor">
-                            <color key="value" red="0.19215686269999999" green="0.70980392160000005" blue="0.87058823529999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
                     <connections>
                         <outlet property="contentView" destination="svH-Pt-448" id="7pJ-Hb-EcP"/>
                         <outlet property="descriptionLabel" destination="0XM-y9-sOw" id="sdK-sh-2RL"/>
@@ -137,59 +133,59 @@
                         <color key="sectionIndexColor" name="keyboardFocusIndicatorColor" catalog="System" colorSpace="catalog"/>
                         <color key="sectionIndexBackgroundColor" red="0.98823529409999999" green="0.019657472870000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PokeCell" rowHeight="86" id="WCw-Qf-5nD" customClass="PokeCellTableViewCell" customModule="CoreDexter" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="86"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PokeCell" rowHeight="200" id="WCw-Qf-5nD" customClass="PokeCellTableViewCell" customModule="CoreDexter" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="200"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WCw-Qf-5nD" id="37f-cq-3Eg">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="85.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="199.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4O9-ww-IM5">
-                                            <rect key="frame" x="16" y="8" width="40" height="40"/>
-                                            <color key="backgroundColor" red="0.19215686274509805" green="0.70980392156862748" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="L8E-Um-nno"/>
-                                                <constraint firstAttribute="width" secondItem="4O9-ww-IM5" secondAttribute="height" multiplier="1:1" id="qx0-7R-4LU"/>
-                                            </constraints>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="751" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
-                                            <rect key="frame" x="64" y="8" width="150" height="69.5"/>
-                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                            <color key="textColor" red="0.94509803921568625" green="0.72156862745098038" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9K0-el-Xyn" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
-                                            <rect key="frame" x="222" y="43" width="145" height="42.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="LabelLabelLabel" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qki-bh-2Xp" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
-                                            <rect key="frame" x="222" y="0.0" width="145" height="43"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" priority="500" constant="75" id="0kJ-gv-mYr"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="rEI-2i-mEB">
+                                            <rect key="frame" x="16" y="8" width="343" height="183.5"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4O9-ww-IM5">
+                                                    <rect key="frame" x="0.0" y="57" width="69.5" height="69.5"/>
+                                                    <color key="backgroundColor" red="0.19215686274509805" green="0.70980392156862748" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="69.5" id="Jyz-nY-lL0"/>
+                                                        <constraint firstAttribute="width" secondItem="4O9-ww-IM5" secondAttribute="height" multiplier="1:1" id="h13-oj-572"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
+                                                    <rect key="frame" x="77.5" y="0.0" width="157.5" height="183.5"/>
+                                                    <string key="text">Long LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong LabelLong Label</string>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <color key="textColor" red="0.94509803921568625" green="0.72156862745098038" blue="0.16470588235294117" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="G3k-iF-Lpa">
+                                                    <rect key="frame" x="243" y="57.5" width="100" height="69"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="251" horizontalCompressionResistancePriority="999" text="LAbel" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qki-bh-2Xp" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="0.0" width="100" height="30.5"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="wcE-2U-Gfb"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="251" horizontalCompressionResistancePriority="999" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9K0-el-Xyn" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="38.5" width="100" height="30.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                        </stackView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="qki-bh-2Xp" firstAttribute="leading" secondItem="NDO-eV-HRb" secondAttribute="trailing" priority="800" constant="8" id="1em-jD-0JD"/>
-                                        <constraint firstAttribute="bottom" secondItem="9K0-el-Xyn" secondAttribute="bottom" id="A3a-su-fQd"/>
-                                        <constraint firstAttribute="trailing" secondItem="9K0-el-Xyn" secondAttribute="trailing" constant="8" id="JsI-Gg-MlQ"/>
-                                        <constraint firstItem="9K0-el-Xyn" firstAttribute="leading" secondItem="NDO-eV-HRb" secondAttribute="trailing" priority="800" constant="8" id="Le1-IK-Crc"/>
-                                        <constraint firstItem="qki-bh-2Xp" firstAttribute="height" secondItem="9K0-el-Xyn" secondAttribute="height" id="XED-vv-m1M"/>
-                                        <constraint firstItem="4O9-ww-IM5" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" constant="16" id="YjS-Lb-uqV"/>
-                                        <constraint firstAttribute="trailing" secondItem="qki-bh-2Xp" secondAttribute="trailing" constant="8" id="Ymk-O7-rqu"/>
-                                        <constraint firstItem="NDO-eV-HRb" firstAttribute="leading" secondItem="4O9-ww-IM5" secondAttribute="trailing" constant="8" id="dvN-e8-AaT"/>
-                                        <constraint firstAttribute="bottom" secondItem="NDO-eV-HRb" secondAttribute="bottom" priority="800" constant="8" id="pYU-M7-vT5"/>
-                                        <constraint firstItem="qki-bh-2Xp" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" id="q2w-bf-fg8"/>
-                                        <constraint firstItem="NDO-eV-HRb" firstAttribute="height" relation="greaterThanOrEqual" secondItem="4O9-ww-IM5" secondAttribute="height" id="sAY-WR-e55"/>
-                                        <constraint firstItem="qki-bh-2Xp" firstAttribute="width" secondItem="9K0-el-Xyn" secondAttribute="width" id="sUF-Kc-izS"/>
-                                        <constraint firstItem="9K0-el-Xyn" firstAttribute="height" secondItem="37f-cq-3Eg" secondAttribute="height" multiplier="0.5" id="tD0-Ih-CWW"/>
-                                        <constraint firstItem="NDO-eV-HRb" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" constant="8" id="vnZ-us-F6F"/>
-                                        <constraint firstItem="4O9-ww-IM5" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" constant="8" id="w0a-uY-Ojd"/>
+                                        <constraint firstItem="rEI-2i-mEB" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="top" constant="8" id="AA7-xX-kH9"/>
+                                        <constraint firstAttribute="trailing" secondItem="rEI-2i-mEB" secondAttribute="trailing" constant="16" id="CAY-RP-tD5"/>
+                                        <constraint firstAttribute="bottom" secondItem="rEI-2i-mEB" secondAttribute="bottom" constant="8" id="XBf-1K-LPL"/>
+                                        <constraint firstItem="rEI-2i-mEB" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leading" constant="16" id="Y0F-Q1-4vv"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="0.98823529409999999" green="0.019657472870000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

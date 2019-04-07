@@ -335,7 +335,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
         cell.layoutIfNeeded()
         let pokeCell = cell as! PokeCellTableViewCell
-        pokeCell.imgview.layer.cornerRadius = pokeCell.imgview.bounds.height / 2
+        pokeCell.updateCircle()
         DispatchQueue.global(qos: .background).async {
             
             //asynchronously requests image if there is none

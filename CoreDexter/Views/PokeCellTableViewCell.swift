@@ -40,9 +40,13 @@ class PokeCellTableViewCell: UITableViewCell {
         
     }
     
+    func updateCircle(){
+        self.imgview.layer.cornerRadius = self.imgview.bounds.height / 2
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.imgview.layer.cornerRadius = self.imgview.bounds.height / 2
+        updateCircle()
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -79,6 +83,7 @@ class ElementLabel : UILabel {
             let colors = element.getColors()
             self.backgroundColor = colors.backgroundColor
             self.textColor = colors.textColor
+            self.font = UIFont.preferredFont(forTextStyle: .body)
             self.text = element.rawValue.capitalized
             self.clipsToBounds = true
             //self.sizeToFit()
