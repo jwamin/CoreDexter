@@ -25,7 +25,7 @@ class CoreDexterTests: XCTestCase {
         }
         initialiser = PokeLoader(APP_REGION)
         initialiser.managedObjectContext = stack.viewContext
-        initialiser.checkAndLoadData()
+        initialiser.loadData()
         
        
         

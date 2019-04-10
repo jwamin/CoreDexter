@@ -186,42 +186,45 @@ extension UIColor {
     
     public static let basicallyAwfulRed = ezColor(r: 252, g: 5, b: 0)
     
-    public static let bulbasaurGreen:UIColor = ezColor(r: 203, g: 253, b: 134)
+    public static let bulbasaurGreen:UIColor = ezColor(r: 0, g: 153, b: 14)
     
-    public static let squirtleBlue:UIColor = ezColor(r: 49, g: 181, b: 222)
+    public static let squirtleBlue:UIColor = ezColor(r: 37, g: 180, b: 224)
     
-    public static let charmanderRed:UIColor = ezColor(r: 220, g: 148, b: 48)
+    public static let charmanderRed:UIColor = ezColor(r: 221, g: 31, b: 0)
     
-    public static let koffingPurple:UIColor = ezColor(r: 90, g: 54, b: 150)
+    public static let koffingPurple:UIColor = ezColor(r: 86, g: 0, b: 107)
     
     public static let pikachuYellow:UIColor = ezColor(r: 248, g: 208, b: 48)
     
-    public static let normalGrey:UIColor = ezColor(r: 168, g: 168, b: 120)
+    public static let normalGrey:UIColor = ezColor(r: 255, g: 255, b: 255)
     
-    public static let flyingPurple:UIColor = ezColor(r: 168, g: 144, b: 240)
+    public static let flyingPurple:UIColor = ezColor(r: 25, g: 133, b: 158)
     
-    public static let fightingBrown:UIColor = ezColor(r: 192, g: 48, b: 40)
+    public static let fightingBrown:UIColor = ezColor(r: 153, g: 124, b: 97)
     
-    public static let fairyPink:UIColor = ezColor(r: 238, g: 153, b: 172)
+    public static let fairyPink:UIColor = ezColor(r: 255, g: 141, b: 141)
     
-    public static let sandshrew:UIColor = ezColor(r: 224, g: 192, b: 104)
+    public static let sandshrew:UIColor = ezColor(r: 178, g: 97, b: 0)
     
-    public static let gengarPurple:UIColor = ezColor(r: 112, g: 88, b: 152)
+    public static let gengarPurple:UIColor = ezColor(r: 47, g: 0, b: 58)
     
-    public static let caterpieGreen:UIColor = ezColor(r: 168, g: 184, b: 32)
+    public static let caterpieGreen:UIColor = ezColor(r: 144, g: 214, b: 145)
     
-    public static let geodude:UIColor = ezColor(r: 168, g: 184, b: 32)
+    public static let geodude:UIColor = ezColor(r: 61, g: 33, b: 1)
     
-    public static let dewgong:UIColor = ezColor(r: 152, g: 216, b: 216)
+    public static let dewgong:UIColor = ezColor(r: 145, g: 219, b: 237)
  
     public static let gyarados:UIColor = ezColor(r: 112, g: 56, b: 248)
     
-    public static let steelix:UIColor = ezColor(r: 184, g: 184, b: 208)
+    public static let steelix:UIColor = ezColor(r: 155, g: 155, b: 155)
     
-    public static let mewPink:UIColor = ezColor(r: 248, g: 88, b: 136)
+    public static let mewPink:UIColor = ezColor(r: 168, g: 0, b: 168)
     
-    public static let darkType:UIColor = ezColor(r: 112, g: 88, b: 72)
+    public static let darkType:UIColor = ezColor(r: 24, g: 27, b: 28)
 
+    //Gavin
+    
+    public static let lightBlue:UIColor = ezColor(r: 211, g: 240, b: 249)
     
 }
 
@@ -279,7 +282,7 @@ public enum ElementalType : String, Codable {
         case .ice:
             return(.white,.dewgong)
         case .normal:
-            return(.white,.normalGrey)
+            return(.black,.normalGrey)
         case .steel:
             return(.white,.steelix)
     }

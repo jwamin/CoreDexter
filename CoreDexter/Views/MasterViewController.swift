@@ -24,6 +24,13 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return font
     }()
     
+    static var lightFont:UIFont = {
+        guard let font = UIFont(name: "Rubik-Light", size: UIFont.systemFontSize) else {
+            fatalError()
+        }
+        return font
+    }()
+    
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
     weak var loadingView:UIView? = nil
@@ -90,14 +97,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         tableView.estimatedRowHeight = 85.0
         tableView.rowHeight = UITableView.automaticDimension
         
-        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
-            fatalError()
-        }
+       let font = MasterViewController.font
         
         //refactor this to IB?
         self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font:UIFontMetrics(forTextStyle: .headline).scaledFont(for:font),
-            NSAttributedString.Key.foregroundColor:UIColor.yellow
+            NSAttributedString.Key.font:UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
         ]
         
         
@@ -290,9 +294,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         if let regionContainer = fetchedResultsController.sections?[section], let objects = regionContainer.objects{
             let header = FontedHeaderView()
-            header.contentView.backgroundColor = .basicallyAwfulRed
+            header.contentView.backgroundColor = .black
             header.textLabel?.font = MasterViewController.font.withSize(UIFont.labelFontSize)
-            //header.textLabel?.textColor = .yellow
+            header.textLabel?.textColor = .white
             let pokemon = objects[0] as! Pokemon
             print(pokemon.region?.name)
             header.textLabel!.text = pokemon.region!.name
@@ -354,7 +358,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         //leave image loading to willDisplay
         //let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
-        let labeltext = "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
+        let labeltext = "\(Int(pokemon.id).digitString())\n\((pokemon.name ?? "Missingno").capitalized)"
         pokeCell.mainLabel.text = labeltext //event.timestamp!.description
         pokeCell.type1Label.typeString = pokemon.type1
         pokeCell.type2Label.typeString = pokemon.type2

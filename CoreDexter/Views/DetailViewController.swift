@@ -121,18 +121,18 @@ class DetailViewController: UIViewController {
         
         
         
-        self.font = MasterViewController.font
+        self.font = MasterViewController.lightFont
         
         numberLabel = UILabel()
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
         numberLabel.numberOfLines = 0
         numberLabel.text = "001"
-        numberLabel.font = font
+        numberLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
         
         genusLabel = UILabel()
         genusLabel.translatesAutoresizingMaskIntoConstraints = false
         genusLabel.text = "Seed Pokémon"
-        genusLabel.font = font
+        genusLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
         
         detailStackView = UIStackView()
         detailStackView.spacing = 8.0
@@ -152,12 +152,12 @@ class DetailViewController: UIViewController {
         detailStackView.addArrangedSubview(type2Label)
         
         let generationLabel = UILabel()
-        generationLabel.font = MasterViewController.font
+        generationLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
         generationLabel.text = pokemonData?.generation
         detailStackView.addArrangedSubview(generationLabel)
         
         let regionLabel = UILabel()
-        regionLabel.font = MasterViewController.font
+        regionLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
         regionLabel.text = pokemonData?.region
         detailStackView.addArrangedSubview(regionLabel)
         
@@ -174,7 +174,7 @@ class DetailViewController: UIViewController {
         descriptionLabel.removeFromSuperview()
         
         
-        descriptionLabel.font = UIFontMetrics(forTextStyle: UIFont.TextStyle.body).scaledFont(for: font)
+        descriptionLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
         
         let sharedFrame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
         
@@ -244,7 +244,7 @@ class DetailViewController: UIViewController {
             return
         }
         
-        numberLabel.text = "National: \(pokemonData.idString)\nRegional:\(pokemonData.regionId)"
+        numberLabel.text = "National:\(pokemonData.idString)\nRegional:\(pokemonData.regionId)"
         genusLabel.text = pokemonData.genus
         descriptionLabel.text = pokemonData.description
         
@@ -301,30 +301,30 @@ class DetailViewController: UIViewController {
         //Content Hugging Priority - The higher this priority is, the more a view resists growing larger than its intrinsic content size.
         //Content Compression Resistance Priority - The higher this priority is, the more a view resists shrinking smaller than its intrinsic content size.
         
-        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .horizontal)
-        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .vertical)
-        
-        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
-        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-        
-        
-        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
-        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-        
-        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
-        
-        for arranged in detailStackView.arrangedSubviews{
-            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
-        }
+//        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .horizontal)
+//        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .vertical)
+//
+//        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
+//        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+//
+//
+//        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
+//        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+//
+//        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+//        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
+//
+//        for arranged in detailStackView.arrangedSubviews{
+//            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
+//            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
+//        }
         
         //imgcontainer height and width
         //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
         //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(>=150)]", options: [], metrics: nil, views: views)
         
         //fix img container to the top of the safe area with standard spacing
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@250-[imgcontainer]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@750-[imgcontainer]", options: [], metrics: nil, views: views)
         
         //imageview inside the uiview - costrain to match container
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgview]-|", options: [], metrics: nil, views: views)
@@ -345,7 +345,7 @@ class DetailViewController: UIViewController {
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[button(==44)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]", options: [], metrics: nil, views: views)
         
-        closeButtonBottomConstraint = closeButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 44)
+        closeButtonBottomConstraint = closeButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         
         constraints += [
             
@@ -434,7 +434,7 @@ class DetailViewController: UIViewController {
             } else {
                 NSLayoutConstraint.deactivate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 1.0
-                self!.closeButtonBottomConstraint.constant = 44
+                
             }
             
             self!.view.layoutIfNeeded()

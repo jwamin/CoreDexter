@@ -26,7 +26,8 @@ class FilesystemOperationTests: XCTestCase {
         }
         initialiser = PokeLoader(APP_REGION)
         initialiser.managedObjectContext = stack.viewContext
-        initialiser.checkAndLoadData()
+        initialiser.loadData()
+        
          let imagesLoaded = expectation(description: "Images loaded")
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pokemon")
         do{

@@ -19,11 +19,7 @@ class PokeCellTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
-        
-        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
-            fatalError()
-        }
+    
         print(imgview.bounds)
         imgview.layer.borderWidth = 1.0
         imgview.layer.borderColor = UIColor.black.cgColor
@@ -31,7 +27,7 @@ class PokeCellTableViewCell: UITableViewCell {
         mainLabel.numberOfLines = 0
         mainLabel.lineBreakMode = .byWordWrapping
         
-        mainLabel.font = UIFontMetrics(forTextStyle: .headline).scaledFont(for: font)
+        mainLabel.font = UIFontMetrics(forTextStyle: .headline).scaledFont(for: MasterViewController.font)
         mainLabel.adjustsFontForContentSizeCategory = true
     }
     
@@ -83,7 +79,7 @@ class ElementLabel : UILabel {
             let colors = element.getColors()
             self.backgroundColor = colors.backgroundColor
             self.textColor = colors.textColor
-            self.font = UIFont.preferredFont(forTextStyle: .body)
+            self.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: MasterViewController.lightFont)
             self.text = element.rawValue.capitalized
             self.clipsToBounds = true
             //self.sizeToFit()
