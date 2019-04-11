@@ -12,6 +12,8 @@ import AVFoundation
 
 class DetailViewController: UIViewController {
     
+    //MARK: Instance Variable
+    
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -25,14 +27,18 @@ class DetailViewController: UIViewController {
     
     var detailStackView:UIStackView!
     
-    var player:AVPlayer!
     var imageview:UIImageView!
-    
+    var closeButton:UIButton!
     var viewIsSetup:Bool = false
     
+    var player:AVPlayer!
+    
     var constraints:[NSLayoutConstraint] = []
+    var centeriseConstraints:[NSLayoutConstraint] = []
+    var closeButtonBottomConstraint:NSLayoutConstraint!
     
     private var animating = true
+    private var expandedViewActive = false
     
     var img:UIImage?{
         didSet{
@@ -47,17 +53,32 @@ class DetailViewController: UIViewController {
         }
     }
     
-    var closeButton:UIButton!
-    var closeButtonBottomConstraint:NSLayoutConstraint!
+    //MARK: ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
        
         print("view did load",self.description)
-        
-    
        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        setupView()
+        setData()
+    }
+    
+    override func viewSafeAreaInsetsDidChange() {
+        
+        super.viewSafeAreaInsetsDidChange()
+        if viewIsSetup {
+            layoutConstraints()
+        }
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
     }
     
     deinit {
@@ -99,11 +120,14 @@ class DetailViewController: UIViewController {
         }
     };
     
+    //MARK: View Setup
+    //Takes over from basic views created in IB
     func setupView(){
         
-        if viewIsSetup {
+        if viewIsSetup || pokemonData == nil {
             return;
         }
+        
         viewIsSetup = true
         print("instantiating video player")
         
@@ -118,8 +142,6 @@ class DetailViewController: UIViewController {
         
         player.currentItem!.addObserver(self, forKeyPath: "status", options: [], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
-        
-        
         
         self.font = MasterViewController.lightFont
         
@@ -163,6 +185,8 @@ class DetailViewController: UIViewController {
         
         contentView.addSubview(detailStackView)
         
+        
+        //Position description label
         guard let descriptionLabel = self.descriptionLabel else {
             return
         }
@@ -172,23 +196,27 @@ class DetailViewController: UIViewController {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         descriptionLabel.removeFromSuperview()
-        
-        
         descriptionLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
         
-        let sharedFrame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
         
+        //Image container view
+        let sharedFrame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
         let imgcontainer = UIView(frame: sharedFrame)
         imgcontainer.translatesAutoresizingMaskIntoConstraints = false
         imgcontainer.isUserInteractionEnabled = true
         imageview = UIImageView(frame: sharedFrame)
-        
         imageview.translatesAutoresizingMaskIntoConstraints = false
+        
         imgcontainer.addSubview(imageview)
+        
+        
         contentView.addSubview(imgcontainer)
         contentView.addSubview(descriptionLabel)
+        
         setImage()
         configureView()
+        
+        //set border aand background color of container
         imgcontainer.layer.backgroundColor = UIColor.squirtleBlue.cgColor
         imgcontainer.layer.borderColor = UIColor.black.cgColor
         
@@ -198,8 +226,8 @@ class DetailViewController: UIViewController {
         imgcontainer.layer.masksToBounds = true
         imageview.layer.zPosition = 2
         
-        
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(tap(_:)))
+        //Add Gesture recognisers for tap of image
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(imageTap(_:)))
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
         
@@ -211,20 +239,52 @@ class DetailViewController: UIViewController {
         closeButton = UIButton(type: .custom)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.setTitle("-", for: .normal)
+        
+        //tweak display layer
         closeButton.layer.cornerRadius = 22
         closeButton.layer.borderWidth = 5.0
         closeButton.layer.borderColor = UIColor.black.cgColor
+        closeButton.layer.zPosition = 2
+        
         closeButton.backgroundColor = UIColor.bulbasaurGreen
         closeButton.setTitleColor(UIColor.black, for: .normal)
         closeButton.titleLabel?.font = MasterViewController.font.withSize(14)
         closeButton.clipsToBounds = false
-        closeButton.addTarget(self, action: #selector(tap(_:)), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(imageTap(_:)), for: .touchUpInside)
         view.addSubview(closeButton)
-        closeButton.layer.zPosition = 2
+        
         closeButton.addLayoutGuide(closeButtonLayoutGuide)
+        
         layoutConstraints()
         
         
+    }
+    
+    //MARK: @objc target actions
+    
+    @objc func imageTap(_ sender:Any){
+        
+        if(sender is UITapGestureRecognizer){
+            let gr = sender as! UITapGestureRecognizer
+            if(gr.state != .ended){
+                print("!ended")
+                return
+            }
+            if(!expandedViewActive){
+                layoutInPopoverConfiguration()
+            } else {
+                tapGrowlAnimation()
+            }
+        } else if (sender is UIButton){
+            layoutInPopoverConfiguration()
+        }
+        
+    }
+    
+    @objc
+    func resetPlayer(_ notification:NSNotification){
+        print("did end playing")
+        self.player.seek(to: .zero)
     }
     
     @objc
@@ -236,46 +296,7 @@ class DetailViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
-    override func viewDidLayoutSubviews() {
-        setupView()
-        setData()
-    }
-    
-    
-    func setData(){
-        
-        guard let pokemonData = self.pokemonData else{
-            return
-        }
-        
-        numberLabel.text = "National:\(pokemonData.idString)\nRegional:\(pokemonData.regionId)"
-        genusLabel.text = pokemonData.genus
-        descriptionLabel.text = pokemonData.description
-        
-    }
-    
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
-    }
 
-    
-    override func viewSafeAreaInsetsDidChange() {
-
-        super.viewSafeAreaInsetsDidChange()
-        if viewIsSetup {
-            layoutConstraints()
-        }
-
-    }
-
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        super.traitCollectionDidChange(previousTraitCollection)
-//        layoutConstraints()
-//    }
-
-    
     private func updateRadius(){
         guard let container = imageview.superview else {
             return
@@ -347,29 +368,6 @@ class DetailViewController: UIViewController {
          updateRadius()
     }
     
-    var centeriseConstraints:[NSLayoutConstraint] = []
-    var viewActive = false
-    //Actions
-    @objc func tap(_ sender:Any){
-        
-        if(sender is UITapGestureRecognizer){
-            let gr = sender as! UITapGestureRecognizer
-            if(gr.state != .ended){
-                print("!ended")
-                return
-            }
-            if(!viewActive){
-                layoutInPopoverConfiguration()
-            } else {
-                tapGrowlAnimation()
-            }
-        } else if (sender is UIButton){
-            layoutInPopoverConfiguration()
-        }
-        
-        
-    }
-    
     
     func layoutInPopoverConfiguration(){
         
@@ -404,7 +402,7 @@ class DetailViewController: UIViewController {
         
         
         UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 10, options: [], animations: { [weak self] in
-            if(!self!.viewActive){
+            if(!self!.expandedViewActive){
                 NSLayoutConstraint.activate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 0.0
                 self!.closeButtonBottomConstraint.constant = 0
@@ -418,19 +416,21 @@ class DetailViewController: UIViewController {
             self!.updateRadius()
         }) { [weak self] (complete) in
             if(complete){
-                self!.viewActive = !self!.viewActive
+                self!.expandedViewActive = !self!.expandedViewActive
             }
         }
     }
     
     
-    @objc
-    func resetPlayer(_ notification:NSNotification){
-        print("did end playing")
-        self.player.seek(to: .zero)
-    }
+    
     
 
+    
+
+    
+
+    
+    //MARK: View Setup
     
     private func configureView() {
         // Update the user interface for the detail item.
@@ -446,12 +446,26 @@ class DetailViewController: UIViewController {
         
     }
     
+    func setData(){
+        
+        guard let pokemonData = self.pokemonData else{
+            return
+        }
+        
+        numberLabel.text = "National:\(pokemonData.idString)\nRegional:\(pokemonData.regionId)"
+        genusLabel.text = pokemonData.genus
+        descriptionLabel.text = pokemonData.description
+        
+    }
+    
     private func setImage(){
         guard let imageview = self.imageview, let img = self.img else {
             return
         }
         imageview.image = img
     }
+    
+    //MARK: Animation
     
     private func tapGrowlAnimation(){
         
@@ -549,9 +563,5 @@ class DetailViewController: UIViewController {
         //play player
         player.play()
     }
-    
-}
-
-extension DetailViewController : UIScrollViewDelegate{
     
 }
