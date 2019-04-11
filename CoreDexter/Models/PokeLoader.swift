@@ -407,7 +407,7 @@ class PokeLoader{
                     }
                     
                     callback(img,nil)
-                    print("loading cell image", imageurl.path)
+                    //print("loading cell image", imageurl.path)
                     return
                 
                     

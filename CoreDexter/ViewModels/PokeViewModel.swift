@@ -87,7 +87,7 @@ final class PokeViewModel{
         
         let returnItem = PokemonViewStruct(name: name, idString: id, regionId: "\(regionId)", description: description, type1: type1, type2: detail.type2, generation: generation, region: physicalRegionString, debugString: debugString, genus: genus)
         
-        print("returning \(returnItem.genus) \(detail.initialDesc)")
+        //print("returning \(returnItem.genus) \(detail.initialDesc)")
         
         return returnItem
         

@@ -92,7 +92,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         //navigationItem.leftBarButtonItem = editButtonItem
-        
         tableView.scrollsToTop = true
         tableView.estimatedRowHeight = 85.0
         tableView.rowHeight = UITableView.automaticDimension
@@ -315,7 +314,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PokeCell", for: indexPath) as! PokeCellTableViewCell
         let poke = fetchedResultsController.object(at: indexPath)
-        print("loading cell \(indexPath)")
+        //print("loading cell \(indexPath)")
         configureCell(cell, withPokemon: poke)
         cell.layoutIfNeeded()
         return cell
@@ -360,8 +359,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
         let labeltext = "\(Int(pokemon.id).digitString())\n\((pokemon.name ?? "Missingno").capitalized)"
         pokeCell.mainLabel.text = labeltext //event.timestamp!.description
+
         pokeCell.type1Label.typeString = pokemon.type1
         pokeCell.type2Label.typeString = pokemon.type2
+
         pokeCell.mainLabel.sizeToFit()
         
     }

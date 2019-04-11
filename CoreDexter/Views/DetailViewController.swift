@@ -203,6 +203,10 @@ class DetailViewController: UIViewController {
         imageview.isUserInteractionEnabled = true
         imageview.addGestureRecognizer(gesture)
         
+        let imageLayoutGuide = UILayoutGuide()
+        imgcontainer.addLayoutGuide(imageLayoutGuide)
+        
+        let closeButtonLayoutGuide = UILayoutGuide()
         
         closeButton = UIButton(type: .custom)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -216,7 +220,8 @@ class DetailViewController: UIViewController {
         closeButton.clipsToBounds = false
         closeButton.addTarget(self, action: #selector(tap(_:)), for: .touchUpInside)
         view.addSubview(closeButton)
-        
+        closeButton.layer.zPosition = 2
+        closeButton.addLayoutGuide(closeButtonLayoutGuide)
         layoutConstraints()
         
         
@@ -296,82 +301,44 @@ class DetailViewController: UIViewController {
             print("generating constraints for the first time")
         }
         
-        let views:[String:UIView] = ["imgcontainer":imageContainer,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton]
+        let views:[String:Any] = ["imgcontainer":imageContainer,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton,
+                                  "ilayoutguide":imageContainer.layoutGuides.first!,"blayoutguide":closeButton.layoutGuides.first!]
         
-        //Content Hugging Priority - The higher this priority is, the more a view resists growing larger than its intrinsic content size.
-        //Content Compression Resistance Priority - The higher this priority is, the more a view resists shrinking smaller than its intrinsic content size.
-        
-//        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .horizontal)
-//        imageContainer.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .vertical)
-//
-//        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
-//        imageContainer.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-//
-//
-//        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .vertical)
-//        imageview.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-//
-//        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-//        detailStackView.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
-//
-//        for arranged in detailStackView.arrangedSubviews{
-//            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .horizontal)
-//            arranged.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: .vertical)
-//        }
-        
-        //imgcontainer height and width
-        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(<=300)]", options: [], metrics: nil, views: views)
-        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(>=150)]", options: [], metrics: nil, views: views)
-        
+ 
         //fix img container to the top of the safe area with standard spacing
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@750-[imgcontainer]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@500-[imgcontainer]", options: [], metrics: nil, views: views)
         
         //imageview inside the uiview - costrain to match container
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgview]-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[imgview]-|", options: [], metrics: nil, views: views)
         
         
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[imgcontainer]-[stackView]-8@250-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@500-[imgcontainer]-[stackView]-8@250-|", options: [], metrics: nil, views: views)
         
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stackView]", options: [], metrics: nil, views: views)
 
- 
-        
-        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stackView]", options: [], metrics: nil, views: views)
-        
-        //constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[label(100@20)]", options: [], metrics: nil, views: views)
-        
         //closeButton
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[button(==44)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]", options: [], metrics: nil, views: views)
         
-        closeButtonBottomConstraint = closeButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
         
+        closeButtonBottomConstraint = view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo:closeButton.bottomAnchor, constant: -100)
+        closeButtonBottomConstraint.priority = UILayoutPriority(100)
         constraints += [
             
         closeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         closeButtonBottomConstraint
-        
         ]
         
         //stackView
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView]->=8@250-[label]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer]-8@251-[label]-0@250-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@751-[label]-8@751-|", options: [], metrics: nil, views: views)
-        
-        //let centerYConstraint = NSLayoutConstraint(item: descriptionLabel, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0)
-        //centerYConstraint.priority = UILayoutPriority(rawValue: 750)
-        
+     
         constraints += [
             
-            /*NSLayoutConstraint(item: imageContainer, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),*/
             NSLayoutConstraint(item: imageContainer, attribute: .height, relatedBy: .equal, toItem: imageContainer, attribute: .width, multiplier: 1.0, constant: 0)//,
-            //centerYConstraint,
-            
-            //NSLayoutConstraint(item: detailDescriptionLabel, attribute: .centerX, relatedBy: .equal, toItem: contentView, attribute: .centerX, multiplier: 1.0, constant: 0),
-            
-            //imageContainer.topAnchor.constraint(equalTo: contentView.topAnchor)//,
-            //imageContainer.bottomAnchor.constraint(equalTo: detailDescriptionLabel.topAnchor)
+
             
         ]
         
@@ -406,19 +373,29 @@ class DetailViewController: UIViewController {
     
     func layoutInPopoverConfiguration(){
         
+        guard let container = imageview.superview else {
+            return
+        }
+        
         if(centeriseConstraints.isEmpty){
+            let views:[String:Any] = ["imgcontainer":container,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton,"ilayoutguide":container.layoutGuides.first!,"blayoutguide":closeButton.layoutGuides.first!]
             let layoutGuides = view.safeAreaLayoutGuide
             let widthConstraint =  min(self.view.frame.height, self.view.frame.width)
             print(widthConstraint)
-            let imageContainer = imageview.superview!
+            let imageContainer = container
             let vXConstraint = imageContainer.centerXAnchor.constraint(equalTo: layoutGuides.centerXAnchor)
             let vYConstraint = imageContainer.centerYAnchor.constraint(equalTo: layoutGuides.centerYAnchor)
             let arConstraint = imageContainer.heightAnchor.constraint(equalTo: imageContainer.widthAnchor)
-            arConstraint.priority = UILayoutPriority(rawValue: 999)
-            vYConstraint.priority = UILayoutPriority(rawValue: 1000)
-            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@700-[container(<=\(widthConstraint))]-8@700-|", options: [], metrics: nil, views: ["container":imageContainer])
-            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@700-[container(<=\(widthConstraint))]-8@700-|", options: [], metrics: nil, views: ["container":imageContainer])
+//            arConstraint.priority = UILayoutPriority(rawValue: 999)
             
+            let metrics = ["maxDimension":widthConstraint]
+            print(widthConstraint)
+            vYConstraint.priority = UILayoutPriority(rawValue: 1000)
+            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@500-[imgcontainer(<=maxDimension)]", options: [], metrics: metrics, views: views)
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|->=8@500-[imgcontainer(<=maxDimension)]", options: [], metrics: metrics, views: views)
+            
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer][ilayoutguide(==blayoutguide)][button(==44)][blayoutguide]|", options: [], metrics: nil, views: views)
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]->=20@1000-|", options: [], metrics: nil, views: views)
             centeriseConstraints += [vXConstraint,vYConstraint,arConstraint]
         }
         
@@ -430,11 +407,11 @@ class DetailViewController: UIViewController {
             if(!self!.viewActive){
                 NSLayoutConstraint.activate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 0.0
-                self!.closeButtonBottomConstraint.constant = -100
+                self!.closeButtonBottomConstraint.constant = 0
             } else {
                 NSLayoutConstraint.deactivate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 1.0
-                
+                self!.closeButtonBottomConstraint.constant = -100
             }
             
             self!.view.layoutIfNeeded()
