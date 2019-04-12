@@ -6,8 +6,8 @@
 //  Copyright © 2019 Joss Manger. All rights reserved.
 //
 
-#if DEBUG
-    let debug = false
+#if MY_DEBUG_FLAG
+    let debug = true
 #else
     let debug = false
 #endif
@@ -42,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         
         let reset = UserDefaults.standard.object(forKey: "reset") as? Bool ?? false
         print("reset",reset)
-        if(debug||reset){
+        if(reset){
             resetAll()
         }
         
