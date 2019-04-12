@@ -31,7 +31,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return font
     }()
     
-    var detailViewController: DetailViewController? = nil
+   // var detailViewController: DetailViewController? = nil
+    
     var managedObjectContext: NSManagedObjectContext? = nil
     weak var loadingView:UIView? = nil
     var viewModel:PokeViewModel!
@@ -108,7 +109,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
-            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
+            //detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         
         let activityview = UIActivityIndicatorView(style: .gray)
@@ -194,10 +195,16 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
     }
     
-    func loadingDone() {
-        print("loading done")
-        isLoading = false
-        removeLoadingScreen()
+    func loadingDone(_ sender:Any) {
+        print("loading done",sender)
+        if(sender is PokeViewModel){
+            print("loading done")
+            isLoading = false
+            removeLoadingScreen()
+        } else if (sender is DetailViewController){
+            (sender as! DetailViewController).configureView(pokemonData: viewModel.currentPokemon)
+        }
+
     }
     
     func resetDone() {
@@ -220,11 +227,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
                 
                 controller.title = object.name?.capitalized
-
-                viewModel.getImageforID(id: object.objectID, callback: { [unowned controller,unowned self] (img) in
+                controller.delegate = self
+                viewModel.getImageforID(id: object.objectID, callback: { [unowned controller, unowned self] (img) in
                     controller.img = img
-                    let pokemonData = self.viewModel.pokemonViewModel(id: object.objectID)
-                    controller.pokemonData = pokemonData
+                    let pokemonData = self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)
+                    print("setting pokemon data")
+                   
                 })
                 
                 if(self.splitViewController?.displayMode == UISplitViewController.DisplayMode.primaryOverlay){

@@ -95,24 +95,24 @@ class ElementLabel : UILabel {
         }
     }
     
-//    var textInsets = UIEdgeInsets(top: 5,
-//                                  left: 10,
-//                                  bottom: 5,
-//                                  right: 10)
-//
-//    override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
-//        let insetRect = bounds.inset(by: textInsets)
-//        let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
-//        let invertedInsets = UIEdgeInsets(top: -5,
-//                                          left: -10,
-//                                          bottom: -5,
-//                                          right: -10)
-//        return textRect.inset(by: invertedInsets)
-//    }
-//
-//    override func drawText(in rect: CGRect) {
-//        super.drawText(in: rect.inset(by: textInsets))
-//    }
+    var textInsets = UIEdgeInsets(top: 5,
+                                  left: 10,
+                                  bottom: 5,
+                                  right: 10)
+
+    override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
+        let insetRect = bounds.inset(by: textInsets)
+        let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
+        let invertedInsets = UIEdgeInsets(top: -5,
+                                          left: -10,
+                                          bottom: -5,
+                                          right: -10)
+        return textRect.inset(by: invertedInsets)
+    }
+
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: textInsets))
+    }
     
     override func prepareForInterfaceBuilder() {
         //invalidateIntrinsicContentSize()

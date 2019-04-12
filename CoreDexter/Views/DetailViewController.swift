@@ -18,40 +18,37 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var descriptionLabel: UILabel!
     
-    var font:UIFont!
+    var delegate:LoadingProtocol?
     
+    let font:UIFont = MasterViewController.font
+    let bodyFont:UIFont = MasterViewController.lightFont
+    
+    // no data, just view!
     var pokemonData:PokemonViewStruct?
     
     var genusLabel:UILabel!
     var numberLabel:UILabel!
     
+    var typeLabelArray:[ElementLabel]!
+    
     var detailStackView:UIStackView!
     
     var imageview:UIImageView!
     var closeButton:UIButton!
-    var viewIsSetup:Bool = false
     
+    //Multimedia
     var player:AVPlayer!
     
+    //constraint containers
     var constraints:[NSLayoutConstraint] = []
     var centeriseConstraints:[NSLayoutConstraint] = []
     var closeButtonBottomConstraint:NSLayoutConstraint!
     
+    private var viewIsSetup:Bool = false
     private var animating = true
     private var expandedViewActive = false
     
-    var img:UIImage?{
-        didSet{
-            setImage()
-        }
-    }
-    
-    
-    var labelText:String = ""{
-        didSet{
-            configureView()
-        }
-    }
+    var img:UIImage?
     
     //MARK: ViewController Lifecycle
     
@@ -60,12 +57,17 @@ class DetailViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
        
         print("view did load",self.description)
-       
+       setupView()
+    }
+    
+    override func awakeFromNib() {
+        print("awoke", descriptionLabel)
+        //setupView()
     }
     
     override func viewDidLayoutSubviews() {
-        setupView()
-        setData()
+        print("vdls")
+        delegate?.loadingDone(self)
     }
     
     override func viewSafeAreaInsetsDidChange() {
@@ -124,11 +126,12 @@ class DetailViewController: UIViewController {
     //Takes over from basic views created in IB
     func setupView(){
         
-        if viewIsSetup || pokemonData == nil {
+        if viewIsSetup {
             return;
         }
-        
+        //view s
         viewIsSetup = true
+        
         print("instantiating video player")
         
         let activity = UIActivityIndicatorView(style: .gray)
@@ -143,18 +146,16 @@ class DetailViewController: UIViewController {
         player.currentItem!.addObserver(self, forKeyPath: "status", options: [], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         
-        self.font = MasterViewController.lightFont
-        
         numberLabel = UILabel()
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
         numberLabel.numberOfLines = 0
         numberLabel.text = "001"
-        numberLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+        numberLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: bodyFont)
         
         genusLabel = UILabel()
         genusLabel.translatesAutoresizingMaskIntoConstraints = false
         genusLabel.text = "Seed Pokémon"
-        genusLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+        genusLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: bodyFont)
         
         detailStackView = UIStackView()
         detailStackView.spacing = 8.0
@@ -169,6 +170,8 @@ class DetailViewController: UIViewController {
         
         type1Label.typeString = pokemonData?.type1
         type2Label.typeString = pokemonData?.type2
+        
+        typeLabelArray = [type1Label,type2Label]
         
         detailStackView.addArrangedSubview(type1Label)
         detailStackView.addArrangedSubview(type2Label)
@@ -188,6 +191,7 @@ class DetailViewController: UIViewController {
         
         //Position description label
         guard let descriptionLabel = self.descriptionLabel else {
+            viewIsSetup = false
             return
         }
         
@@ -209,12 +213,8 @@ class DetailViewController: UIViewController {
         
         imgcontainer.addSubview(imageview)
         
-        
         contentView.addSubview(imgcontainer)
         contentView.addSubview(descriptionLabel)
-        
-        setImage()
-        configureView()
         
         //set border aand background color of container
         imgcontainer.layer.backgroundColor = UIColor.squirtleBlue.cgColor
@@ -256,7 +256,7 @@ class DetailViewController: UIViewController {
         view.addLayoutGuide(closeButtonLayoutGuide)
         
         layoutConstraints()
-        
+      
         
     }
     
@@ -297,6 +297,8 @@ class DetailViewController: UIViewController {
         }
     }
 
+    //MARK: Layout methods
+    
     private func updateRadius(){
         guard let container = imageview.superview else {
             return
@@ -437,29 +439,27 @@ class DetailViewController: UIViewController {
     
     //MARK: View Setup
     
-    private func configureView() {
+    public func configureView(pokemonData:PokemonViewStruct?) {
         // Update the user interface for the detail item.
         
-        
-        if let label = descriptionLabel {
-            
-            label.text = labelText
-        } else {
+        guard let data = pokemonData else {
             return
         }
         
-        
-    }
-    
-    func setData(){
-        
-        guard let pokemonData = self.pokemonData else{
+        guard let label = descriptionLabel else {
+            print("returning on desclabel")
             return
         }
         
-        numberLabel.text = "National:\(pokemonData.idString)\nRegional:\(pokemonData.regionId)"
-        genusLabel.text = pokemonData.genus
-        descriptionLabel.text = pokemonData.description
+        label.text = data.description
+        imageview.image = img
+        numberLabel.text = "National:\(data.idString)\nRegional:\(data.regionId)"
+        
+        typeLabelArray[0].typeString = data.type1
+        typeLabelArray[1].typeString = data.type2
+        
+        genusLabel.text = data.genus
+        descriptionLabel.text = data.description
         
     }
     

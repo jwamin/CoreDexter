@@ -13,12 +13,14 @@ import PokeAPIKit
 
 protocol LoadingProtocol{
     func loadingInProgress()
-    func loadingDone()
+    func loadingDone(_ sender:Any)
 }
 
 final class PokeViewModel{
     
     private let pokeModel:PokeLoader
+    
+    public private(set) var currentPokemon:PokemonViewStruct?
     
     var loadingDelegate:LoadingProtocol?
     
@@ -34,7 +36,7 @@ final class PokeViewModel{
             pokeModel.loadDelegate = loadingDelegate
             loadingDelegate?.loadingInProgress()
         } else {
-            loadingDelegate?.loadingDone()
+            loadingDelegate?.loadingDone(self)
         }
        
         
@@ -72,7 +74,7 @@ final class PokeViewModel{
         pokeModel.delegate = nil
     }
     
-    public func pokemonViewModel(id:NSManagedObjectID)->PokemonViewStruct?{
+    public func setCurrentPokemonViewStruct(id:NSManagedObjectID){
         
         let detail = pokeModel.getItem(id: id)
         let id = Int(detail.id).digitString()
@@ -80,7 +82,7 @@ final class PokeViewModel{
         let physicalRegion = Generation(rawValue: detail.generation!)
         
         guard let generation = detail.generation, let name = detail.name, let physicalRegionString = physicalRegion?.getRegion().string(), let type1 = detail.type1, let description = detail.initialDesc, let genus = detail.genus else {
-            return nil
+            return
         }
         
         let debugString = "\(detail.name ?? "")\nNational Index:\(id)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(physicalRegion?.getRegion().string() ?? "")\n\(detail.type1 ?? "")\n\(detail.type2 ?? "")\n\n\(detail.initialDesc ?? "")"
@@ -89,7 +91,7 @@ final class PokeViewModel{
         
         //print("returning \(returnItem.genus) \(detail.initialDesc)")
         
-        return returnItem
+        currentPokemon = returnItem
         
     }
     

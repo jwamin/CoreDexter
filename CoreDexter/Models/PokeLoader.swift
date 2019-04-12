@@ -148,7 +148,7 @@ class PokeLoader{
         }
         
             appDelegate.saveContext()
-            loadDelegate?.loadingDone()
+            loadDelegate?.loadingDone(self)
             delegate?.resetDone()
         
         
