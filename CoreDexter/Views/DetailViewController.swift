@@ -232,7 +232,7 @@ class DetailViewController: UIViewController {
         imageview.addGestureRecognizer(gesture)
         
         let imageLayoutGuide = UILayoutGuide()
-        imgcontainer.addLayoutGuide(imageLayoutGuide)
+        view.addLayoutGuide(imageLayoutGuide)
         
         let closeButtonLayoutGuide = UILayoutGuide()
         
@@ -253,7 +253,7 @@ class DetailViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(imageTap(_:)), for: .touchUpInside)
         view.addSubview(closeButton)
         
-        closeButton.addLayoutGuide(closeButtonLayoutGuide)
+        view.addLayoutGuide(closeButtonLayoutGuide)
         
         layoutConstraints()
         
@@ -323,7 +323,7 @@ class DetailViewController: UIViewController {
         }
         
         let views:[String:Any] = ["imgcontainer":imageContainer,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton,
-                                  "ilayoutguide":imageContainer.layoutGuides.first!,"blayoutguide":closeButton.layoutGuides.first!]
+                                  "ilayoutguide":view.layoutGuides[0],"blayoutguide":view.layoutGuides[1]]
         
  
         //fix img container to the top of the safe area with standard spacing
@@ -376,25 +376,30 @@ class DetailViewController: UIViewController {
         }
         
         if(centeriseConstraints.isEmpty){
-            let views:[String:Any] = ["imgcontainer":container,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton,"ilayoutguide":container.layoutGuides.first!,"blayoutguide":closeButton.layoutGuides.first!]
+            
+            let views:[String:Any] = ["imgcontainer":container,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton,"ilayoutguide":view.layoutGuides[0],"blayoutguide":view.layoutGuides[1]]
+            
             let layoutGuides = view.safeAreaLayoutGuide
+            //let lg1 = view.layoutGuides[0]
+            //let lg2 = view.layoutGuides[1]
+            
             let widthConstraint =  min(self.view.frame.height, self.view.frame.width)
             print(widthConstraint)
             let imageContainer = container
             let vXConstraint = imageContainer.centerXAnchor.constraint(equalTo: layoutGuides.centerXAnchor)
             let vYConstraint = imageContainer.centerYAnchor.constraint(equalTo: layoutGuides.centerYAnchor)
-            let arConstraint = imageContainer.heightAnchor.constraint(equalTo: imageContainer.widthAnchor)
-//            arConstraint.priority = UILayoutPriority(rawValue: 999)
+
+            let metrics = ["maxDimension":widthConstraint,"layoutHeight":self.view.bounds.height/8]
+            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@250-[imgcontainer(==maxDimension)]->=8@250-|", options: [], metrics: metrics, views: views)
+  
+//            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[ilayoutguide(==20)]", options: [], metrics: metrics, views: views)
+//            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[blayoutguide(==20)]", options: [], metrics: metrics, views: views)
             
-            let metrics = ["maxDimension":widthConstraint]
-            print(widthConstraint)
-            vYConstraint.priority = UILayoutPriority(rawValue: 1000)
-            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@500-[imgcontainer(<=maxDimension)]", options: [], metrics: metrics, views: views)
-            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|->=8@500-[imgcontainer(<=maxDimension)]", options: [], metrics: metrics, views: views)
-            
-            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer][ilayoutguide(==blayoutguide)][button(==44)][blayoutguide]|", options: [], metrics: nil, views: views)
-            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]->=20@1000-|", options: [], metrics: nil, views: views)
-            centeriseConstraints += [vXConstraint,vYConstraint,arConstraint]
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button][blayoutguide(==layoutHeight)]-|", options: [], metrics: metrics, views: views)
+            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[ilayoutguide(==blayoutguide)][button][blayoutguide]-|", options: [], metrics: nil, views: views)
+            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]->=20@1000-|", options: [], metrics: nil, views: views)
+            centeriseConstraints += [vXConstraint,vYConstraint]
+    
         }
         
         
