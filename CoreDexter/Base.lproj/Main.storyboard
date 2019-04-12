@@ -141,7 +141,7 @@
                                                     <rect key="frame" x="0.0" y="57" width="69.5" height="69.5"/>
                                                     <color key="backgroundColor" red="0.19215686274509805" green="0.70980392156862748" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="69.5" id="Jyz-nY-lL0"/>
+                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="69.5" id="Jyz-nY-lL0"/>
                                                         <constraint firstAttribute="width" secondItem="4O9-ww-IM5" secondAttribute="height" multiplier="1:1" id="h13-oj-572"/>
                                                     </constraints>
                                                 </imageView>

@@ -62,9 +62,10 @@ class PokeCellTableViewCell: UITableViewCell {
 @IBDesignable
 class ElementLabel : UILabel {
     
-    override func awakeFromNib() {
-        //self.setContentHuggingPriority(UILayoutPriority(12), for: .horizontal)
-    }
+    let textInsets = UIEdgeInsets(top: 5,
+                                  left: 10,
+                                  bottom: 5,
+                                  right: 10)
     
     var typeString:String?{
         didSet{
@@ -94,19 +95,15 @@ class ElementLabel : UILabel {
             fixupCorner()
         }
     }
-    
-    var textInsets = UIEdgeInsets(top: 5,
-                                  left: 10,
-                                  bottom: 5,
-                                  right: 10)
+
 
     override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
         let insetRect = bounds.inset(by: textInsets)
         let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
-        let invertedInsets = UIEdgeInsets(top: -5,
-                                          left: -10,
-                                          bottom: -5,
-                                          right: -10)
+        let invertedInsets = UIEdgeInsets(top: -textInsets.top,
+                                          left: -textInsets.left,
+                                          bottom: -textInsets.bottom,
+                                          right: -textInsets.right)
         return textRect.inset(by: invertedInsets)
     }
 
