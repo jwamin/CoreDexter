@@ -65,6 +65,7 @@ class DetailViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         delegate?.loadingDone(self)
+        //updateRadius()
     }
     
     override func viewSafeAreaInsetsDidChange() {
@@ -176,13 +177,13 @@ class DetailViewController: UIViewController {
         
         generationLabel = UILabel()
         generationLabel.translatesAutoresizingMaskIntoConstraints = false
-        generationLabel.font = font
+        generationLabel.font = bodyFont
         generationLabel.text = pokemonData?.generation
         detailStackView.addArrangedSubview(generationLabel)
         
         regionLabel = UILabel()
         regionLabel.translatesAutoresizingMaskIntoConstraints = false
-        regionLabel.font = font
+        regionLabel.font = bodyFont
         regionLabel.text = pokemonData?.region
         detailStackView.addArrangedSubview(regionLabel)
         
@@ -210,6 +211,7 @@ class DetailViewController: UIViewController {
         let mainVerticalStack = UIStackView()
         mainVerticalStack.translatesAutoresizingMaskIntoConstraints = false
         mainVerticalStack.axis = .vertical
+        mainVerticalStack.distribution = .fill
         mainVerticalStack.alignment = .fill
         
         
@@ -343,7 +345,7 @@ class DetailViewController: UIViewController {
         }
         
         let safeArea = view.safeAreaLayoutGuide
-        let views = ["stack":mainStackView,"imgcontainer":imageContainer,"imgview":imageview]
+        let views = ["stack":mainStackView,"imgcontainer":imageContainer,"imgview":imageview,"button":closeButton]
         
         //main vertical stack view constraints
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[stack]-|", options: [], metrics: nil, views: views)
@@ -359,7 +361,9 @@ class DetailViewController: UIViewController {
             imageview.centerYAnchor.constraint(equalTo: imageContainer.centerYAnchor)
         ]
         
-        
+        //closeButton
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[button(==44)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]", options: [], metrics: nil, views: views)
         
         closeButtonBottomConstraint = safeArea.bottomAnchor.constraint(equalTo:closeButton.bottomAnchor, constant: -100)
         closeButtonBottomConstraint.priority = UILayoutPriority(100)
@@ -369,6 +373,8 @@ class DetailViewController: UIViewController {
         ]
         
         NSLayoutConstraint.activate(constraints)
+        view.layoutIfNeeded()
+        updateRadius()
     }
     
     private func layoutConstraints(){
@@ -519,11 +525,11 @@ class DetailViewController: UIViewController {
         typeLabelArray[0].typeString = data.type1
         typeLabelArray[1].typeString = data.type2
         
-        generationLabel.text = data.generation
-        regionLabel.text = data.region
+        generationLabel.text = data.generation.capitalized
+        regionLabel.text = data.region.capitalized
         
         genusLabel.text = data.genus
-        descriptionLabel.text = data.description
+        descriptionLabel.text = data.description + "\n\n" + lorem
         
     }
     
