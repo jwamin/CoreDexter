@@ -31,6 +31,9 @@ class DetailViewController: UIViewController {
     
     var typeLabelArray:[ElementLabel]!
     
+    var generationLabel:UILabel!
+    var regionLabel:UILabel!
+    
     var detailStackView:UIStackView!
     
     var imageview:UIImageView!
@@ -68,7 +71,7 @@ class DetailViewController: UIViewController {
         
         super.viewSafeAreaInsetsDidChange()
         if viewIsSetup {
-            layoutConstraints()
+            //layoutConstraints()
         }
         
     }
@@ -155,6 +158,7 @@ class DetailViewController: UIViewController {
         detailStackView.spacing = 8.0
         detailStackView.translatesAutoresizingMaskIntoConstraints = false
         detailStackView.axis = .vertical
+        detailStackView.alignment = .top
         
         detailStackView.addArrangedSubview(numberLabel)
         detailStackView.addArrangedSubview(genusLabel)
@@ -170,17 +174,19 @@ class DetailViewController: UIViewController {
         detailStackView.addArrangedSubview(type1Label)
         detailStackView.addArrangedSubview(type2Label)
         
-        let generationLabel = UILabel()
+        generationLabel = UILabel()
+        generationLabel.translatesAutoresizingMaskIntoConstraints = false
         generationLabel.font = font
         generationLabel.text = pokemonData?.generation
         detailStackView.addArrangedSubview(generationLabel)
         
-        let regionLabel = UILabel()
+        regionLabel = UILabel()
+        regionLabel.translatesAutoresizingMaskIntoConstraints = false
         regionLabel.font = font
         regionLabel.text = pokemonData?.region
         detailStackView.addArrangedSubview(regionLabel)
         
-        contentView.addSubview(detailStackView)
+        //contentView.addSubview(detailStackView)
         
         
         //Position description label
@@ -196,6 +202,16 @@ class DetailViewController: UIViewController {
         descriptionLabel.removeFromSuperview()
         descriptionLabel.font = bodyFont
         
+        let horizontalDetail = UIStackView()
+        horizontalDetail.translatesAutoresizingMaskIntoConstraints = false
+        horizontalDetail.axis = .horizontal
+        horizontalDetail.alignment = .fill
+        
+        let mainVerticalStack = UIStackView()
+        mainVerticalStack.translatesAutoresizingMaskIntoConstraints = false
+        mainVerticalStack.axis = .vertical
+        mainVerticalStack.alignment = .fill
+        
         
         //Image container view
         let sharedFrame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
@@ -207,8 +223,15 @@ class DetailViewController: UIViewController {
         
         imgcontainer.addSubview(imageview)
         
-        contentView.addSubview(imgcontainer)
-        contentView.addSubview(descriptionLabel)
+        horizontalDetail.addArrangedSubview(imgcontainer)
+        horizontalDetail.addArrangedSubview(detailStackView)
+        //contentView.addSubview(descriptionLabel)
+        
+        mainVerticalStack.addArrangedSubview(horizontalDetail)
+        mainVerticalStack.addArrangedSubview(descriptionLabel)
+        
+        contentView.addSubview(mainVerticalStack)
+        
         
         //set border aand background color of container
         imgcontainer.layer.backgroundColor = UIColor.squirtleBlue.cgColor
@@ -229,6 +252,7 @@ class DetailViewController: UIViewController {
         view.addLayoutGuide(imageLayoutGuide)
         
         let closeButtonLayoutGuide = UILayoutGuide()
+        view.addLayoutGuide(closeButtonLayoutGuide)
         
         closeButton = UIButton(type: .custom)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -247,10 +271,10 @@ class DetailViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(imageTap(_:)), for: .touchUpInside)
         view.addSubview(closeButton)
         
-        view.addLayoutGuide(closeButtonLayoutGuide)
         
-        layoutConstraints()
-      
+        
+        //layoutConstraints()
+        altLayoutContstaints()
         
     }
     
@@ -303,6 +327,49 @@ class DetailViewController: UIViewController {
         
     }
     
+    private func altLayoutContstaints(){
+        
+        guard let imageContainer = imageview.superview, let mainStackView = scrollView.subviews.first!.subviews.first! as? UIStackView else {
+            print("returning")
+            return
+        }
+        
+        if (!constraints.isEmpty){
+            print("regenerating constraints")
+            NSLayoutConstraint.deactivate(constraints)
+            constraints.removeAll()
+        } else {
+            print("generating constraints for the first time")
+        }
+        
+        let safeArea = view.safeAreaLayoutGuide
+        let views = ["stack":mainStackView,"imgcontainer":imageContainer,"imgview":imageview]
+        
+        //main vertical stack view constraints
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[stack]-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stack]-|", options: [], metrics: nil, views: views)
+        
+        //image view constraints
+        
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0@751-[imgview]-0@751-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0@751-[imgview]-0@751-|", options: [], metrics: nil, views: views)
+        constraints += [
+            imageview.heightAnchor.constraint(equalTo: imageview.widthAnchor),
+            imageview.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor),
+            imageview.centerYAnchor.constraint(equalTo: imageContainer.centerYAnchor)
+        ]
+        
+        
+        
+        closeButtonBottomConstraint = safeArea.bottomAnchor.constraint(equalTo:closeButton.bottomAnchor, constant: -100)
+        closeButtonBottomConstraint.priority = UILayoutPriority(100)
+        constraints += [
+            closeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            closeButtonBottomConstraint
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
     
     private func layoutConstraints(){
         
@@ -386,7 +453,7 @@ class DetailViewController: UIViewController {
             let vYConstraint = imageContainer.centerYAnchor.constraint(equalTo: layoutGuides.centerYAnchor)
 
             let metrics = ["maxDimension":widthConstraint,"layoutHeight":self.view.bounds.height/8]
-            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@250-[imgcontainer(==maxDimension)]->=8@250-|", options: [], metrics: metrics, views: views)
+            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@255-[imgcontainer(==maxDimension)]->=8@255-|", options: [], metrics: metrics, views: views)
   
 //            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[ilayoutguide(==20)]", options: [], metrics: metrics, views: views)
 //            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[blayoutguide(==20)]", options: [], metrics: metrics, views: views)
@@ -440,17 +507,20 @@ class DetailViewController: UIViewController {
             return
         }
         
-        guard let label = descriptionLabel else {
-            print("returning on desclabel")
-            return
-        }
+//        guard let label = descriptionLabel else {
+//            print("returning on desclabel")
+//            return
+//        }
         
-        label.text = data.description
+        descriptionLabel.text = data.description
         imageview.image = img
         numberLabel.text = "National:\(data.idString)\nRegional:\(data.regionId)"
         
         typeLabelArray[0].typeString = data.type1
         typeLabelArray[1].typeString = data.type2
+        
+        generationLabel.text = data.generation
+        regionLabel.text = data.region
         
         genusLabel.text = data.genus
         descriptionLabel.text = data.description
