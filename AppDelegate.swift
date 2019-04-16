@@ -136,8 +136,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     func resetAll(){
         UserDefaults.standard.set(false, forKey: "reset")
-        AppDelegate.deleteAllData("Pokemon",persistentContainer: persistentContainer)
         AppDelegate.deleteAllData("Region",persistentContainer: persistentContainer)
+        AppDelegate.deleteAllData("Pokemon",persistentContainer: persistentContainer)
         AppDelegate.clearAllFilesFromTempDirectory()
     }
     
@@ -173,6 +173,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                 persistentContainer.viewContext.delete(objectData)
             }
             print("\(entity) delete successful")
+            
+//            let deleteRequrest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+//            deleteRequrest.resultType = .resultTypeObjectIDs
+//            let results = try persistentContainer.viewContext.execute(deleteRequrest) as? NSBatchDeleteResult
+//            let objectIDArray = results?.result as? [NSManagedObjectID]
+//            let changes = [NSDeletedObjectsKey : objectIDArray]
+//            NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [persistentContainer.viewContext])
+//
+//
         } catch let error {
             print("Detele all data in \(entity) error :", error)
         }

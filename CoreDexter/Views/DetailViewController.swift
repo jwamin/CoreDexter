@@ -20,8 +20,8 @@ class DetailViewController: UIViewController {
     
     var delegate:LoadingProtocol?
     
-    let font:UIFont = MasterViewController.font
-    let bodyFont:UIFont = MasterViewController.lightFont
+    let font:UIFont = MasterViewController.headingFont
+    let bodyFont:UIFont = MasterViewController.bodyFont
     
     // no data, just view!
     var pokemonData:PokemonViewStruct?
@@ -150,12 +150,12 @@ class DetailViewController: UIViewController {
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
         numberLabel.numberOfLines = 0
         numberLabel.text = "001"
-        numberLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: bodyFont)
+        numberLabel.font = bodyFont
         
         genusLabel = UILabel()
         genusLabel.translatesAutoresizingMaskIntoConstraints = false
         genusLabel.text = "Seed Pokémon"
-        genusLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: bodyFont)
+        genusLabel.font = bodyFont
         
         detailStackView = UIStackView()
         detailStackView.spacing = 8.0
@@ -177,12 +177,12 @@ class DetailViewController: UIViewController {
         detailStackView.addArrangedSubview(type2Label)
         
         let generationLabel = UILabel()
-        generationLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+        generationLabel.font = font
         generationLabel.text = pokemonData?.generation
         detailStackView.addArrangedSubview(generationLabel)
         
         let regionLabel = UILabel()
-        regionLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+        regionLabel.font = font
         regionLabel.text = pokemonData?.region
         detailStackView.addArrangedSubview(regionLabel)
         
@@ -200,7 +200,7 @@ class DetailViewController: UIViewController {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         descriptionLabel.removeFromSuperview()
-        descriptionLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+        descriptionLabel.font = bodyFont
         
         
         //Image container view
@@ -248,7 +248,7 @@ class DetailViewController: UIViewController {
         
         closeButton.backgroundColor = UIColor.bulbasaurGreen
         closeButton.setTitleColor(UIColor.black, for: .normal)
-        closeButton.titleLabel?.font = MasterViewController.font.withSize(14)
+        closeButton.titleLabel?.font = font
         closeButton.clipsToBounds = false
         closeButton.addTarget(self, action: #selector(imageTap(_:)), for: .touchUpInside)
         view.addSubview(closeButton)

@@ -17,21 +17,19 @@ import CoreData
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol {
     
     // MARK: - IVars
-    static var font:UIFont = {
+    static var headingFont:UIFont = {
         guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
             fatalError()
         }
-        return font
+        return UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
     }()
     
-    static var lightFont:UIFont = {
+    static var bodyFont:UIFont = {
         guard let font = UIFont(name: "Rubik-Light", size: UIFont.systemFontSize) else {
             fatalError()
         }
-        return font
+        return UIFontMetrics(forTextStyle: .body).scaledFont(for:font)
     }()
-    
-   // var detailViewController: DetailViewController? = nil
     
     var managedObjectContext: NSManagedObjectContext? = nil
     weak var loadingView:UIView? = nil
@@ -97,11 +95,21 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         tableView.estimatedRowHeight = 85.0
         tableView.rowHeight = UITableView.automaticDimension
         
-       let font = MasterViewController.font
+        tableView.indexDisplayMode = .automatic
+        
+        let searchController = UISearchController(searchResultsController: self)
+        self.navigationItem.searchController = searchController
+        //searchController.delegate = self
+        //searchController.searchResultsUpdater = self
+        //let searchViewController = UISearchContainerViewController(searchController: searchController)
+        
+        
+        
+       let font = MasterViewController.headingFont
         
         //refactor this to IB?
         self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font:UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
+            NSAttributedString.Key.font:font
         ]
         
         
@@ -189,15 +197,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         isLoading = true
         animateLoading()
-        
-        
-
-        
     }
     
     func loadingDone(_ sender:Any) {
         print("loading done",sender)
-        if(sender is PokeViewModel){
+        if(sender is PokeLoader || sender is PokeViewModel){
             print("loading done")
             isLoading = false
             removeLoadingScreen()
@@ -292,6 +296,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     // MARK: - Table View
     
+    
+    // MARK: - Table View DataSource
+    
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         
         return fetchedResultsController.sections?.count ?? 0
@@ -302,11 +310,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         if let regionContainer = fetchedResultsController.sections?[section], let objects = regionContainer.objects{
             let header = FontedHeaderView()
             header.contentView.backgroundColor = .black
-            header.textLabel?.font = MasterViewController.font.withSize(UIFont.labelFontSize)
+            header.textLabel?.font = MasterViewController.headingFont
             header.textLabel?.textColor = .white
             let pokemon = objects[0] as! Pokemon
             print(pokemon.region?.name)
-            header.textLabel!.text = pokemon.region!.name
+            header.textLabel!.text = pokemon.region?.name ?? "error"
             
             return header
         }
@@ -328,14 +336,47 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return cell
     }
     
+    func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
+        let pokeCell = cell as! PokeCellTableViewCell
+        
+        //leave image loading to willDisplay
+        //let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
+        let labeltext = "\(Int(pokemon.id).digitString())\n\((pokemon.name ?? "Missingno").capitalized)"
+        pokeCell.mainLabel.text = labeltext //event.timestamp!.description
+        
+        pokeCell.type1Label.typeString = pokemon.type1
+        pokeCell.type2Label.typeString = pokemon.type2
+        
+        pokeCell.mainLabel.sizeToFit()
+        
+    }
+    
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
     
-//    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 40.0
-//    }
+    #if(MY_DEBUG_FLAG)
+    
+    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+        print(title,index)
+        return index
+    }
+    
+    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return [
+        RegionIndex.kanto.string(),
+        RegionIndex.johto.string(),
+        RegionIndex.hoenn.string(),
+        RegionIndex.sinnoh.string(),
+        RegionIndex.unova.string(),
+        RegionIndex.kalos.string()
+        ]
+    }
+    
+    #endif
+    
+    // MARK: - Table View Delegate
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
@@ -360,20 +401,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         cell.prepareForReuse()
     }
     
-    func configureCell(_ cell: UITableViewCell, withPokemon pokemon: Pokemon) {
-        let pokeCell = cell as! PokeCellTableViewCell
-        
-        //leave image loading to willDisplay
-        //let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
-        let labeltext = "\(Int(pokemon.id).digitString())\n\((pokemon.name ?? "Missingno").capitalized)"
-        pokeCell.mainLabel.text = labeltext //event.timestamp!.description
 
-        pokeCell.type1Label.typeString = pokemon.type1
-        pokeCell.type2Label.typeString = pokemon.type2
-
-        pokeCell.mainLabel.sizeToFit()
-        
-    }
     
     // MARK: - Custom
     

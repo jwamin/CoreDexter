@@ -12,52 +12,40 @@ import CoreData
 
 class CoreDexterTests: XCTestCase {
 
-    var stack:NSPersistentContainer!
+    var container:NSPersistentContainer!
     var initialiser:PokeLoader!
     override func setUp() {
+      
         // Put setup code here. This method is called before the invocation of each test method in the class.
         print("set up")
-        stack = NSPersistentContainer(name: "CoreDexter")
-        stack.loadPersistentStores { (description, error) in
-            if (error != nil) {
-                XCTFail()
-            }
+        
+        container = NSPersistentContainer(name: "CoreDexter")
+        //container.persistentStoreDescriptions[0].url = URL(fileURLWithPath: "/dev/null")
+        container.loadPersistentStores { (description, error) in
+            XCTAssertNil(error)
         }
         initialiser = PokeLoader(APP_REGION)
-        initialiser.managedObjectContext = stack.viewContext
+        initialiser.managedObjectContext = container.viewContext
+        
+        
         initialiser.loadData()
         
-       
-        
+          super.setUp()
     }
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        stack = nil
+        container = nil
         initialiser = nil
+        super.tearDown()
     }
 
-    func testThereArePokemon() {
-        
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pokemon")
-        do{
-          let pokemon = try stack.viewContext.fetch(fetchRequest) as! [Pokemon]
-            print(pokemon.count,pokemon[256].region_id,pokemon[256].id)
-            XCTAssertGreaterThan(pokemon.count, 0, "pokemon were returned")
-        } catch {
-            XCTFail("request unsuccessful")
-            
-        }
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testThereAreRegions() {
+    func testAThereAreRegions() {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Region")
         do{
-            let region = try stack.viewContext.fetch(fetchRequest) as! [Region]
-            print(region,region.count)
+            let region = try container.viewContext.fetch(fetchRequest) as! [Region]
+            print(region.count)
             XCTAssertGreaterThan(region.count, 0, "there are no regions returned")
         } catch {
             XCTFail("request unsuccessful")
@@ -67,13 +55,30 @@ class CoreDexterTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
+    func testBThereArePokemon() {
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pokemon")
+        do{
+          let pokemon = try container.viewContext.fetch(fetchRequest) as! [Pokemon]
+            print(pokemon.count)
+            XCTAssertGreaterThan(pokemon.count, 0, "pokemon were not returned")
+        } catch {
+            XCTFail("request unsuccessful")
+            
+        }
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
+
+
+    
     func testRegionsdelete() {
         
-        AppDelegate.deleteAllData("Region", persistentContainer: stack)
+        AppDelegate.deleteAllData("Region", persistentContainer: container)
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Region")
         do{
-            let region = try stack.viewContext.fetch(fetchRequest) as! [Region]
+            let region = try container.viewContext.fetch(fetchRequest) as! [Region]
             print(region)
             XCTAssert(region.count==0, "Regions have not been deleted")
         } catch {
@@ -85,11 +90,11 @@ class CoreDexterTests: XCTestCase {
     }
 
     func testPokemonDelete(){
-        AppDelegate.deleteAllData("Pokemon", persistentContainer: stack)
+        AppDelegate.deleteAllData("Pokemon", persistentContainer: container)
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pokemon")
         do{
-            let pokemon = try stack.viewContext.fetch(fetchRequest) as! [Pokemon]
+            let pokemon = try container.viewContext.fetch(fetchRequest) as! [Pokemon]
             print(pokemon)
             XCTAssert(pokemon.count==0, "Pokemon have not been deleted")
         } catch {

@@ -27,7 +27,7 @@ class PokeCellTableViewCell: UITableViewCell {
         mainLabel.numberOfLines = 0
         mainLabel.lineBreakMode = .byWordWrapping
         
-        mainLabel.font = UIFontMetrics(forTextStyle: .headline).scaledFont(for: MasterViewController.font)
+        mainLabel.font = MasterViewController.headingFont
         mainLabel.adjustsFontForContentSizeCategory = true
     }
     
@@ -86,7 +86,7 @@ class ElementLabel : UILabel {
             let colors = element.getColors()
             self.backgroundColor = colors.backgroundColor
             self.textColor = colors.textColor
-            self.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: MasterViewController.lightFont)
+            self.font = MasterViewController.bodyFont
             self.text = element.rawValue.capitalized
             self.clipsToBounds = true
             self.isHidden = false
@@ -130,6 +130,6 @@ class ElementLabel : UILabel {
 class FontedHeaderView : UITableViewHeaderFooterView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.textLabel?.font = MasterViewController.font
+        self.textLabel?.font = MasterViewController.headingFont
     }
 }

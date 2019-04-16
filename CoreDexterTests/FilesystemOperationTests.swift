@@ -13,25 +13,26 @@ import UIKit
 
 class FilesystemOperationTests: XCTestCase {
     
-    var stack:NSPersistentContainer!
+    var container:NSPersistentContainer!
     var initialiser:PokeLoader!
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         print("set up")
-        stack = NSPersistentContainer(name: "CoreDexter")
-        stack.loadPersistentStores { (description, error) in
+        container = NSPersistentContainer(name: "CoreDexter")
+        //container.persistentStoreDescriptions[0].url = URL(fileURLWithPath: "/dev/null")
+        container.loadPersistentStores { (description, error) in
             if (error != nil) {
                 XCTFail()
             }
         }
         initialiser = PokeLoader(APP_REGION)
-        initialiser.managedObjectContext = stack.viewContext
+        initialiser.managedObjectContext = container.viewContext
         initialiser.loadData()
         
          let imagesLoaded = expectation(description: "Images loaded")
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pokemon")
         do{
-            let pokemons = try stack.viewContext.fetch(fetchRequest) as! [Pokemon]
+            let pokemons = try container.viewContext.fetch(fetchRequest) as! [Pokemon]
             
            
             
@@ -56,7 +57,7 @@ class FilesystemOperationTests: XCTestCase {
             
         }
         
-        wait(for: [imagesLoaded], timeout: 10)
+        wait(for: [imagesLoaded], timeout: 20)
         print("ready")
         
     }
@@ -67,15 +68,12 @@ class FilesystemOperationTests: XCTestCase {
     
     func testImagesLoad() {
         // This is an example of a functional test case.
-        print("images present test started")
         let promise = expectation(description: "there are no files in the directory")
         var contents:[URL] = []
         let fileManager = FileManager.default
         do{
             let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-            print("something")
             contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
-            print(contents.count)
             if(contents.count>0){
                 promise.fulfill()
             } else {
@@ -85,33 +83,33 @@ class FilesystemOperationTests: XCTestCase {
         } catch {
             XCTFail("Failed to get document directory")
         }
-        wait(for: [promise], timeout: 15)
+        wait(for: [promise], timeout: 20)
         XCTAssertGreaterThan(contents.count, 0)
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
-    func testZImagesGetUnloaded(){
-        
-        
-        AppDelegate.clearAllFilesFromTempDirectory()
-        
-        let promise = expectation(description: "there are no files in the directory")
-        
-        var contents:[URL] = []
-        
-        let fileManager = FileManager.default
-        do{
-            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-                contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
-            if(contents.count==0){
-                promise.fulfill()
-            }
-            
-        } catch {
-            XCTFail("Failed to get document directory")
-        }
-        wait(for: [promise], timeout: 10)
-        XCTAssertEqual(contents.count, 0)
-    }
+//    func testZImagesGetUnloaded(){
+//
+//
+//        AppDelegate.clearAllFilesFromTempDirectory()
+//
+//        let promise = expectation(description: "there are no files in the directory")
+//
+//        var contents:[URL] = []
+//
+//        let fileManager = FileManager.default
+//        do{
+//            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
+//                contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
+//            if(contents.count==0){
+//                promise.fulfill()
+//            }
+//
+//        } catch {
+//            XCTFail("Failed to get document directory")
+//        }
+//        wait(for: [promise], timeout: 10)
+//        XCTAssertEqual(contents.count, 0)
+//    }
     
 }
