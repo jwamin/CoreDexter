@@ -55,18 +55,12 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-       
-        print("view did load",self.description)
        setupView()
     }
     
-    override func awakeFromNib() {
-        print("awoke", descriptionLabel)
-        //setupView()
-    }
+
     
     override func viewDidLayoutSubviews() {
-        print("vdls")
         delegate?.loadingDone(self)
     }
     

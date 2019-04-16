@@ -31,11 +31,6 @@ class PokeCellTableViewCell: UITableViewCell {
         mainLabel.adjustsFontForContentSizeCategory = true
     }
     
-    override func safeAreaInsetsDidChange() {
-        print("safe area insets changed!")
-        
-    }
-    
     func updateCircle(){
         self.imgview.layer.cornerRadius = self.imgview.bounds.height / 2
     }
@@ -118,7 +113,6 @@ class ElementLabel : UILabel {
     }
     
     private func fixupCorner(){
-        print("will fixup corner")
         //sizeToFit()
         self.layer.cornerRadius = self.bounds.height / 2
         

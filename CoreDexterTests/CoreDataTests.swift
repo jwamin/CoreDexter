@@ -24,7 +24,7 @@ class CoreDexterTests: XCTestCase {
         container.loadPersistentStores { (description, error) in
             XCTAssertNil(error)
         }
-        initialiser = PokeLoader(APP_REGION)
+        initialiser = PokeLoader(.kanto)
         initialiser.managedObjectContext = container.viewContext
         
         

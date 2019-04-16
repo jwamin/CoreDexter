@@ -25,7 +25,7 @@ class FilesystemOperationTests: XCTestCase {
                 XCTFail()
             }
         }
-        initialiser = PokeLoader(APP_REGION)
+        initialiser = PokeLoader(.kanto)
         initialiser.managedObjectContext = container.viewContext
         initialiser.loadData()
         
