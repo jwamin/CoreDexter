@@ -9,7 +9,14 @@
 import Foundation
 import PokeAPIKit
 
-let APP_REGION:RegionIndex = .national
+let setRegion:RegionIndex? = {
+    if let string = UserDefaults.standard.value(forKey: "region") as? String, let inte = Int(string){
+        return RegionIndex(rawValue: inte)
+    }
+   return nil
+}()
+
+let APP_REGION:RegionIndex = (setRegion != nil) ? setRegion! : .national
 
 let criesBaseUrl = "https://play.pokemonshowdown.com/audio/cries/"
 
