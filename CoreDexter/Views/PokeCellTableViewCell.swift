@@ -55,12 +55,62 @@ class PokeCellTableViewCell: UITableViewCell {
 }
 
 @IBDesignable
-class ElementLabel : UILabel {
+class ElementLabel : UIView {
     
-    let textInsets = UIEdgeInsets(top: 5,
-                                  left: 10,
-                                  bottom: 5,
-                                  right: 10)
+    let label = UILabel()
+    private var myConstraints: [NSLayoutConstraint]?
+    
+    var text:String?{
+        didSet{
+            self.label.text = text
+        }
+    }
+    
+    init(){
+        super.init(frame: .zero)
+        setupLabel()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override func awakeFromNib() {
+        print("awake")
+        setupLabel()
+    }
+    
+    func setupLabel(){
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        self.layoutMargins = ElementLabel.standardTextinset
+        self.addSubview(label)
+    }
+    
+    override func updateConstraints() {
+        print("update constraints")
+        if myConstraints == nil{
+            var constraints = [NSLayoutConstraint]()
+            let layoutGuide = self.layoutMarginsGuide
+            let views = ["label":label]
+            constraints += NSLayoutConstraint.constraints(withVisualFormat: "|-0-[label]-0-|", options: [], metrics: nil, views: views)
+            constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[label]-0-|", options: [], metrics: nil, views: views)
+            myConstraints = constraints
+            NSLayoutConstraint.activate(constraints)
+        }
+        super.updateConstraints()
+    }
+    
+    static let standardTextinset = UIEdgeInsets(top: 5,
+                                                left: 10,
+                                                bottom: 5,
+                                                right: 10)
+    
+    var textInsets = ElementLabel.standardTextinset {
+        didSet{
+            invalidateIntrinsicContentSize()
+        }
+    }
     
     var typeString:String?{
         didSet{
@@ -80,8 +130,8 @@ class ElementLabel : UILabel {
             }
             let colors = element.getColors()
             self.backgroundColor = colors.backgroundColor
-            self.textColor = colors.textColor
-            self.font = MasterViewController.bodyFont
+            self.label.textColor = colors.textColor
+            self.label.font = MasterViewController.bodyFont
             self.text = element.rawValue.capitalized
             self.clipsToBounds = true
             self.isHidden = false
@@ -89,21 +139,6 @@ class ElementLabel : UILabel {
             self.layoutIfNeeded()
             fixupCorner()
         }
-    }
-
-
-    override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
-        let insetRect = bounds.inset(by: textInsets)
-        let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
-        let invertedInsets = UIEdgeInsets(top: -textInsets.top,
-                                          left: -textInsets.left,
-                                          bottom: -textInsets.bottom,
-                                          right: -textInsets.right)
-        return textRect.inset(by: invertedInsets)
-    }
-
-    override func drawText(in rect: CGRect) {
-        super.drawText(in: rect.inset(by: textInsets))
     }
     
     override func prepareForInterfaceBuilder() {

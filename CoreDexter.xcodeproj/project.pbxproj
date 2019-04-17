@@ -27,6 +27,7 @@
 		57A859F5223ABACD00926BF7 /* PokeAPIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */; };
 		57A859FA223ABB8600926BF7 /* libPokeAPIKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */; };
 		57BBE9F1224F9B130062E6DA /* ExtensionsEtx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4060FA2204E93300196626 /* ExtensionsEtx.swift */; };
+		57F4078B2266962E00F92289 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F4078A2266962E00F92289 /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,7 @@
 		5773AF80224C15D700C90641 /* FilesystemOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesystemOperationTests.swift; sourceTree = "<group>"; };
 		57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPokeAPIKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeAPIKit.swift; sourceTree = "<group>"; };
+		57F4078A2266962E00F92289 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 			children = (
 				3D2BE73B220231F200E28519 /* MasterViewController.swift */,
 				3D2BE73D220231F200E28519 /* DetailViewController.swift */,
+				57F4078A2266962E00F92289 /* Extensions.swift */,
 				3D381D162208BD88005503CF /* PokeCellTableViewCell.swift */,
 			);
 			path = Views;
@@ -329,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D2BE73A220231F200E28519 /* CoreDexter.xcdatamodeld in Sources */,
+				57F4078B2266962E00F92289 /* Extensions.swift in Sources */,
 				3D2BE737220231F200E28519 /* AppDelegate.swift in Sources */,
 				3D381D172208BD88005503CF /* PokeCellTableViewCell.swift in Sources */,
 				3D2BE73C220231F200E28519 /* MasterViewController.swift in Sources */,
@@ -515,7 +519,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				OTHER_SWIFT_FLAGS = "-D MY_DEBUG_FLAG";
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jossy.CoreDexter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
