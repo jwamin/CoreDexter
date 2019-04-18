@@ -10,6 +10,14 @@ import UIKit
 import PokeAPIKit
 import AVFoundation
 
+class RingImageView : UIView{
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.layer.cornerRadius = self.bounds.width / 2
+    }
+}
+
+
 class DetailViewController: UIViewController {
     
     //MARK: Instance Variable
@@ -64,14 +72,8 @@ class DetailViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:font
         ]
-       setupView()
-    }
-    
-
-    
-    override func viewDidLayoutSubviews() {
+        setupView()
         delegate?.loadingDone(self)
-        //updateRadius()
     }
     
     override func viewSafeAreaInsetsDidChange() {
@@ -224,7 +226,7 @@ class DetailViewController: UIViewController {
         imageOuterContainer = UIView()
         imageOuterContainer.translatesAutoresizingMaskIntoConstraints = false
         
-        let imgcontainer = UIView()
+        let imgcontainer = RingImageView()
         imgcontainer.translatesAutoresizingMaskIntoConstraints = false
         imgcontainer.isUserInteractionEnabled = true
         imageview = UIImageView()
@@ -324,7 +326,7 @@ class DetailViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
         }
     }
-
+    
     //MARK: Layout methods
     
     private func updateRadius(){
@@ -332,7 +334,7 @@ class DetailViewController: UIViewController {
             return
         }
         
-        container.layer.cornerRadius = container.bounds.width / 2
+        
         return
         
     }
@@ -353,7 +355,7 @@ class DetailViewController: UIViewController {
         }
         
         let safeArea = view.safeAreaLayoutGuide
-        let views = ["stack":mainStackView,"imgcontainer":imageContainer,"imgview":imageview,"button":closeButton,"outer":imageOuterContainer]
+        let views = ["stack":mainStackView,"imgcontainer":imageContainer,"imgview":imageview,"button":closeButton,"outer":imageOuterContainer] as [String:Any]
         
         //main vertical stack view constraints
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[stack]-|", options: [], metrics: nil, views: views)
@@ -361,13 +363,13 @@ class DetailViewController: UIViewController {
         
         
         //Imgview containe
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[outer(==imgcontainer)]", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[outer(==imgcontainer)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[outer(==imgcontainer@750)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[outer(==imgcontainer@750)]", options: [], metrics: nil, views: views)
         
         //image view constraints
         
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0@751-[imgview]-0@751-|", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0@751-[imgview]-0@751-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0@500-[imgview]-0@500-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0@500-[imgview]-0@500-|", options: [], metrics: nil, views: views)
         constraints += [
             imageview.heightAnchor.constraint(equalTo: imageview.widthAnchor),
             imageview.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor),
@@ -375,7 +377,7 @@ class DetailViewController: UIViewController {
         ]
         
         var pinContainerConstraints = [imageContainer.centerXAnchor.constraint(equalTo: imageContainer.superview!.centerXAnchor),
-        imageContainer.centerYAnchor.constraint(equalTo: imageContainer.superview!.centerYAnchor)]
+                                       imageContainer.centerYAnchor.constraint(equalTo: imageContainer.superview!.centerYAnchor)]
         
         NSLayoutConstraint.fixPriorities(forConstraints: &pinContainerConstraints, withPriority: UILayoutPriority(100))
         
@@ -420,16 +422,16 @@ class DetailViewController: UIViewController {
             let imageContainer = container
             let vXConstraint = imageContainer.centerXAnchor.constraint(equalTo: layoutGuides.centerXAnchor)
             let vYConstraint = imageContainer.centerYAnchor.constraint(equalTo: layoutGuides.centerYAnchor)
-
-            let metrics = ["maxDimension":widthConstraint,"layoutHeight":self.view.bounds.height/8]
             
-            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@1-[imgcontainer(==maxDimension@750)]->=8@1-|", options: [], metrics: metrics, views: views)
+            let metrics = ["maxDimension":(widthConstraint - 16),"layoutHeight":self.view.bounds.height/8]
             
-            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|->=8@1-[imgcontainer(==maxDimension@750)]->=8@1-|", options: [], metrics: metrics, views: views)
-  
-           centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[stackView(==0)]", options: [], metrics: metrics, views: views)
-           //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView(==0)]", options: [], metrics: metrics, views: views)
-          
+            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@999-[imgcontainer(==maxDimension)]-8@999-|", options: [], metrics: metrics, views: views)
+            
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@999-[imgcontainer(==maxDimension)]-8@999-|", options: [], metrics: metrics, views: views)
+            
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[stackView(==0)]", options: [], metrics: metrics, views: views)
+            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView(==0)]", options: [], metrics: metrics, views: views)
+            
             //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[blayoutguide(==20)]", options: [], metrics: metrics, views: views)
             
             //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button][blayoutguide(==layoutHeight)]-|", options: [], metrics: metrics, views: views)
@@ -440,7 +442,7 @@ class DetailViewController: UIViewController {
             
             
             centeriseConstraints += [vXConstraint,vYConstraint]
-    
+            
             NSLayoutConstraint.label(constraints: &centeriseConstraints, with: "popover constraints")
             
         }
@@ -451,10 +453,10 @@ class DetailViewController: UIViewController {
         
         UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 10, options: [], animations: { [weak self] in
             if(!self!.expandedViewActive){
-                //NSLayoutConstraint.activate(self!.centeriseConstraints)
+                NSLayoutConstraint.activate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 0.0
                 for view in self!.detailStackView.arrangedSubviews{
-                        view.isHidden = true
+                    view.isHidden = true
                 }
                 
                 if let elementLabels = self?.typeLabelArray{
@@ -462,18 +464,18 @@ class DetailViewController: UIViewController {
                         elabel.isHidden = true
                     }
                 }
-               
+                
                 
                 self!.scrollView.isScrollEnabled = false
-                //self!.detailStackView.isHidden = true
+                self!.detailStackView.isHidden = true
                 self!.closeButtonBottomConstraint.constant = 0
             } else {
-                //NSLayoutConstraint.deactivate(self!.centeriseConstraints)
+                NSLayoutConstraint.deactivate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 1.0
-
+                
                 self!.detailStackView.alpha = 1.0
                 for view in self!.detailStackView.arrangedSubviews{
-                        view.isHidden = false
+                    view.isHidden = false
                 }
                 if let elementLabels = self?.typeLabelArray{
                     for elabel in elementLabels{
@@ -481,7 +483,7 @@ class DetailViewController: UIViewController {
                     }
                 }
                 self!.scrollView.isScrollEnabled = true
-                //self!.detailStackView.isHidden = false
+                self!.detailStackView.isHidden = false
                 self!.closeButtonBottomConstraint.constant = -100
             }
             
@@ -498,11 +500,11 @@ class DetailViewController: UIViewController {
     
     
     
-
     
-
     
-
+    
+    
+    
     
     //MARK: View Setup
     
@@ -513,10 +515,10 @@ class DetailViewController: UIViewController {
             return
         }
         
-//        guard let label = descriptionLabel else {
-//            print("returning on desclabel")
-//            return
-//        }
+        //        guard let label = descriptionLabel else {
+        //            print("returning on desclabel")
+        //            return
+        //        }
         
         descriptionLabel.text = data.description
         imageview.image = img
@@ -529,7 +531,7 @@ class DetailViewController: UIViewController {
         regionLabel.text = data.region.capitalized
         
         genusLabel.text = data.genus
-        descriptionLabel.text = data.description + "\n\n" + lorem
+        descriptionLabel.text = data.description //+ "\n\n" + lorem
         
     }
     
