@@ -41,10 +41,13 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         tableView.indexDisplayMode = .automatic
         
-        let searchController = UISearchController(searchResultsController: self)
-        self.navigationItem.searchController = searchController
+        //search results controller
+        
+//        let searchController = UISearchController(searchResultsController: self)
+//        self.navigationItem.searchController = searchController
         //searchController.delegate = self
         //searchController.searchResultsUpdater = self
+        
         //let searchViewController = UISearchContainerViewController(searchController: searchController)
         
         layoutGuide.widthAnchor.constraint(equalToConstant: 500)
