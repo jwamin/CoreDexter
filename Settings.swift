@@ -9,6 +9,18 @@
 import UIKit
 import PokeAPIKit
 
+// MARK: - Base App settings
+
+let APP_REGION:RegionIndex = (setRegion != nil) ? setRegion! : .national
+
+let setRegion:RegionIndex? = {
+    if let string = UserDefaults.standard.value(forKey: "region") as? String, let inte = Int(string){
+        return RegionIndex(rawValue: inte)
+    }
+    return nil
+}()
+
+// MARK: - Fonts
 fileprivate let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize)
 fileprivate let bodyfont = UIFont(name: "Rubik-Light", size: UIFont.systemFontSize)
 
@@ -26,18 +38,9 @@ var bodyFont:()->UIFont = {
     return UIFontMetrics(forTextStyle: .body).scaledFont(for:bodyfont)
 }
 
-let setRegion:RegionIndex? = {
-    if let string = UserDefaults.standard.value(forKey: "region") as? String, let inte = Int(string){
-        return RegionIndex(rawValue: inte)
-    }
-   return nil
-}()
 
-let APP_REGION:RegionIndex = (setRegion != nil) ? setRegion! : .national
 
-let criesBaseUrl = "https://play.pokemonshowdown.com/audio/cries/"
-
-let criesUrlSuffix = ".mp3"
+// MARK: - General
 
 let lorem = """
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc id cursus metus aliquam eleifend mi in nulla posuere. Tristique sollicitudin nibh sit amet. Pellentesque diam volutpat commodo sed egestas egestas fringilla. Diam sollicitudin tempor id eu nisl nunc mi ipsum faucibus. Egestas sed tempus urna et pharetra pharetra massa massa. Condimentum id venenatis a condimentum vitae sapien pellentesque. Ante in nibh mauris cursus mattis. Porttitor lacus luctus accumsan tortor posuere ac ut consequat semper. Velit sed ullamcorper morbi tincidunt ornare massa eget egestas. Enim lobortis scelerisque fermentum dui. Amet justo donec enim diam vulputate ut. Vel facilisis volutpat est velit egestas dui id ornare. Pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Amet mattis vulputate enim nulla aliquet porttitor lacus.

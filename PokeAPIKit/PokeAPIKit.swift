@@ -8,8 +8,12 @@
 import Foundation
 
 public let API_URL_ROOT:String = "https://pokeapi.co/api/v2/"
+
 public let IMAGE_URL:String = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
 
+public let CRIES_BASE_URL = "https://play.pokemonshowdown.com/audio/cries/"
+
+public let CRIES_URL_SUFFIX = ".mp3"
 
 public struct Pokedex : Codable {
     public let descriptions:[Description]

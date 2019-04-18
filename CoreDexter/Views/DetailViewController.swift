@@ -10,12 +10,7 @@ import UIKit
 import PokeAPIKit
 import AVFoundation
 
-class RingImageView : UIView{
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.layer.cornerRadius = self.bounds.width / 2
-    }
-}
+
 
 
 class DetailViewController: UIViewController {
@@ -90,8 +85,38 @@ class DetailViewController: UIViewController {
     }
     
     deinit {
-        //this runs on a new "prepareForSegue"
         print("deinitialised detail view")
+    }
+    
+    //MARK: View Data population
+    
+    public func configureView(pokemonData:PokemonViewStruct?) {
+        // Update the user interface for the detail item.
+        
+        guard let data = pokemonData else {
+            return
+        }
+        
+        descriptionLabel.text = data.description
+        imageview.image = img
+        numberLabel.text = "National:\(data.idString)\nRegional:\(data.regionId)"
+        
+        typeLabelArray[0].typeString = data.type1
+        typeLabelArray[1].typeString = data.type2
+        
+        generationLabel.text = data.generation.capitalized
+        regionLabel.text = data.region.capitalized
+        
+        genusLabel.text = data.genus
+        descriptionLabel.text = data.description //+ "\n\n" + lorem
+        
+    }
+    
+    private func setImage(){
+        guard let imageview = self.imageview, let img = self.img else {
+            return
+        }
+        imageview.image = img
     }
     
     //MARK: KVO for AVPlayer Item ready state
@@ -145,7 +170,7 @@ class DetailViewController: UIViewController {
         activity.startAnimating()
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activity)
         
-        let myurl = URL(string: criesBaseUrl+self.title!.lowercased().replacingOccurrences(of: "-", with: "")+criesUrlSuffix)!
+        let myurl = URL(string: CRIES_BASE_URL+self.title!.lowercased().replacingOccurrences(of: "-", with: "")+CRIES_URL_SUFFIX)!
         player = AVPlayer(url: myurl)
         player.actionAtItemEnd = .pause
         
@@ -213,14 +238,16 @@ class DetailViewController: UIViewController {
         horizontalDetail.axis = .horizontal
         horizontalDetail.alignment = .fill
         horizontalDetail.spacing = 8
+        horizontalDetail.backgroundColor = UIColor.red
         
         let mainVerticalStack = UIStackView()
         mainVerticalStack.translatesAutoresizingMaskIntoConstraints = false
         mainVerticalStack.spacing = 8
         mainVerticalStack.axis = .vertical
         mainVerticalStack.distribution = .fill
-        mainVerticalStack.alignment = .fill
-        
+        mainVerticalStack.alignment = .top
+        mainVerticalStack.backgroundColor = .blue
+    
         
         //Image container view
         imageOuterContainer = UIView()
@@ -329,16 +356,8 @@ class DetailViewController: UIViewController {
     
     //MARK: Layout methods
     
-    private func updateRadius(){
-        guard let container = imageview.superview else {
-            return
-        }
-        
-        
-        return
-        
-    }
     
+    //primary layout
     private func layoutConstraints(){
         
         guard let imageContainer = imageview.superview, let mainStackView = scrollView.subviews.first!.subviews.first! as? UIStackView else {
@@ -367,7 +386,7 @@ class DetailViewController: UIViewController {
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[outer(==imgcontainer@750)]", options: [], metrics: nil, views: views)
         
         //image view constraints
-        
+        //affix the image to the inner container
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0@500-[imgview]-0@500-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0@500-[imgview]-0@500-|", options: [], metrics: nil, views: views)
         constraints += [
@@ -398,24 +417,23 @@ class DetailViewController: UIViewController {
         
         NSLayoutConstraint.activate(constraints)
         view.layoutIfNeeded()
-        updateRadius()
+
     }
     
     
-    
+    // Layout for rearranged views, upon tap on image
     func layoutInPopoverConfiguration(){
         
         guard let container = imageview.superview else {
             return
         }
         
+        //if this is first run, fill centerise constraints ivar
         if(centeriseConstraints.isEmpty){
             
             let views:[String:Any] = ["imgcontainer":container,"imgview":imageview,"label":descriptionLabel,"contentView":contentView,"stackView":detailStackView,"button":closeButton,"ilayoutguide":view.layoutGuides[0],"blayoutguide":view.layoutGuides[1]]
             
             let layoutGuides = view.safeAreaLayoutGuide
-            //let lg1 = view.layoutGuides[0]
-            //let lg2 = view.layoutGuides[1]
             
             let widthConstraint =  min(self.view.frame.height, self.view.frame.width)
             print(widthConstraint)
@@ -429,28 +447,18 @@ class DetailViewController: UIViewController {
             
             centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8@999-[imgcontainer(==maxDimension)]-8@999-|", options: [], metrics: metrics, views: views)
             
+            //this doesnt really work, probably the stack view
+            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer][ilayoutguide(==blayoutguide)][button][blayoutguide]|", options: [], metrics: metrics, views: views)
+            
             centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[stackView(==0)]", options: [], metrics: metrics, views: views)
-            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView(==0)]", options: [], metrics: metrics, views: views)
-            
-            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[blayoutguide(==20)]", options: [], metrics: metrics, views: views)
-            
-            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button][blayoutguide(==layoutHeight)]-|", options: [], metrics: metrics, views: views)
-            
-            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[ilayoutguide(==blayoutguide)][button][blayoutguide]-|", options: [], metrics: nil, views: views)
-            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]->=20@1000-|", options: [], metrics: nil, views: views)
-            
-            
             
             centeriseConstraints += [vXConstraint,vYConstraint]
             
             NSLayoutConstraint.label(constraints: &centeriseConstraints, with: "popover constraints")
             
         }
-        
-        
-        
-        
-        
+
+        // animate layout into new configuration
         UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 10, options: [], animations: { [weak self] in
             if(!self!.expandedViewActive){
                 NSLayoutConstraint.activate(self!.centeriseConstraints)
@@ -464,7 +472,6 @@ class DetailViewController: UIViewController {
                         elabel.isHidden = true
                     }
                 }
-                
                 
                 self!.scrollView.isScrollEnabled = false
                 self!.detailStackView.isHidden = true
@@ -488,59 +495,16 @@ class DetailViewController: UIViewController {
             }
             
             self!.view.layoutIfNeeded()
-            self!.updateRadius()
+
         }) { [weak self] (complete) in
             if(complete){
-                
+                //set ivar
                 self!.expandedViewActive = !self!.expandedViewActive
             }
         }
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    //MARK: View Setup
-    
-    public func configureView(pokemonData:PokemonViewStruct?) {
-        // Update the user interface for the detail item.
-        
-        guard let data = pokemonData else {
-            return
-        }
-        
-        //        guard let label = descriptionLabel else {
-        //            print("returning on desclabel")
-        //            return
-        //        }
-        
-        descriptionLabel.text = data.description
-        imageview.image = img
-        numberLabel.text = "National:\(data.idString)\nRegional:\(data.regionId)"
-        
-        typeLabelArray[0].typeString = data.type1
-        typeLabelArray[1].typeString = data.type2
-        
-        generationLabel.text = data.generation.capitalized
-        regionLabel.text = data.region.capitalized
-        
-        genusLabel.text = data.genus
-        descriptionLabel.text = data.description //+ "\n\n" + lorem
-        
-    }
-    
-    private func setImage(){
-        guard let imageview = self.imageview, let img = self.img else {
-            return
-        }
-        imageview.image = img
-    }
     
     //MARK: Animation
     

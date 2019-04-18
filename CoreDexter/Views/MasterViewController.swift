@@ -447,11 +447,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     var _fetchedResultsController: NSFetchedResultsController<Pokemon>? = nil
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        
         if(scrollLoading){
             return
         }
         tableView.beginUpdates()
-        
         
     }
     
@@ -480,11 +480,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                     tableView.deleteRows(at: [indexPath], with: .fade)
                 }
             case .update:
-                print("updating row")
+                
                 guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-                    print("problem with indexpath and/or cell")
+                    print("\(indexPath) has likely scrolled out of view")
                     return
                 }
+                print("updating row \(indexpath)")
                 self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
             case .move:
                 configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
