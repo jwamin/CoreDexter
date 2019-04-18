@@ -47,10 +47,16 @@ class ElementLabel : UIView {
     func setupLabel(){
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
+        
+        //HERE WE ARE BACK TO THE OLD QUESTION
+        //LABELS IN THE TABLE VIEW MUST BREAK A CONSTRAINT IN ORDER TO BE EQUAL WIDTH
+        //CONTAINER CAN'T TAKE THE INTRINSIC SIZE OF ITS LABEL IF IT IS FORCED BY STACKVIEW TO HAVE EQUAL WIDTH TO ITS SIBLING
+        
         label.setContentHuggingPriority(UILayoutPriority(rawValue: 999), for: .horizontal) // this one
         label.setContentHuggingPriority(UILayoutPriority(rawValue: 999), for: .vertical)
         label.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .horizontal)
         label.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
+        self.clipsToBounds = true
         self.addSubview(label)
     }
     
@@ -59,13 +65,13 @@ class ElementLabel : UIView {
             guard let element = element else {
                 return
             }
+            
             let colors = element.getColors()
             self.backgroundColor = colors.backgroundColor
             self.label.textColor = colors.textColor
             self.label.font = bodyFont()
             self.label.text = element.rawValue.capitalized
-            self.clipsToBounds = true
-            self.isHidden = false
+            
             self.alpha = 1.0
             self.sizeToFit()
             self.layoutIfNeeded()
@@ -85,8 +91,8 @@ class ElementLabel : UIView {
             var constraints = [NSLayoutConstraint]()
             //let layoutGuide = self.layoutMarginsGuide
             let views = ["label":label]
-            constraints += NSLayoutConstraint.constraints(withVisualFormat: "|-15-[label]-15-|", options: [], metrics: nil, views: views)
-            constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-5-[label]-5-|", options: [], metrics: nil, views: views)
+            constraints += NSLayoutConstraint.constraints(withVisualFormat: "|-15@250-[label]-15@250-|", options: [], metrics: nil, views: views)
+            constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-5@250-[label]-5@250-|", options: [], metrics: nil, views: views)
             
             constraints += [
                 label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
