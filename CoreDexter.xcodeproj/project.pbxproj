@@ -117,6 +117,7 @@
 				3D2BE74F2202487600E28519 /* README.md */,
 				3D2C342E220B64CB00282C38 /* Settings.swift */,
 				3D2BE736220231F200E28519 /* AppDelegate.swift */,
+				57F4078A2266962E00F92289 /* Extensions.swift */,
 				3D2C3433220B6FF300282C38 /* Settings.bundle */,
 				3D2BE735220231F200E28519 /* CoreDexter */,
 				57A859F3223ABACD00926BF7 /* PokeAPIKit */,
@@ -159,7 +160,6 @@
 			children = (
 				3D2BE73B220231F200E28519 /* MasterViewController.swift */,
 				3D2BE73D220231F200E28519 /* DetailViewController.swift */,
-				57F4078A2266962E00F92289 /* Extensions.swift */,
 				3D381D162208BD88005503CF /* TableViewSubclasses.swift */,
 				570C50662268C6D100DC357A /* GeneralSubclasses.swift */,
 			);

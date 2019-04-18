@@ -245,7 +245,7 @@ class DetailViewController: UIViewController {
         mainVerticalStack.spacing = 8
         mainVerticalStack.axis = .vertical
         mainVerticalStack.distribution = .fill
-        mainVerticalStack.alignment = .top
+        mainVerticalStack.alignment = .fill
         mainVerticalStack.backgroundColor = .blue
     
         
@@ -387,8 +387,12 @@ class DetailViewController: UIViewController {
         
         //image view constraints
         //affix the image to the inner container
+        
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[imgcontainer(==imgview@750)]", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[imgcontainer(==imgview@750)]", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0@500-[imgview]-0@500-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0@500-[imgview]-0@500-|", options: [], metrics: nil, views: views)
+        
         constraints += [
             imageview.heightAnchor.constraint(equalTo: imageview.widthAnchor),
             imageview.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor),
