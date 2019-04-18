@@ -6,8 +6,25 @@
 //  Copyright © 2019 Joss Manger. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import PokeAPIKit
+
+fileprivate let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize)
+fileprivate let bodyfont = UIFont(name: "Rubik-Light", size: UIFont.systemFontSize)
+
+var headingFont:()->UIFont = {
+    guard let font = font else {
+        fatalError()
+    }
+    return UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
+}
+
+var bodyFont:()->UIFont = {
+    guard let bodyfont = bodyfont else {
+        fatalError()
+    }
+    return UIFontMetrics(forTextStyle: .body).scaledFont(for:bodyfont)
+}
 
 let setRegion:RegionIndex? = {
     if let string = UserDefaults.standard.value(forKey: "region") as? String, let inte = Int(string){

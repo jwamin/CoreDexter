@@ -396,7 +396,7 @@ class PokeLoader{
                 var boolPointer = ObjCBool(booleanLiteral: false)
                 
                 if (FileManager.default.fileExists(atPath: imageurl.path, isDirectory: &boolPointer)){
-                    print("using existing file")
+                    //print("using existing file")
                     guard let img = UIImage(contentsOfFile: imageurl.path) else {
                         return
                     }
@@ -413,13 +413,14 @@ class PokeLoader{
                     
                 }
                 print("file doesnt exist \(item.front_sprite_filename!)")
+                //handle this better
                 return
             }
             print("no callback, so pointless")
             return
             }
         } else {
-            print("no filename, will load",item.id)
+            //print("no filename, will load",item.id)
            loadImage(item: item, callback: callback,nil)
         }
         
@@ -473,7 +474,7 @@ class PokeLoader{
                         }
                         
                         
-                        print("getting image from github success!",item.id)
+                        //print("getting image from github success!",item.id)
                         
                         
                     } catch {

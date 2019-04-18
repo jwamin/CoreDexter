@@ -16,6 +16,8 @@ class PokeCellTableViewCell: UITableViewCell {
     @IBOutlet weak var type1Label: ElementLabel!
     @IBOutlet weak var type2Label: ElementLabel!
     
+    weak var layoutGuide:UILayoutGuide?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -27,7 +29,7 @@ class PokeCellTableViewCell: UITableViewCell {
         mainLabel.numberOfLines = 0
         mainLabel.lineBreakMode = .byWordWrapping
         
-        mainLabel.font = MasterViewController.headingFont
+        mainLabel.font = headingFont()
         mainLabel.adjustsFontForContentSizeCategory = true
     }
     
@@ -60,15 +62,25 @@ class ElementLabel : UIView {
     let label = UILabel()
     private var myConstraints: [NSLayoutConstraint]?
     
-    var text:String?{
+    var typeString:String?{
         didSet{
-            self.label.text = text
+            if let validString = typeString{
+                element = ElementalType(rawValue: validString)
+                return
+            }
+            self.label.text = "None"
+            self.alpha = 0.0
+            self.layoutIfNeeded()
         }
     }
     
     init(){
         super.init(frame: .zero)
         setupLabel()
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -83,46 +95,13 @@ class ElementLabel : UIView {
     func setupLabel(){
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        self.layoutMargins = ElementLabel.standardTextinset
+        label.setContentHuggingPriority(UILayoutPriority(rawValue: 999), for: .horizontal) // this one
+        label.setContentHuggingPriority(UILayoutPriority(rawValue: 999), for: .vertical)
+        label.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .horizontal)
+        label.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 999), for: .vertical)
         self.addSubview(label)
     }
     
-    override func updateConstraints() {
-        print("update constraints")
-        if myConstraints == nil{
-            var constraints = [NSLayoutConstraint]()
-            let layoutGuide = self.layoutMarginsGuide
-            let views = ["label":label]
-            constraints += NSLayoutConstraint.constraints(withVisualFormat: "|-0-[label]-0-|", options: [], metrics: nil, views: views)
-            constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[label]-0-|", options: [], metrics: nil, views: views)
-            myConstraints = constraints
-            NSLayoutConstraint.activate(constraints)
-        }
-        super.updateConstraints()
-    }
-    
-    static let standardTextinset = UIEdgeInsets(top: 5,
-                                                left: 10,
-                                                bottom: 5,
-                                                right: 10)
-    
-    var textInsets = ElementLabel.standardTextinset {
-        didSet{
-            invalidateIntrinsicContentSize()
-        }
-    }
-    
-    var typeString:String?{
-        didSet{
-            if let validString = typeString{
-                element = ElementalType(rawValue: validString)
-                return
-            }
-            self.text = "None"
-            self.alpha = 0.0
-            self.layoutIfNeeded()
-        }
-    }
     private var element:ElementalType?{
         didSet{
             guard let element = element else {
@@ -131,26 +110,55 @@ class ElementLabel : UIView {
             let colors = element.getColors()
             self.backgroundColor = colors.backgroundColor
             self.label.textColor = colors.textColor
-            self.label.font = MasterViewController.bodyFont
-            self.text = element.rawValue.capitalized
+            self.label.font = bodyFont()
+            self.label.text = element.rawValue.capitalized
             self.clipsToBounds = true
             self.isHidden = false
             self.alpha = 1.0
+            self.sizeToFit()
             self.layoutIfNeeded()
-            fixupCorner()
+            
         }
+    }
+
+    private func fixupCorner(){
+        sizeToFit()
+        self.layer.cornerRadius = self.bounds.height / 2
+        
+    }
+    
+    override func updateConstraints() {
+        print("update constraints")
+        if myConstraints == nil{
+            var constraints = [NSLayoutConstraint]()
+            //let layoutGuide = self.layoutMarginsGuide
+            let views = ["label":label]
+            constraints += NSLayoutConstraint.constraints(withVisualFormat: "|-15-[label]-15-|", options: [], metrics: nil, views: views)
+            constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-5-[label]-5-|", options: [], metrics: nil, views: views)
+            
+            constraints += [
+                label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            ]
+            
+            NSLayoutConstraint.fixPriorities(forConstraints: &constraints, withPriority: UILayoutPriority(999))
+            
+            myConstraints = constraints
+            NSLayoutConstraint.activate(constraints)
+        }
+        super.updateConstraints()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        fixupCorner()
     }
     
     override func prepareForInterfaceBuilder() {
-        //invalidateIntrinsicContentSize()
-        fixupCorner()
+        setupLabel()
+        invalidateIntrinsicContentSize()
+        //fixupCorner()
         self.element = .dragon
-    }
-    
-    private func fixupCorner(){
-        //sizeToFit()
-        self.layer.cornerRadius = self.bounds.height / 2
-        
     }
     
 }
@@ -159,6 +167,6 @@ class ElementLabel : UIView {
 class FontedHeaderView : UITableViewHeaderFooterView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.textLabel?.font = MasterViewController.headingFont
+        self.textLabel?.font = headingFont()
     }
 }

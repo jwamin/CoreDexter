@@ -20,8 +20,8 @@ class DetailViewController: UIViewController {
     
     var delegate:LoadingProtocol?
     
-    let font:UIFont = MasterViewController.headingFont
-    let bodyFont:UIFont = MasterViewController.bodyFont
+    let font:UIFont = headingFont()
+    let bodyfont:UIFont = bodyFont()
     
     // no data, just view!
     var pokemonData:PokemonViewStruct?
@@ -154,12 +154,12 @@ class DetailViewController: UIViewController {
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
         numberLabel.numberOfLines = 0
         numberLabel.text = "001"
-        numberLabel.font = bodyFont
+        numberLabel.font = bodyfont
         
         genusLabel = UILabel()
         genusLabel.translatesAutoresizingMaskIntoConstraints = false
         genusLabel.text = "Seed Pokémon"
-        genusLabel.font = bodyFont
+        genusLabel.font = bodyfont
         
         detailStackView = UIStackView()
         detailStackView.spacing = 8.0
@@ -184,13 +184,13 @@ class DetailViewController: UIViewController {
         
         generationLabel = UILabel()
         generationLabel.translatesAutoresizingMaskIntoConstraints = false
-        generationLabel.font = bodyFont
+        generationLabel.font = bodyfont
         generationLabel.text = pokemonData?.generation
         detailStackView.addArrangedSubview(generationLabel)
         
         regionLabel = UILabel()
         regionLabel.translatesAutoresizingMaskIntoConstraints = false
-        regionLabel.font = bodyFont
+        regionLabel.font = bodyfont
         regionLabel.text = pokemonData?.region
         detailStackView.addArrangedSubview(regionLabel)
         
@@ -204,7 +204,7 @@ class DetailViewController: UIViewController {
         descriptionLabel.textAlignment = .center
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.removeFromSuperview()
-        descriptionLabel.font = bodyFont
+        descriptionLabel.font = bodyfont
         
         let horizontalDetail = UIStackView()
         horizontalDetail.translatesAutoresizingMaskIntoConstraints = false
@@ -357,7 +357,7 @@ class DetailViewController: UIViewController {
         
         //main vertical stack view constraints
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[stack]-|", options: [], metrics: nil, views: views)
-        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[stack]-|", options: [], metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8-[stack]-8-|", options: [], metrics: nil, views: views)
         
         
         //Imgview containe
@@ -422,13 +422,18 @@ class DetailViewController: UIViewController {
             let vYConstraint = imageContainer.centerYAnchor.constraint(equalTo: layoutGuides.centerYAnchor)
 
             let metrics = ["maxDimension":widthConstraint,"layoutHeight":self.view.bounds.height/8]
-            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@255-[imgcontainer(==maxDimension@250)]->=8@255-|", options: [], metrics: metrics, views: views)
+            
+            centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|->=8@1-[imgcontainer(==maxDimension@750)]->=8@1-|", options: [], metrics: metrics, views: views)
+            
+            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|->=8@1-[imgcontainer(==maxDimension@750)]->=8@1-|", options: [], metrics: metrics, views: views)
   
            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[stackView(==0)]", options: [], metrics: metrics, views: views)
            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[stackView(==0)]", options: [], metrics: metrics, views: views)
-//            centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[blayoutguide(==20)]", options: [], metrics: metrics, views: views)
+          
+            //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[blayoutguide(==20)]", options: [], metrics: metrics, views: views)
             
             //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button][blayoutguide(==layoutHeight)]-|", options: [], metrics: metrics, views: views)
+            
             //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-[ilayoutguide(==blayoutguide)][button][blayoutguide]-|", options: [], metrics: nil, views: views)
             //centeriseConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:[button(==44)]->=20@1000-|", options: [], metrics: nil, views: views)
             
@@ -446,20 +451,37 @@ class DetailViewController: UIViewController {
         
         UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 10, options: [], animations: { [weak self] in
             if(!self!.expandedViewActive){
-                NSLayoutConstraint.activate(self!.centeriseConstraints)
+                //NSLayoutConstraint.activate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 0.0
-                for view in self!.detailStackView.arrangedSubviews as! [UIView]{
-                    view.isHidden = true
+                for view in self!.detailStackView.arrangedSubviews{
+                        view.isHidden = true
                 }
+                
+                if let elementLabels = self?.typeLabelArray{
+                    for elabel in elementLabels{
+                        elabel.isHidden = true
+                    }
+                }
+               
+                
+                self!.scrollView.isScrollEnabled = false
+                //self!.detailStackView.isHidden = true
                 self!.closeButtonBottomConstraint.constant = 0
             } else {
-                NSLayoutConstraint.deactivate(self!.centeriseConstraints)
+                //NSLayoutConstraint.deactivate(self!.centeriseConstraints)
                 self!.descriptionLabel.alpha = 1.0
 
                 self!.detailStackView.alpha = 1.0
-                for view in self!.detailStackView.arrangedSubviews as! [UIView]{
-                    view.isHidden = false
+                for view in self!.detailStackView.arrangedSubviews{
+                        view.isHidden = false
                 }
+                if let elementLabels = self?.typeLabelArray{
+                    for elabel in elementLabels{
+                        elabel.isHidden = false
+                    }
+                }
+                self!.scrollView.isScrollEnabled = true
+                //self!.detailStackView.isHidden = false
                 self!.closeButtonBottomConstraint.constant = -100
             }
             
@@ -467,6 +489,7 @@ class DetailViewController: UIViewController {
             self!.updateRadius()
         }) { [weak self] (complete) in
             if(complete){
+                
                 self!.expandedViewActive = !self!.expandedViewActive
             }
         }

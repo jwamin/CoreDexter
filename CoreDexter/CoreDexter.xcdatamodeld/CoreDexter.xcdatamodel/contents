@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Pokemon" representedClassName="Pokemon" syncable="YES" codeGenerationType="class">
+        <attribute name="favourite" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="front_sprite" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="front_sprite_filename" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="generation" optional="YES" attributeType="String" syncable="YES"/>
@@ -19,7 +20,7 @@
         <relationship name="pokemon" toMany="YES" deletionRule="Nullify" destinationEntity="Pokemon" inverseName="region" inverseEntity="Pokemon" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Pokemon" positionX="-330.58203125" positionY="-164.1015625" width="128" height="208"/>
+        <element name="Pokemon" positionX="-330.58203125" positionY="-164.1015625" width="128" height="225"/>
         <element name="Region" positionX="-87.7109375" positionY="3.55078125" width="128" height="90"/>
     </elements>
 </model>

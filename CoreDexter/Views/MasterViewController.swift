@@ -17,75 +17,19 @@ import CoreData
 class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol {
     
     // MARK: - IVars
-    static var headingFont:UIFont = {
-        guard let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize) else {
-            fatalError()
-        }
-        return UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
-    }()
-    
-    static var bodyFont:UIFont = {
-        guard let font = UIFont(name: "Rubik-Light", size: UIFont.systemFontSize) else {
-            fatalError()
-        }
-        return UIFontMetrics(forTextStyle: .body).scaledFont(for:font)
-    }()
     
     var managedObjectContext: NSManagedObjectContext? = nil
     weak var loadingView:UIView? = nil
     var viewModel:PokeViewModel!
     var scrollLoading = false
     
+    //cell layout guides
+    var layoutGuide:UILayoutGuide = UILayoutGuide()
+    var layoutGuideConstraint:NSLayoutConstraint!
+    
     // MARK: - ViewController Lifecycle
     var isLoading:Bool = false
-    func animateLoading(){
-        guard let loadingView = self.loadingView, let pokedexImageView = loadingView.subviews[0] as? UIImageView else {
-            return
-        }
-        
-        UIView.animateKeyframes(withDuration: 0.5, delay: 1.0, options: [], animations: {
-            pokedexImageView.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
-        }) { (complete) in
-                UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 30, options: [.beginFromCurrentState], animations: {
-                    pokedexImageView.layer.transform = CATransform3DMakeScale(1.0, 1.0, 1.0)
-                    
-                }, completion: { (complete) in
-                    if(complete){
-                        if(self.isLoading){
-                            self.animateLoading()
-                        }
-                    }
-                })
-            
-        }
-    }
-    
-    func removeLoadingScreen(){
-        
-        guard let loadingView = self.loadingView, let pokedexImageView = loadingView.subviews[0] as? UIImageView else {
-            return
-        }
-        
-        pokedexImageView.layer.removeAllAnimations()
-        
-        UIView.animateKeyframes(withDuration: 1.0, delay: 0, options: [], animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0.7, relativeDuration: 0.3, animations: {
-                self.loadingView!.alpha = 0.0
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.2, animations: {
-                self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-            })
-            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.7, animations: {
-                self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
-            })
-        }, completion: { (complete) in
-            if(complete){
-                print(self.loadingView!.superview)
-                self.loadingView?.removeFromSuperview()
-                self.loadingView = nil
-            }
-        })
-    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,9 +47,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //searchController.searchResultsUpdater = self
         //let searchViewController = UISearchContainerViewController(searchController: searchController)
         
+        layoutGuide.widthAnchor.constraint(equalToConstant: 500)
+        tableView.addLayoutGuide(layoutGuide)
+        layoutGuideConstraint = layoutGuide.widthAnchor.constraint(equalToConstant: 10)
+        layoutGuideConstraint.isActive = true
         
-        
-       let font = MasterViewController.headingFont
+        let font = headingFont()
         
         //refactor this to IB?
         self.navigationController?.navigationBar.titleTextAttributes = [
@@ -120,6 +67,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             //detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         
+        //activity view in toolbar
         let activityview = UIActivityIndicatorView(style: .gray)
         activityview.hidesWhenStopped = true
         let addActivityView = UIBarButtonItem(customView: activityview)
@@ -310,7 +258,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         if let regionContainer = fetchedResultsController.sections?[section], let objects = regionContainer.objects{
             let header = FontedHeaderView()
             header.contentView.backgroundColor = .black
-            header.textLabel?.font = MasterViewController.headingFont
+            header.textLabel?.font = headingFont()
             header.textLabel?.textColor = .white
             let pokemon = objects[0] as! Pokemon
             print(pokemon.region?.name)
@@ -346,8 +294,33 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         pokeCell.type1Label.typeString = pokemon.type1
         pokeCell.type2Label.typeString = pokemon.type2
+        pokeCell.layoutGuide = layoutGuide
+        pokeCell.addLayoutGuide(layoutGuide)
+        
+        
+        pokeCell.imgview.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
+        
+//        pokeCell.type1Label.label.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
+//        pokeCell.type2Label.label.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
+//        
+//        
+//        if(pokeCell.type1Label.bounds.width > layoutGuide.layoutFrame.width){
+//            print("updating")
+//            print(pokeCell.type1Label.bounds.width, layoutGuide.layoutFrame.width)
+//            if layoutGuideConstraint != nil{
+//                layoutGuideConstraint.isActive = false
+//            }
+//            
+//            
+//            layoutGuideConstraint = layoutGuide.widthAnchor.constraint(equalToConstant: pokeCell.type1Label.bounds.width)
+//            
+//            layoutGuideConstraint.isActive = true
+//            
+//        }
         
         pokeCell.mainLabel.sizeToFit()
+        
+        pokeCell.layoutIfNeeded()
         
     }
     
@@ -356,25 +329,25 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return true
     }
     
-    #if(MY_DEBUG_FLAG)
-    
-    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-        print(title,index)
-        return index
-    }
-    
-    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return [
-        RegionIndex.kanto.string(),
-        RegionIndex.johto.string(),
-        RegionIndex.hoenn.string(),
-        RegionIndex.sinnoh.string(),
-        RegionIndex.unova.string(),
-        RegionIndex.kalos.string()
-        ]
-    }
-    
-    #endif
+//    #if(MY_DEBUG_FLAG)
+//    
+//    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+//        print(title,index)
+//        return index
+//    }
+//    
+//    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+//        return [
+//        RegionIndex.kanto.string(),
+//        RegionIndex.johto.string(),
+//        RegionIndex.hoenn.string(),
+//        RegionIndex.sinnoh.string(),
+//        RegionIndex.unova.string(),
+//        RegionIndex.kalos.string()
+//        ]
+//    }
+//    
+//    #endif
     
     // MARK: - Table View Delegate
     
@@ -541,3 +514,55 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
 }
 
+//Loading Screen
+
+extension MasterViewController{
+    func animateLoading(){
+        guard let loadingView = self.loadingView, let pokedexImageView = loadingView.subviews[0] as? UIImageView else {
+            return
+        }
+        
+        UIView.animateKeyframes(withDuration: 0.5, delay: 1.0, options: [], animations: {
+            pokedexImageView.layer.transform = CATransform3DMakeScale(0.5, 0.5, 0.5)
+        }) { (complete) in
+            UIView.animate(withDuration: 1.0, delay: 0, usingSpringWithDamping: 5, initialSpringVelocity: 30, options: [.beginFromCurrentState], animations: {
+                pokedexImageView.layer.transform = CATransform3DMakeScale(1.0, 1.0, 1.0)
+                
+            }, completion: { (complete) in
+                if(complete){
+                    if(self.isLoading){
+                        self.animateLoading()
+                    }
+                }
+            })
+            
+        }
+    }
+    
+    func removeLoadingScreen(){
+        
+        guard let loadingView = self.loadingView, let pokedexImageView = loadingView.subviews[0] as? UIImageView else {
+            return
+        }
+        
+        pokedexImageView.layer.removeAllAnimations()
+        
+        UIView.animateKeyframes(withDuration: 1.0, delay: 0, options: [], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.7, relativeDuration: 0.3, animations: {
+                self.loadingView!.alpha = 0.0
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.2, animations: {
+                self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+            })
+            UIView.addKeyframe(withRelativeStartTime: 0.2, relativeDuration: 0.7, animations: {
+                self.loadingView?.subviews[0].transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+            })
+        }, completion: { (complete) in
+            if(complete){
+                print(self.loadingView!.superview)
+                self.loadingView?.removeFromSuperview()
+                self.loadingView = nil
+            }
+        })
+    }
+}
