@@ -22,6 +22,10 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+    <key>NSCameraUsageDescription</key>
+    <string>I need the camera to use ARKit</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Please accept camera roll access to save pictures...</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MajorMonoDisplay-Regular.ttf</string>
@@ -34,6 +38,7 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
+        <string>arkit</string>
 	</array>
 	<key>UIStatusBarTintParameters</key>
 	<dict>

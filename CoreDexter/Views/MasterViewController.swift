@@ -14,7 +14,7 @@ import CoreData
 
 // MARK: - (V)iew
 
-class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol {
+class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol, PokemonARDelegate {
     
     // MARK: - IVars
     
@@ -168,6 +168,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
     }
     
+    func requestModel() -> PokeARModel {
+        return viewModel.pokemonARModel
+    }
+    
     // MARK: - Segues
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -185,6 +189,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
                 controller.delegate = self
                 controller.setupView()
+                controller.arModelDelegate = self
                 viewModel.getImageforID(id: object.objectID, callback: { [unowned controller, unowned self] (img) in
                     controller.img = img
                     self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)

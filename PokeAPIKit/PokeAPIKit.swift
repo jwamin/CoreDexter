@@ -181,4 +181,15 @@ public struct Species : Codable {
     public let varieties:[Variety]
 }
 
-
+public struct PokeARModel {
+    public init(number:String,name:String,spriteData:Data,height:Int) {
+        self.name = name
+        self.number = number
+        self.sprite = spriteData
+        self.height = Float(height) / 10// api returns decimeters, when ARKit uinit is meters
+    }
+    public let name:String
+    public let sprite:Data
+    public let number:String
+    public let height:Float
+}

@@ -8,6 +8,7 @@
 
 import UIKit
 import PokeAPIKit
+import PokeCamera
 import AVFoundation
 
 
@@ -22,6 +23,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     
     var delegate:LoadingProtocol?
+    var arModelDelegate:PokemonARDelegate?
     
     let font:UIFont = headingFont()
     let bodyfont:UIFont = bodyFont()
@@ -653,8 +655,13 @@ extension DetailViewController{
     func startARKitView(){
     
         let navigationcontroller = UINavigationController()
-        let viewController = ARTempVC()
+        navigationcontroller.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.font:font
+        ]
+        let viewController = PokeCameraViewController(nibName: nil, bundle: nil)
+        viewController.pokeModel = arModelDelegate?.requestModel()
         viewController.view.backgroundColor = UIColor.white
+        viewController.title = self.title! + " Camera"
         navigationcontroller.viewControllers = [viewController]
         viewController.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "Done", style: .done, target: viewController, action: #selector(viewController.dismissz))
         
@@ -665,6 +672,10 @@ extension DetailViewController{
     }
     
     
+}
+
+protocol PokemonARDelegate {
+    func requestModel()->PokeARModel
 }
 
 
