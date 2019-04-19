@@ -27,7 +27,7 @@ class DetailViewController: UIViewController {
     let bodyfont:UIFont = bodyFont()
     
     // no data, just view!
-    var pokemonData:PokemonViewStruct?
+    //var pokemonData:PokemonViewStruct?
     
     var genusLabel:UILabel!
     var numberLabel:UILabel!
@@ -67,7 +67,22 @@ class DetailViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font:font
         ]
-        setupView()
+        
+        if let split = self.splitViewController {
+            print("vdl \(split.displayMode)")
+            
+            switch(split.displayMode){
+            case .allVisible:
+                break
+            case .primaryHidden:
+                break
+            case .primaryOverlay:
+                break
+            default:
+                setupView()
+            }
+            }
+        
         delegate?.loadingDone(self)
     }
     
@@ -96,6 +111,12 @@ class DetailViewController: UIViewController {
         guard let data = pokemonData else {
             return
         }
+        
+        if !viewIsSetup{
+            setupView()
+        }
+        
+        
         
         descriptionLabel.text = data.description
         imageview.image = img
@@ -155,7 +176,7 @@ class DetailViewController: UIViewController {
     
     //MARK: View Setup
     //Takes over from basic views created in IB
-    func setupView(){
+    public func setupView(){
         
         if viewIsSetup {
             return;
@@ -201,9 +222,6 @@ class DetailViewController: UIViewController {
         let type1Label = ElementLabel()
         let type2Label = ElementLabel()
         
-        type1Label.typeString = pokemonData?.type1
-        type2Label.typeString = pokemonData?.type2
-        
         typeLabelArray = [type1Label,type2Label]
         
         detailStackView.addArrangedSubview(type1Label)
@@ -212,13 +230,11 @@ class DetailViewController: UIViewController {
         generationLabel = UILabel()
         generationLabel.translatesAutoresizingMaskIntoConstraints = false
         generationLabel.font = bodyfont
-        generationLabel.text = pokemonData?.generation
         detailStackView.addArrangedSubview(generationLabel)
         
         regionLabel = UILabel()
         regionLabel.translatesAutoresizingMaskIntoConstraints = false
         regionLabel.font = bodyfont
-        regionLabel.text = pokemonData?.region
         detailStackView.addArrangedSubview(regionLabel)
         
         //Position description label
@@ -374,12 +390,13 @@ class DetailViewController: UIViewController {
         }
         
         let safeArea = view.safeAreaLayoutGuide
-        let views = ["stack":mainStackView,"imgcontainer":imageContainer,"imgview":imageview,"button":closeButton,"outer":imageOuterContainer] as [String:Any]
+        let views = ["stack":mainStackView,"imgcontainer":imageContainer,"imgview":imageview,"button":closeButton,"outer":imageOuterContainer,"scrollViewContents":contentView] as [String:Any]
         
         //main vertical stack view constraints
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-[stack]-|", options: [], metrics: nil, views: views)
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-8-[stack]-8-|", options: [], metrics: nil, views: views)
         
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[scrollViewContents]-0-|", options: [], metrics: nil, views: views)
         
         //Imgview containe
         constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:[outer(==imgcontainer@750)]", options: [], metrics: nil, views: views)

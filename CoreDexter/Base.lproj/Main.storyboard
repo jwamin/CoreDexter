@@ -73,7 +73,7 @@
                                     <constraint firstItem="svH-Pt-448" firstAttribute="width" secondItem="BYN-fF-3oH" secondAttribute="width" id="Iiy-tS-zUC"/>
                                     <constraint firstItem="svH-Pt-448" firstAttribute="height" secondItem="BYN-fF-3oH" secondAttribute="height" priority="100" id="Ntp-Qe-F6a"/>
                                     <constraint firstItem="svH-Pt-448" firstAttribute="leading" secondItem="BYN-fF-3oH" secondAttribute="leading" id="SSm-QH-b1z"/>
-                                    <constraint firstAttribute="bottom" secondItem="svH-Pt-448" secondAttribute="bottom" id="fwa-Jn-x9m"/>
+                                    <constraint firstItem="svH-Pt-448" firstAttribute="bottom" secondItem="BYN-fF-3oH" secondAttribute="bottom" id="fwa-Jn-x9m"/>
                                     <constraint firstItem="svH-Pt-448" firstAttribute="top" secondItem="BYN-fF-3oH" secondAttribute="top" id="mbu-RO-rWN"/>
                                 </constraints>
                                 <connections>
@@ -190,7 +190,9 @@
                             <outlet property="delegate" destination="7bK-jq-Zjz" id="RA6-mI-bju"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="CoreDexter" id="Zdf-7t-Un8"/>
+                    <navigationItem key="navigationItem" title="CoreDexter" id="Zdf-7t-Un8">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="T6C-AM-XlH"/>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
             </objects>

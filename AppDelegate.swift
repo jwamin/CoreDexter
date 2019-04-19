@@ -37,7 +37,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let storyboard = UIStoryboard(name: "LaunchScreen", bundle: Bundle.main)
         let loadingScreen = storyboard.instantiateViewController(withIdentifier: "loadingScreen")
         controller.loadingView = loadingScreen.view
-        masterNavigationController.view.addSubview(loadingScreen.view)
+        
+        
+        splitViewController.view.addSubview(loadingScreen.view)
         
         
         let reset = UserDefaults.standard.object(forKey: "reset") as? Bool ?? false
@@ -84,6 +86,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             return true
         }
         return false
+    }
+    
+    func targetDisplayModeForAction(in svc: UISplitViewController) -> UISplitViewController.DisplayMode {
+        switch svc.displayMode {
+        case .allVisible:
+            return .primaryHidden
+        default:
+            return .automatic
+        }
     }
     
     // MARK: - Core Data stack

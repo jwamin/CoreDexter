@@ -182,26 +182,34 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
                 
                 controller.title = object.name?.capitalized
+
                 controller.delegate = self
+                controller.setupView()
                 viewModel.getImageforID(id: object.objectID, callback: { [unowned controller, unowned self] (img) in
                     controller.img = img
-                    let pokemonData = self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)
+                    self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)
                     print("setting pokemon data")
                    
                 })
                 
-                if(self.splitViewController?.displayMode == UISplitViewController.DisplayMode.primaryOverlay){
-                    UIView.animate(withDuration: 0.3, animations: {
-                        self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.primaryHidden
-                    }) { (complete) in
-                        self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
-                    }
+                guard let displayMode = self.splitViewController?.displayMode else {
+                    return
                 }
-      
+                
+                switch(displayMode){
+                case .primaryOverlay:
+                        UIView.animate(withDuration: 0.3, animations: {
+                            self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.primaryHidden
+                        }) { (complete) in
+                            self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
+                        } 
+                default:
+                    break;
+                }
                 
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
                 controller.navigationItem.leftItemsSupplementBackButton = true
-                //controller.setupView()
+                
             }
         }
     }
