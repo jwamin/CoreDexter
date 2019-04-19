@@ -59,6 +59,9 @@ class DetailViewController: UIViewController {
     
     var img:UIImage?
     
+    var arButton:UIButton!
+    var arbuttonAnchor:NSLayoutConstraint!
+    
     //MARK: ViewController Lifecycle
     
     override func viewDidLoad() {
@@ -270,13 +273,10 @@ class DetailViewController: UIViewController {
         imageOuterContainer.translatesAutoresizingMaskIntoConstraints = false
         
         let imgcontainer = RingImageView()
-        imgcontainer.translatesAutoresizingMaskIntoConstraints = false
-        imgcontainer.isUserInteractionEnabled = true
-        imageview = UIImageView()
-        imageview.translatesAutoresizingMaskIntoConstraints = false
+
+        imageview = imgcontainer.imageview
         
         imageOuterContainer.addSubview(imgcontainer)
-        imgcontainer.addSubview(imageview)
         
         horizontalDetail.addArrangedSubview(imageOuterContainer)
         horizontalDetail.addArrangedSubview(detailStackView)
@@ -288,15 +288,7 @@ class DetailViewController: UIViewController {
         contentView.addSubview(mainVerticalStack)
         
         
-        //set border aand background color of container
-        imgcontainer.layer.backgroundColor = UIColor.squirtleBlue.cgColor
-        imgcontainer.layer.borderColor = UIColor.black.cgColor
-        
-        //borderwidth composites above the layer contents... interesting
-        imgcontainer.layer.borderWidth = 5.0
-        imgcontainer.layer.zPosition = -1
-        imgcontainer.layer.masksToBounds = true
-        imageview.layer.zPosition = 2
+
         
         //Add Gesture recognisers for tap of image
         let gesture = UITapGestureRecognizer(target: self, action: #selector(imageTap(_:)))
@@ -326,6 +318,16 @@ class DetailViewController: UIViewController {
         closeButton.addTarget(self, action: #selector(imageTap(_:)), for: .touchUpInside)
         view.addSubview(closeButton)
         
+        
+        //ARKit Button
+        
+        arButton = UIButton(type: .custom)
+        arButton.translatesAutoresizingMaskIntoConstraints = false
+        arButton.setImage(UIImage(named: "ARKit"), for: .normal)
+        arButton.imageView?.contentMode = .scaleAspectFit
+        arButton.isEnabled = false
+        arButton.addTarget(self, action: #selector(startARKitView), for: .touchUpInside)
+        view.addSubview(arButton)
         
         
         layoutConstraints()
@@ -434,6 +436,17 @@ class DetailViewController: UIViewController {
             closeButtonBottomConstraint
         ]
         
+        //AR Button
+        arbuttonAnchor = safeArea.trailingAnchor.constraint(equalToSystemSpacingAfter: arButton.trailingAnchor, multiplier: 1.0)
+        arbuttonAnchor.constant = -100
+        constraints += [
+            arbuttonAnchor,
+            arButton.topAnchor.constraint(equalToSystemSpacingBelow: safeArea.topAnchor, multiplier: 1.0),
+            arButton.widthAnchor.constraint(equalToConstant: 75),
+            arButton.heightAnchor.constraint(equalToConstant: 30)
+        ]
+        
+        
         NSLayoutConstraint.label(constraints: &constraints, with: "main constraints")
         
         NSLayoutConstraint.activate(constraints)
@@ -493,7 +506,8 @@ class DetailViewController: UIViewController {
                         elabel.isHidden = true
                     }
                 }
-                
+                self?.arbuttonAnchor.constant = 0
+                self?.arButton.isEnabled = true
                 self!.scrollView.isScrollEnabled = false
                 self!.detailStackView.isHidden = true
                 self!.closeButtonBottomConstraint.constant = 0
@@ -510,6 +524,8 @@ class DetailViewController: UIViewController {
                         elabel.isHidden = false
                     }
                 }
+                self?.arbuttonAnchor.constant = -100
+                self?.arButton.isEnabled = false
                 self!.scrollView.isScrollEnabled = true
                 self!.detailStackView.isHidden = false
                 self!.closeButtonBottomConstraint.constant = -100
@@ -626,4 +642,36 @@ class DetailViewController: UIViewController {
         player.play()
     }
     
+}
+
+
+extension DetailViewController{
+    
+    //MARK: ARKit
+    
+    @objc
+    func startARKitView(){
+    
+        let navigationcontroller = UINavigationController()
+        let viewController = ARTempVC()
+        viewController.view.backgroundColor = UIColor.white
+        navigationcontroller.viewControllers = [viewController]
+        viewController.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "Done", style: .done, target: viewController, action: #selector(viewController.dismissz))
+        
+        self.present(navigationcontroller, animated: true) {
+            print("done",navigationcontroller.description,viewController.description,self.description)
+        }
+    
+    }
+    
+    
+}
+
+
+class ARTempVC : UIViewController{
+
+    @objc func dismissz(){
+        dismiss(animated: true, completion: nil)
+    }
+
 }

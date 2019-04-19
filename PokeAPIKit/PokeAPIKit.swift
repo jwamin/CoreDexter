@@ -151,8 +151,6 @@ public struct PalParkEncounters : Codable {
     public let rate:Int
 }
 
-
-
 public struct Species : Codable {
     public let base_happiness:Int
     public let capture_rate:Int
@@ -182,6 +180,5 @@ public struct Species : Codable {
     public let shape:NameURL
     public let varieties:[Variety]
 }
-
 
 

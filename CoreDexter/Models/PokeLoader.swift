@@ -22,6 +22,8 @@ struct PokeData {
     var type2:String?
     var description:String?
     var genus:String?
+    var height:Int
+    var weight:Int
 }
 
 // MARK: - Protocol
@@ -141,7 +143,7 @@ class PokeLoader{
             pokemon.type2 = pokemen.type2 ?? nil
             pokemon.initialDesc = pokemen.description ?? ""
             pokemon.genus = pokemen.genus ?? ""
-            
+            pokemon.height = Int16(pokemen.height)
             //add as set to region
             region.pokemon?.adding(pokemon)
             
@@ -294,7 +296,7 @@ class PokeLoader{
                 }
             }
             
-            let poke = PokeData(name: name, region: region, generation: generation, index: String(speciesInfo.id), regionIndex: String(gameIndex), nationalIndex: number, type1: nil, type2: nil, description: message, genus: genusEntry)
+            let poke = PokeData(name: name, region: region, generation: generation, index: String(speciesInfo.id), regionIndex: String(gameIndex), nationalIndex: number, type1: nil, type2: nil, description: message, genus: genusEntry, height: 0, weight:0)
             
             self.pokeArray.append(poke)
             //print(poke)
@@ -351,7 +353,8 @@ class PokeLoader{
             
             var thisPokemon = self.pokeArray[thisPokeIndex]
             
-            
+            thisPokemon.height = pokemon.height
+            thisPokemon.weight = pokemon.weight
             
             let typesarray = pokemon.types
             

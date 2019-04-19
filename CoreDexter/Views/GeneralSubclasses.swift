@@ -121,7 +121,45 @@ class ElementLabel : UIView {
     
 }
 
+@IBDesignable
 class RingImageView : UIView{
+    
+    var imageview:UIImageView!
+    
+    override init(frame: CGRect) {
+        imageview = UIImageView()
+        
+        super.init(frame: frame)
+        self.addSubview(imageview)
+        //set border aand background color of container
+        setupView()
+        
+    }
+    
+    func setupView(){
+        imageview.translatesAutoresizingMaskIntoConstraints = false
+        imageview.layer.zPosition = 2
+        self.layer.backgroundColor = UIColor.squirtleBlue.cgColor
+        self.layer.borderColor = UIColor.black.cgColor
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.isUserInteractionEnabled = true
+        //borderwidth composites above the layer contents... interesting
+        self.layer.borderWidth = 5.0
+        self.layer.zPosition = -1
+        self.layer.masksToBounds = true
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError()
+    }
+    
+    override func prepareForInterfaceBuilder() {
+        imageview = UIImageView()
+        self.addSubview(imageview)
+        setupView()
+        imageview.image = UIImage(named: "test")
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         self.layer.cornerRadius = self.bounds.width / 2
