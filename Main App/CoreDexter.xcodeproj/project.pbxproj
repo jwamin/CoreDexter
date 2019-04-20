@@ -77,7 +77,6 @@
 		3D2BE745220231F300E28519 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3D2BE747220231F300E28519 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D2BE74D220238D400E28519 /* PokeLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeLoader.swift; sourceTree = "<group>"; };
-		3D2BE74F2202487600E28519 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		3D2BE750220248E400E28519 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		3D2C342B220B32E300282C38 /* PokeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeViewModel.swift; sourceTree = "<group>"; };
 		3D2C342E220B64CB00282C38 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -129,7 +128,6 @@
 			isa = PBXGroup;
 			children = (
 				573E8ED822564E940009808E /* 1024-1.png */,
-				3D2BE74F2202487600E28519 /* README.md */,
 				3D2C342E220B64CB00282C38 /* Settings.swift */,
 				3D2BE736220231F200E28519 /* AppDelegate.swift */,
 				57F4078A2266962E00F92289 /* Extensions.swift */,
