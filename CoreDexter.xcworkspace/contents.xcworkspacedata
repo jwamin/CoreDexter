@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:CoreDexter.xcodeproj">
+      location = "group:Main App/CoreDexter.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../ios/ARHitTest/PokeCamera.xcodeproj">
+      location = "group:Main App/../Camera/PokeCamera.xcodeproj">
    </FileRef>
 </Workspace>

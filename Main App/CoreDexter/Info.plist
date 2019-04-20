@@ -15,17 +15,17 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.12</string>
+	<string>0.2</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-    <key>NSCameraUsageDescription</key>
-    <string>I need the camera to use ARKit</string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Please accept camera roll access to save pictures...</string>
+	<key>NSCameraUsageDescription</key>
+	<string>I need the camera to use ARKit</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Please accept camera roll access to save pictures...</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MajorMonoDisplay-Regular.ttf</string>
@@ -38,7 +38,7 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
-        <string>arkit</string>
+		<string>arkit</string>
 	</array>
 	<key>UIStatusBarTintParameters</key>
 	<dict>
