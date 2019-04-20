@@ -32,6 +32,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     // MARK: - ViewController Lifecycle
     var isLoading:Bool = false
 
+    var showingFavs = false{
+        didSet{
+            displayFavs()
+            navigationItem.leftBarButtonItem?.image = (showingFavs) ? UIImage(named:"fav-fill") : UIImage(named:"fav")
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,15 +78,46 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             //detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         
-        //activity view in toolbar
-        let activityview = UIActivityIndicatorView(style: .gray)
-        activityview.hidesWhenStopped = true
-        let addActivityView = UIBarButtonItem(customView: activityview)
-        navigationItem.leftBarButtonItem = addActivityView
-        activityview.startAnimating()
+        //activity view in toolbar .. mebbe refactor to loading screen
+//        let activityview = UIActivityIndicatorView(style: .gray)
+//        activityview.hidesWhenStopped = true
+//        let addActivityView = UIBarButtonItem(customView: activityview)
+//        navigationItem.leftBarButtonItem = addActivityView
+//        activityview.startAnimating()
         
+        let favimg = UIImage(named:"fav")
+        
+        
+        let favitem = UIBarButtonItem(image: favimg, style: .plain, target: self, action: #selector(toggleFavs))
+        
+        navigationItem.leftBarButtonItem = favitem
         
         viewModel = PokeViewModel(delegate:self)
+        
+    }
+    
+    @objc func toggleFavs(){
+        showingFavs = !showingFavs
+    }
+    
+    private func displayFavs(){
+        print(showingFavs)
+        
+        let fetchRequest: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
+        NSFetchedResultsController<Pokemon>.deleteCache(withName: fetchedResultsController.cacheName)
+        let predicate = (showingFavs) ? NSPredicate(format: "favourite == %@", NSNumber(booleanLiteral: showingFavs)) : nil
+        
+        do {
+            print("before",fetchedResultsController.fetchRequest.predicate)
+            fetchedResultsController.fetchRequest.predicate = predicate
+            print("after",fetchedResultsController.fetchRequest.predicate)
+            try fetchedResultsController.performFetch()
+            
+            tableView.reloadData()
+        }catch{
+         print("error")
+            }
+
         
     }
     
@@ -114,7 +151,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     func callReset(){
         print("reset done")
-        (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).startAnimating()
+        //(navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).startAnimating()
         viewModel = nil
         
         let storyboard = UIStoryboard(name: "LaunchScreen", bundle: Bundle.main)
@@ -389,10 +426,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        if(indexPath.row == tableView.indexPathsForVisibleRows!.last!.row){
-            //end of loading
-            (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
-        }
+//        if(indexPath.row == tableView.indexPathsForVisibleRows!.last!.row){
+//            //end of loading
+//            (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
+//        }
 
         cell.layoutIfNeeded()
         let pokeCell = cell as! PokeCellTableViewCell
