@@ -62,6 +62,23 @@ class PokeLoader{
         print("pokemodel deinitialised")
     }
     
+    func updateFavourite(id:NSManagedObjectID,callback:((_ id:NSManagedObjectID,_ favourite:Bool)->Void)?){
+        
+        let pokemon = getItem(id: id)
+        
+        pokemon.favourite = !pokemon.favourite
+        
+        do {
+           try managedObjectContext.save()
+            callback?(id,pokemon.favourite)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        
+        
+    }
+    
+    
     func getItem(id:NSManagedObjectID)->Pokemon{
         return managedObjectContext.object(with: id) as! Pokemon
     }

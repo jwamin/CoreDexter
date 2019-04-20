@@ -14,7 +14,7 @@ import CoreData
 
 // MARK: - (V)iew
 
-class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol, PokemonARDelegate {
+class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol, DetailDelegate {
     
     // MARK: - IVars
     
@@ -22,6 +22,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     weak var loadingView:UIView? = nil
     var viewModel:PokeViewModel!
     var scrollLoading = false
+    
+    var detailView:DetailViewController!
     
     //cell layout guides
     var layoutGuide:UILayoutGuide = UILayoutGuide()
@@ -153,11 +155,26 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     func loadingDone(_ sender:Any) {
         print("loading done",sender)
         if(sender is PokeLoader || sender is PokeViewModel){
-            print("loading done")
-            isLoading = false
-            removeLoadingScreen()
+            //if(isLoading){
+                print("loading done")
+                isLoading = false
+                removeLoadingScreen()
+            //} else {
+                guard let vm = viewModel, let cp = vm.currentPokemon else {
+                    return
+                }
+                detailView.processUpdates(data: cp)
+            
+            //reload data so favourites appear... dont like this but hey
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            
+            //}
         } else if (sender is DetailViewController){
-            (sender as! DetailViewController).configureView(pokemonData: viewModel.currentPokemon)
+            let detailView = sender as! DetailViewController
+            detailView.configureView(pokemonData: viewModel.currentPokemon)
+            //detailView.observeValue(forKeyPath: "currentPokemon", of: viewModel, change: nil, context: nil)
         }
 
     }
@@ -170,6 +187,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     func requestModel() -> PokeARModel {
         return viewModel.pokemonARModel
+    }
+    
+    func updateFavourite() {
+        viewModel.updateFavouriteForPokemon(id:nil)
     }
     
     // MARK: - Segues
@@ -186,10 +207,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
                 
                 controller.title = object.name?.capitalized
-
+                detailView = controller
                 controller.delegate = self
-                controller.setupView()
-                controller.arModelDelegate = self
+                controller.detailDelegate = self
                 viewModel.getImageforID(id: object.objectID, callback: { [unowned controller, unowned self] (img) in
                     controller.img = img
                     self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)
@@ -312,7 +332,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         pokeCell.type2Label.typeString = pokemon.type2
         pokeCell.layoutGuide = layoutGuide
         pokeCell.addLayoutGuide(layoutGuide)
-        
+        pokeCell.setFavourite(isFavourite: pokemon.favourite)
         
         pokeCell.imgview.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
         

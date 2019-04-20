@@ -77,7 +77,6 @@
 		3D2BE745220231F300E28519 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3D2BE747220231F300E28519 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D2BE74D220238D400E28519 /* PokeLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeLoader.swift; sourceTree = "<group>"; };
-		3D2BE750220248E400E28519 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		3D2C342B220B32E300282C38 /* PokeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeViewModel.swift; sourceTree = "<group>"; };
 		3D2C342E220B64CB00282C38 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		3D2C3433220B6FF300282C38 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -158,7 +157,6 @@
 				3D2C342D220B4A4500282C38 /* Views */,
 				3D4060F82204E63100196626 /* MajorMonoDisplay-Regular.ttf */,
 				572C6E66225E676E00BD4F1F /* Rubik-Light.ttf */,
-				3D2BE750220248E400E28519 /* .gitignore */,
 				3D2BE73F220231F200E28519 /* Main.storyboard */,
 				3D2BE742220231F300E28519 /* Assets.xcassets */,
 				3D2BE744220231F300E28519 /* LaunchScreen.storyboard */,

@@ -23,7 +23,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     
     var delegate:LoadingProtocol?
-    var arModelDelegate:PokemonARDelegate?
+    var detailDelegate:DetailDelegate?
     
     let font:UIFont = headingFont()
     let bodyfont:UIFont = bodyFont()
@@ -38,6 +38,17 @@ class DetailViewController: UIViewController {
     
     var generationLabel:UILabel!
     var regionLabel:UILabel!
+    
+    var favouriteItem:UIBarButtonItem!
+    var isFavourite:Bool = false {
+        didSet{
+            guard let favouriteButton = favouriteItem else {
+                return
+            }
+            favouriteButton.tintColor = .pikachuYellow
+            favouriteButton.image = (isFavourite) ? UIImage(named: "fav-fill") : UIImage(named: "fav")
+        }
+    }
     
     var mainStackView:UIStackView!
     var detailStackView:UIStackView!
@@ -102,6 +113,7 @@ class DetailViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: player)
+        //NotificationCenter.default.removeObserver(self, name: <#T##NSNotification.Name?#>, object: <#T##Any?#>)
     }
     
     deinit {
@@ -130,6 +142,8 @@ class DetailViewController: UIViewController {
         typeLabelArray[0].typeString = data.type1
         typeLabelArray[1].typeString = data.type2
         
+        isFavourite = data.isFavourite
+        
         generationLabel.text = data.generation.capitalized
         regionLabel.text = data.region.capitalized
         
@@ -148,6 +162,8 @@ class DetailViewController: UIViewController {
     //MARK: KVO for AVPlayer Item ready state
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        
+        print(object)
         
         if(object is AVPlayerItem && keyPath == "status"){
             let item = object as! AVPlayerItem
@@ -179,6 +195,10 @@ class DetailViewController: UIViewController {
         }
     };
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print(segue.identifier)
+    }
+    
     //MARK: View Setup
     //Takes over from basic views created in IB
     public func setupView(){
@@ -187,7 +207,7 @@ class DetailViewController: UIViewController {
             return;
         }
         //view s
-        viewIsSetup = true
+        //viewIsSetup = true
         
         print("instantiating video player")
         
@@ -202,6 +222,19 @@ class DetailViewController: UIViewController {
         
         player.currentItem!.addObserver(self, forKeyPath: "status", options: [], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resetPlayer(_:)), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        
+        favouriteItem = UIBarButtonItem(image: UIImage(named: "fav"), style: .plain, target: self, action: #selector(addToFavourites(_:)))
+        favouriteItem.tintColor = UIColor.black
+        favouriteItem.title = "favourite"
+        navigationController?.setToolbarHidden(false, animated: false)
+        
+        
+        self.setToolbarItems([UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                              favouriteItem,
+                              UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)], animated: false)
+        
+        print(favouriteItem,navigationController?.toolbarItems)
+        
         
         numberLabel = UILabel()
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -331,6 +364,7 @@ class DetailViewController: UIViewController {
         arButton.addTarget(self, action: #selector(startARKitView), for: .touchUpInside)
         view.addSubview(arButton)
         
+        viewIsSetup = true
         
         layoutConstraints()
         
@@ -646,6 +680,22 @@ class DetailViewController: UIViewController {
     
 }
 
+extension DetailViewController{
+    
+    @objc
+    func addToFavourites(_ sender: UITabBarItem){
+        print("add to favs",sender)
+        detailDelegate?.updateFavourite()
+    }
+    
+    func processUpdates(data:PokemonViewStruct){
+        if(data.isFavourite != isFavourite){
+            isFavourite = data.isFavourite
+        }
+    }
+    
+}
+
 
 extension DetailViewController{
     
@@ -659,7 +709,7 @@ extension DetailViewController{
             NSAttributedString.Key.font:font
         ]
         let viewController = PokeCameraViewController(nibName: nil, bundle: nil)
-        viewController.pokeModel = arModelDelegate?.requestModel()
+        viewController.pokeModel = detailDelegate?.requestModel()
         viewController.view.backgroundColor = UIColor.white
         viewController.title = self.title! + " Camera"
         navigationcontroller.viewControllers = [viewController]
@@ -674,15 +724,9 @@ extension DetailViewController{
     
 }
 
-protocol PokemonARDelegate {
+
+
+protocol DetailDelegate {
     func requestModel()->PokeARModel
-}
-
-
-class ARTempVC : UIViewController{
-
-    @objc func dismissz(){
-        dismiss(animated: true, completion: nil)
-    }
-
+    func updateFavourite() // send message to model to update the favourite status of the current pokemon
 }

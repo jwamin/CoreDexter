@@ -37,8 +37,12 @@ final class PokeViewModel{
             self.getImageforID(id: curdata.dataID) { (image) in
                 self.currentImageData = image.pngData()
             }
+            
+            loadingDelegate?.loadingDone(self)
+            
         }
     }
+    
     public private(set) var currentImageData:Data?
     
     var loadingDelegate:LoadingProtocol?
@@ -64,6 +68,24 @@ final class PokeViewModel{
     
     deinit {
         print("pokeviewmodel deallocated")
+    }
+    
+    public func updateFavouriteForPokemon(id:NSManagedObjectID?){
+ 
+        let workingID:NSManagedObjectID
+        
+        if let id = id {
+            workingID = id
+        } else {
+            workingID = currentPokemon!.dataID
+        }
+        
+        pokeModel.updateFavourite(id: workingID) { (returnedID, isFavourite) in
+            if(self.currentPokemon?.dataID == workingID){
+                self.currentPokemon?.isFavourite = isFavourite
+            }
+        }
+        
     }
     
     public func getImageforID(id:NSManagedObjectID, callback:@escaping ((UIImage)->())){
@@ -107,7 +129,7 @@ final class PokeViewModel{
         
         let debugString = "\(detail.name ?? "")\nNational Index:\(idNumber)\nRegional Index:\(regionId)\n\(detail.generation ?? "")\n\(physicalRegion?.getRegion().string() ?? "")\n\(detail.type1 ?? "")\n\(detail.type2 ?? "")\n\n\(detail.initialDesc ?? "")"
         
-        let returnItem = PokemonViewStruct(dataID: id, name: name, idString: idNumber, regionId: "\(regionId)", description: description, type1: type1, type2: detail.type2, generation: generation, region: physicalRegionString, debugString: debugString, genus: genus, height: Int(detail.height), weight: Int(detail.weight))
+        let returnItem = PokemonViewStruct(dataID: id, isFavourite:detail.favourite, name: name,  idString: idNumber, regionId: "\(regionId)", description: description, type1: type1, type2: detail.type2, generation: generation, region: physicalRegionString, debugString: debugString, genus: genus, height: Int(detail.height), weight: Int(detail.weight))
         
         //print("returning \(returnItem.genus) \(detail.initialDesc)")
         
@@ -120,6 +142,7 @@ final class PokeViewModel{
 
 public struct PokemonViewStruct{
     public let dataID:NSManagedObjectID
+    public var isFavourite:Bool
     public let name:String
     public let idString:String
     public let regionId:String

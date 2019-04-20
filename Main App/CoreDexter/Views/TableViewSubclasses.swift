@@ -15,6 +15,7 @@ class PokeCellTableViewCell: UITableViewCell {
     @IBOutlet weak var mainLabel: UILabel!
     @IBOutlet weak var type1Label: ElementLabel!
     @IBOutlet weak var type2Label: ElementLabel!
+    @IBOutlet weak var favBadge: UIImageView!
     
     weak var layoutGuide:UILayoutGuide?
     
@@ -25,7 +26,11 @@ class PokeCellTableViewCell: UITableViewCell {
         imgview.layer.borderWidth = 1.0
         imgview.layer.borderColor = UIColor.black.cgColor
         
-        mainLabel.numberOfLines = 0
+        favBadge.backgroundColor = .clear
+        favBadge.tintColor = .pikachuYellow
+        
+
+                mainLabel.numberOfLines = 0
         mainLabel.lineBreakMode = .byWordWrapping
         
         mainLabel.font = headingFont()
@@ -47,9 +52,15 @@ class PokeCellTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    func setFavourite(isFavourite:Bool){
+     
+        favBadge.image = (isFavourite) ? UIImage(named:"fav-fill") : nil
+    }
+    
     override func prepareForReuse() {
         self.imgview.image = nil
         self.mainLabel.text = nil
+        setFavourite(isFavourite: false)
         super.prepareForReuse()
     }
     
