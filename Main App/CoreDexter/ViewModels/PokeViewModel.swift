@@ -11,11 +11,6 @@ import CoreData
 import UIKit
 import PokeAPIKit
 
-protocol LoadingProtocol{
-    func loadingInProgress()
-    func loadingDone(_ sender:Any)
-}
-
 final class PokeViewModel{
     
     public var pokemonARModel:PokeARModel{
@@ -70,7 +65,7 @@ final class PokeViewModel{
         print("pokeviewmodel deallocated")
     }
     
-    public func updateFavouriteForPokemon(id:NSManagedObjectID?){
+    public func updateFavouriteForPokemon(id:NSManagedObjectID?,callback:((_ id:NSManagedObjectID,_ favourite:Bool)->Void)?){
  
         let workingID:NSManagedObjectID
         
@@ -82,8 +77,11 @@ final class PokeViewModel{
         
         pokeModel.updateFavourite(id: workingID) { (returnedID, isFavourite) in
             if(self.currentPokemon?.dataID == workingID){
+                print("updating current pokemon")
                 self.currentPokemon?.isFavourite = isFavourite
-            }
+        } else {
+            callback?(returnedID,isFavourite)
+        }
         }
         
     }

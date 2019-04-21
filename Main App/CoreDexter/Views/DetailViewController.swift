@@ -11,9 +11,6 @@ import PokeAPIKit
 import PokeCamera
 import AVFoundation
 
-
-
-
 class DetailViewController: UIViewController {
     
     //MARK: Instance Variable
@@ -197,6 +194,10 @@ class DetailViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print(segue.identifier)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        print("view disappeared")
     }
     
     //MARK: View Setup
@@ -726,7 +727,3 @@ extension DetailViewController{
 
 
 
-protocol DetailDelegate {
-    func requestModel()->PokeARModel
-    func updateFavourite() // send message to model to update the favourite status of the current pokemon
-}

@@ -14,7 +14,7 @@ import CoreData
 
 // MARK: - (V)iew
 
-class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate,ResetProtocol,LoadingProtocol, DetailDelegate {
+class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
     // MARK: - IVars
     
@@ -31,11 +31,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     // MARK: - ViewController Lifecycle
     var isLoading:Bool = false
-
+    
     var showingFavs = false{
         didSet{
             displayFavs()
-            navigationItem.leftBarButtonItem?.image = (showingFavs) ? UIImage(named:"fav-fill") : UIImage(named:"fav")
+            
         }
     }
     
@@ -49,10 +49,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         tableView.indexDisplayMode = .automatic
         
+        tableView.register(FontedHeaderView.self, forHeaderFooterViewReuseIdentifier: "header")
+        
         //search results controller
         
-//        let searchController = UISearchController(searchResultsController: self)
-//        self.navigationItem.searchController = searchController
+        //        let searchController = UISearchController(searchResultsController: self)
+        //        self.navigationItem.searchController = searchController
         //searchController.delegate = self
         //searchController.searchResultsUpdater = self
         
@@ -79,11 +81,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
         
         //activity view in toolbar .. mebbe refactor to loading screen
-//        let activityview = UIActivityIndicatorView(style: .gray)
-//        activityview.hidesWhenStopped = true
-//        let addActivityView = UIBarButtonItem(customView: activityview)
-//        navigationItem.leftBarButtonItem = addActivityView
-//        activityview.startAnimating()
+        //        let activityview = UIActivityIndicatorView(style: .gray)
+        //        activityview.hidesWhenStopped = true
+        //        let addActivityView = UIBarButtonItem(customView: activityview)
+        //        navigationItem.leftBarButtonItem = addActivityView
+        //        activityview.startAnimating()
         
         let favimg = UIImage(named:"fav")
         
@@ -102,22 +104,41 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     private func displayFavs(){
         print(showingFavs)
+        print(fetchedResultsController.sections!.count)
+        //NSFetchedResultsController<Pokemon>.deleteCache(withName: fetchedResultsController.cacheName)
         
-        let fetchRequest: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
-        NSFetchedResultsController<Pokemon>.deleteCache(withName: fetchedResultsController.cacheName)
+        //quick datasetcheck
+        if(showingFavs){
+            var areFavourites:Bool = false
+            for pokemon in fetchedResultsController.fetchedObjects! as [Pokemon]{
+                if pokemon.favourite{
+                    areFavourites = true
+                    break
+                }
+            }
+            
+            if !areFavourites {
+                let alert = UIAlertController(title: "No favourites", message: "add some favourite pokemon!", preferredStyle: .alert)
+                let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(action)
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+        }
+        
         let predicate = (showingFavs) ? NSPredicate(format: "favourite == %@", NSNumber(booleanLiteral: showingFavs)) : nil
         
         do {
-            print("before",fetchedResultsController.fetchRequest.predicate)
             fetchedResultsController.fetchRequest.predicate = predicate
-            print("after",fetchedResultsController.fetchRequest.predicate)
             try fetchedResultsController.performFetch()
-            
             tableView.reloadData()
+            tableView.reloadSectionIndexTitles()
+            print(fetchedResultsController.sections!.count)
+            navigationItem.leftBarButtonItem?.image = (showingFavs) ? UIImage(named:"fav-fill") : UIImage(named:"fav")
         }catch{
-         print("error")
-            }
-
+            print("error")
+        }
+        
         
     }
     
@@ -125,6 +146,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
         super.viewWillAppear(animated)
+        tableView.reloadData()
     }
     
     // MARK: - Actions
@@ -161,8 +183,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         self.navigationController?.view.addSubview(loadingScreen.view)
         
         UIView.animate(withDuration: 0.5, animations: {
-           
-                loadingScreen.view.alpha = 1.0
+            
+            loadingScreen.view.alpha = 1.0
             
         }) { [unowned self] (complete) in
             let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -176,59 +198,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             print("reloaded")
         }
         
-
-    }
-    
-    
-    // MARK: - Delegate Methods
-    
-    func loadingInProgress() {
-        print("loading in progress")
         
-        isLoading = true
-        animateLoading()
     }
     
-    func loadingDone(_ sender:Any) {
-        print("loading done",sender)
-        if(sender is PokeLoader || sender is PokeViewModel){
-            //if(isLoading){
-                print("loading done")
-                isLoading = false
-                removeLoadingScreen()
-            //} else {
-                guard let vm = viewModel, let cp = vm.currentPokemon else {
-                    return
-                }
-                detailView.processUpdates(data: cp)
-            
-            //reload data so favourites appear... dont like this but hey
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-            
-            //}
-        } else if (sender is DetailViewController){
-            let detailView = sender as! DetailViewController
-            detailView.configureView(pokemonData: viewModel.currentPokemon)
-            //detailView.observeValue(forKeyPath: "currentPokemon", of: viewModel, change: nil, context: nil)
-        }
-
-    }
     
-    func resetDone() {
-        viewModel.resetDelegate()
-        tableView.reloadData()
-        (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
-    }
     
-    func requestModel() -> PokeARModel {
-        return viewModel.pokemonARModel
-    }
-    
-    func updateFavourite() {
-        viewModel.updateFavouriteForPokemon(id:nil)
-    }
     
     // MARK: - Segues
     
@@ -241,7 +215,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 
                 let object = fetchedResultsController.object(at: indexPath)
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-
+                
                 
                 controller.title = object.name?.capitalized
                 detailView = controller
@@ -251,7 +225,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                     controller.img = img
                     self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)
                     print("setting pokemon data")
-                   
+                    
                 })
                 
                 guard let displayMode = self.splitViewController?.displayMode else {
@@ -260,11 +234,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 
                 switch(displayMode){
                 case .primaryOverlay:
-                        UIView.animate(withDuration: 0.3, animations: {
-                            self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.primaryHidden
-                        }) { (complete) in
-                            self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
-                        } 
+                    UIView.animate(withDuration: 0.3, animations: {
+                        self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.primaryHidden
+                    }) { (complete) in
+                        self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.automatic
+                    }
                 default:
                     break;
                 }
@@ -288,7 +262,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if(!scrollView.isTracking){
             print("did end decelerating and not tracking")
-             endScroll()
+            endScroll()
         }
     }
     
@@ -313,6 +287,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 print("no worky")
             }
         }
+        
     }
     
     // MARK: - Table View
@@ -326,27 +301,44 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return fetchedResultsController.sections?.count ?? 0
     }
     
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let sectionInfo = fetchedResultsController.sections else {
+            fatalError()
+        }
+        return sectionInfo[section].numberOfObjects
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         if let regionContainer = fetchedResultsController.sections?[section], let objects = regionContainer.objects{
-            let header = FontedHeaderView()
+            
+            let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "header") as! FontedHeaderView
             header.contentView.backgroundColor = .black
             header.textLabel?.font = headingFont()
             header.textLabel?.textColor = .white
+            //            header.textLabel?.text = regionContainer.name
             let pokemon = objects[0] as! Pokemon
-            print(pokemon.region?.name)
+            
+            //            for region in fetchedResultsController.sections!{
+            //                print(region.objects!.count)
+            //            }
+            
             header.textLabel!.text = pokemon.region?.name ?? "error"
             
             return header
         }
-       
+        
         return nil
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionInfo = fetchedResultsController.sections![section]
-        return sectionInfo.numberOfObjects
-    }
+    //    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+    //        return fetchedResultsController.sectionIndexTitles
+    //    }
+    
+    //    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+    //        let result = fetchedResultsController.section(forSectionIndexTitle: title, at: index)
+    //        return result
+    //    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PokeCell", for: indexPath) as! PokeCellTableViewCell
@@ -362,6 +354,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         //leave image loading to willDisplay
         //let labeltext = (Int(pokemon.id) == 60) ? "This is hopefully a really reallyl ong label to check if self sizing is still working" : "\(Int(pokemon.id).digitString()) - \((pokemon.name ?? "Missingno").capitalized)"
+        
         let labeltext = "\(Int(pokemon.id).digitString())\n\((pokemon.name ?? "Missingno").capitalized)"
         pokeCell.mainLabel.text = labeltext //event.timestamp!.description
         
@@ -373,28 +366,42 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         pokeCell.imgview.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
         
-//        pokeCell.type1Label.label.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
-//        pokeCell.type2Label.label.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
-//        
-//        
-//        if(pokeCell.type1Label.bounds.width > layoutGuide.layoutFrame.width){
-//            print("updating")
-//            print(pokeCell.type1Label.bounds.width, layoutGuide.layoutFrame.width)
-//            if layoutGuideConstraint != nil{
-//                layoutGuideConstraint.isActive = false
-//            }
-//            
-//            
-//            layoutGuideConstraint = layoutGuide.widthAnchor.constraint(equalToConstant: pokeCell.type1Label.bounds.width)
-//            
-//            layoutGuideConstraint.isActive = true
-//            
-//        }
+        //        pokeCell.type1Label.label.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
+        //        pokeCell.type2Label.label.widthAnchor.constraint(equalTo: layoutGuide.widthAnchor).isActive = true
+        //
+        //
+        //        if(pokeCell.type1Label.bounds.width > layoutGuide.layoutFrame.width){
+        //            print("updating")
+        //            print(pokeCell.type1Label.bounds.width, layoutGuide.layoutFrame.width)
+        //            if layoutGuideConstraint != nil{
+        //                layoutGuideConstraint.isActive = false
+        //            }
+        //
+        //
+        //            layoutGuideConstraint = layoutGuide.widthAnchor.constraint(equalToConstant: pokeCell.type1Label.bounds.width)
+        //
+        //            layoutGuideConstraint.isActive = true
+        //
+        //        }
         
         pokeCell.mainLabel.sizeToFit()
         
         pokeCell.layoutIfNeeded()
         
+    }
+
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let poke = self.fetchedResultsController.object(at: indexPath)
+        let favouriteAction = UITableViewRowAction(style: .normal, title: (!poke.favourite ? "Add Favourite" : "Remove Favourite") ) { [unowned self, objectID = poke.objectID] (action, indexPath) in
+            self.viewModel.updateFavouriteForPokemon(id: objectID){ [weak tableView] (id,isFavourite) in
+                let cell = tableView?.cellForRow(at: indexPath) as! PokeCellTableViewCell
+                cell.setFavourite(isFavourite: isFavourite)
+            }
+        }
+        favouriteAction.backgroundColor = !poke.favourite ? nil : UIColor.pikachuYellow
+        
+        return [favouriteAction]
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -402,35 +409,35 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         return true
     }
     
-//    #if(MY_DEBUG_FLAG)
-//    
-//    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
-//        print(title,index)
-//        return index
-//    }
-//    
-//    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-//        return [
-//        RegionIndex.kanto.string(),
-//        RegionIndex.johto.string(),
-//        RegionIndex.hoenn.string(),
-//        RegionIndex.sinnoh.string(),
-//        RegionIndex.unova.string(),
-//        RegionIndex.kalos.string()
-//        ]
-//    }
-//    
-//    #endif
+    //    #if(MY_DEBUG_FLAG)
+    //
+    //    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+    //        print(title,index)
+    //        return index
+    //    }
+    //
+    //    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+    //        return [
+    //        RegionIndex.kanto.string(),
+    //        RegionIndex.johto.string(),
+    //        RegionIndex.hoenn.string(),
+    //        RegionIndex.sinnoh.string(),
+    //        RegionIndex.unova.string(),
+    //        RegionIndex.kalos.string()
+    //        ]
+    //    }
+    //
+    //    #endif
     
     // MARK: - Table View Delegate
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-//        if(indexPath.row == tableView.indexPathsForVisibleRows!.last!.row){
-//            //end of loading
-//            (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
-//        }
-
+        //        if(indexPath.row == tableView.indexPathsForVisibleRows!.last!.row){
+        //            //end of loading
+        //            (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
+        //        }
+        
         cell.layoutIfNeeded()
         let pokeCell = cell as! PokeCellTableViewCell
         pokeCell.updateCircle()
@@ -447,38 +454,38 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         cell.prepareForReuse()
     }
     
-
+    
     
     // MARK: - Custom
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-
+    
     
     public func getImageForCell(at indexPath:IndexPath){
         
         //send message to model to retrieve or request image for cell
         
         let obj = self.fetchedResultsController.object(at: indexPath)
-  
-            self.scrollLoading = true
-            let id = obj.objectID
+        
+        self.scrollLoading = true
+        let id = obj.objectID
+        
+        viewModel.getImageforID(id: id){ [unowned self] (img:UIImage) in
             
-            viewModel.getImageforID(id: id){ [unowned self] (img:UIImage) in
+            DispatchQueue.main.async {
                 
-                DispatchQueue.main.async {
-                    
-                    //cell might have moved out of view, so we test
-                    guard let cell = self.tableView.cellForRow(at: indexPath) as? PokeCellTableViewCell else {
-                        print("no cell at \(indexPath) ?")
-                        return
-                    }
-                    
-                    cell.imgview.image = img
-                    cell.layoutIfNeeded()
+                //cell might have moved out of view, so we test
+                guard let cell = self.tableView.cellForRow(at: indexPath) as? PokeCellTableViewCell else {
+                    print("no cell at \(indexPath) ?")
+                    return
                 }
+                
+                cell.imgview.image = img
+                cell.layoutIfNeeded()
             }
+        }
         
         
     }
@@ -502,7 +509,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         // Edit the section name key path and cache name if appropriate.
         // nil for section name key path means "no sections".
-        let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: "region", cacheName: "Master")
+        let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: "generation", cacheName: nil)
         aFetchedResultsController.delegate = self
         _fetchedResultsController = aFetchedResultsController
         
@@ -545,9 +552,15 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         if(!scrollLoading){
+            
+            guard let indexpath = indexPath,let newIndexPath = newIndexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
+                print("\(indexPath) has likely scrolled out of view")
+                return
+            }
+            
             switch type {
             case .insert:
-                tableView.insertRows(at: [newIndexPath!], with: .fade)
+                tableView.insertRows(at: [newIndexPath], with: .fade)
             case .delete:
                 if let indexPath = indexPath{
                     tableView.deleteRows(at: [indexPath], with: .fade)
@@ -562,7 +575,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
             case .move:
                 configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
-                tableView.moveRow(at: indexPath!, to: newIndexPath!)
+                tableView.moveRow(at: indexPath!, to: newIndexPath)
             }
         }
     }
@@ -588,9 +601,76 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
 }
 
+// MARK: - Delegate Methods
+
+extension MasterViewController : DetailDelegate{
+    
+    func requestModel() -> PokeARModel {
+        return viewModel.pokemonARModel
+    }
+    
+    func updateFavourite() {
+        viewModel.updateFavouriteForPokemon(id:nil,callback:nil)
+    }
+    
+}
+
+
+extension MasterViewController : ResetProtocol{
+    
+    func resetDone() {
+        viewModel.resetDelegate()
+        tableView.reloadData()
+        //(navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
+    }
+    
+}
+
 //Loading Screen
 
-extension MasterViewController{
+extension MasterViewController : LoadingProtocol{
+    
+    
+    
+    func loadingInProgress() {
+        print("loading in progress")
+        
+        isLoading = true
+        animateLoading()
+    }
+    
+    func loadingDone(_ sender:Any) {
+        print("loading done",sender)
+        if(sender is PokeLoader || sender is PokeViewModel){
+            //if(isLoading){
+            print("loading done")
+            if isLoading == false{
+                removeLoadingScreen()
+            } else {
+                isLoading = false
+            }
+            
+            //} else {
+            guard let vm = viewModel, let cp = vm.currentPokemon else {
+                return
+            }
+            detailView.processUpdates(data: cp)
+            
+            //reload data so favourites appear... dont like this but hey
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            
+            //}
+        } else if (sender is DetailViewController){
+            let detailView = sender as! DetailViewController
+            detailView.configureView(pokemonData: viewModel.currentPokemon)
+            //detailView.observeValue(forKeyPath: "currentPokemon", of: viewModel, change: nil, context: nil)
+        }
+        
+    }
+    
+    
     func animateLoading(){
         guard let loadingView = self.loadingView, let pokedexImageView = loadingView.subviews[0] as? UIImageView else {
             return
@@ -606,6 +686,8 @@ extension MasterViewController{
                 if(complete){
                     if(self.isLoading){
                         self.animateLoading()
+                    } else {
+                        self.removeLoadingScreen()
                     }
                 }
             })

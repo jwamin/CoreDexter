@@ -26,19 +26,15 @@ struct PokeData {
     var weight:Int
 }
 
-// MARK: - Protocol
-
-protocol ResetProtocol {
-    func resetDone()
-}
-
-// MARK: - Model
+// MARK: - Networking and Data Retrieval
 
 class PokeLoader{
 
     let region:RegionIndex
+    
     var delegate:ResetProtocol?
     var loadDelegate:LoadingProtocol?
+    
     var dispatchGroup:DispatchGroup!
     var pokeArray:[PokeData] = []
     var appDelegate:AppDelegate!
