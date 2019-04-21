@@ -394,9 +394,22 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let poke = self.fetchedResultsController.object(at: indexPath)
         let favouriteAction = UITableViewRowAction(style: .normal, title: (!poke.favourite ? "Add Favourite" : "Remove Favourite") ) { [unowned self, objectID = poke.objectID] (action, indexPath) in
-            self.viewModel.updateFavouriteForPokemon(id: objectID){ [weak tableView] (id,isFavourite) in
+            self.viewModel.updateFavouriteForPokemon(id: objectID){ [weak tableView, weak self] (id,isFavourite) in
                 let cell = tableView?.cellForRow(at: indexPath) as! PokeCellTableViewCell
                 cell.setFavourite(isFavourite: isFavourite)
+                
+                if(!isFavourite && (self?.showingFavs)!){
+                    if (tableView?.numberOfRows(inSection: indexPath.section)==1){
+                        tableView?.beginUpdates()
+                        tableView?.deleteRows(at: [indexPath], with: .right)
+                        tableView?.deleteSections(IndexSet(integer: indexPath.section), with: .right)
+                        tableView?.endUpdates()
+                    } else {
+                        tableView?.deleteRows(at: [indexPath], with: .right)
+                    }
+                    
+                }
+                
             }
         }
         favouriteAction.backgroundColor = !poke.favourite ? nil : UIColor.pikachuYellow
