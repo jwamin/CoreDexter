@@ -73,7 +73,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         ]
         
         
-        let addButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(fileinfo(_:)))
+        let addButton = UIBarButtonItem(image: UIImage(named: "gear"), style: .plain, target: self, action: #selector(fileinfo(_:)))
+                                        
+            
         navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
