@@ -28,7 +28,7 @@ struct PokeData {
 
 // MARK: - Networking and Data Retrieval
 
-class PokeLoader{
+class PokeDataLoader{
 
     let region:RegionIndex
     
@@ -70,7 +70,6 @@ class PokeLoader{
         } catch {
             fatalError(error.localizedDescription)
         }
-        
         
     }
     
@@ -403,11 +402,22 @@ class PokeLoader{
         
         if let sprite_filename = item.front_sprite_filename{
             
-            DispatchQueue.global().async {
+            getImageFromStorage(filepath: sprite_filename, callback: callback)
+            
+        } else {
+            //print("no filename, will load",item.id)
+           loadImageFromAPI(item: item, callback: callback,nil)
+        }
+        
+       
+}
+
+    private func getImageFromStorage(filepath:String,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
+        DispatchQueue.global().async {
             
             let filepaths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
             if let dirpath = filepaths.first{
-                let imageurl = URL(fileURLWithPath: dirpath).appendingPathComponent(sprite_filename)
+                let imageurl = URL(fileURLWithPath: dirpath).appendingPathComponent(filepath)
                 
                 var boolPointer = ObjCBool(booleanLiteral: false)
                 
@@ -425,25 +435,19 @@ class PokeLoader{
                     callback(img,nil)
                     //print("loading cell image", imageurl.path)
                     return
-                
+                    
                     
                 }
-                print("file doesnt exist \(item.front_sprite_filename!)")
+                print("file doesnt exist \(filepath)")
                 //handle this better
                 return
             }
             print("no callback, so pointless")
             return
-            }
-        } else {
-            //print("no filename, will load",item.id)
-           loadImage(item: item, callback: callback,nil)
         }
-        
-       
-}
-
-    public func loadImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?,_ secondaryCallback:(()->Void)?){
+    }
+    
+    private func loadImageFromAPI(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?,_ secondaryCallback:(()->Void)?){
     
         DispatchQueue.global().async {
             guard let url = URL(string:IMAGE_URL+String(item.id)+".png") else {

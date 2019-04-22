@@ -14,7 +14,7 @@ import CoreData
 
 // MARK: - (V)iew
 
-class MasterViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+class MasterViewController: UITableViewController {
     
     // MARK: - IVars
     
@@ -31,6 +31,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     // MARK: - ViewController Lifecycle
     var isLoading:Bool = false
+    
+    var searchController:UISearchController!
     
     var showingFavs = false{
         didSet{
@@ -52,13 +54,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         tableView.register(FontedHeaderView.self, forHeaderFooterViewReuseIdentifier: "header")
         
         //search results controller
+        initialiseSearchController()
         
-        //        let searchController = UISearchController(searchResultsController: self)
-        //        self.navigationItem.searchController = searchController
-        //searchController.delegate = self
-        //searchController.searchResultsUpdater = self
-        
-        //let searchViewController = UISearchContainerViewController(searchController: searchController)
         
         layoutGuide.widthAnchor.constraint(equalToConstant: 500)
         tableView.addLayoutGuide(layoutGuide)
@@ -101,16 +98,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
     
     @objc func toggleFavs(){
-        showingFavs = !showingFavs
-    }
-    
-    private func displayFavs(){
-        print(showingFavs)
-        print(fetchedResultsController.sections!.count)
-        //NSFetchedResultsController<Pokemon>.deleteCache(withName: fetchedResultsController.cacheName)
         
         //quick datasetcheck
-        if(showingFavs){
+        if(!showingFavs){
             var areFavourites:Bool = false
             for pokemon in fetchedResultsController.fetchedObjects! as [Pokemon]{
                 if pokemon.favourite{
@@ -120,7 +110,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             }
             
             if !areFavourites {
-                let alert = UIAlertController(title: "No favourites", message: "add some favourite pokemon!", preferredStyle: .alert)
+                let alert = UIAlertController(title: "No favourites", message: "Add some favourite Pokemon!", preferredStyle: .alert)
                 let action = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(action)
                 self.present(alert, animated: true, completion: nil)
@@ -128,7 +118,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             }
         }
         
-        let predicate = (showingFavs) ? NSPredicate(format: "favourite == %@", NSNumber(booleanLiteral: showingFavs)) : nil
+        showingFavs = !showingFavs
+    }
+    
+    private func displayFavs(){
+
+        let predicate = (showingFavs) ? FAVOURITES_PREDICATE : nil
         
         do {
             fetchedResultsController.fetchRequest.predicate = predicate
@@ -138,7 +133,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             print(fetchedResultsController.sections!.count)
             navigationItem.leftBarButtonItem?.image = (showingFavs) ? UIImage(named:"fav-fill") : UIImage(named:"fav")
         }catch{
-            print("error")
+            print(error.localizedDescription)
         }
         
         
@@ -182,7 +177,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let loadingScreen = storyboard.instantiateViewController(withIdentifier: "loadingScreen")
         self.loadingView = loadingScreen.view
         loadingScreen.view.alpha = 0.0
-        self.navigationController?.view.addSubview(loadingScreen.view)
+        if(self.splitViewController!.displayMode == .primaryOverlay){
+            self.splitViewController!.preferredDisplayMode = .primaryHidden
+        
+        }
+        self.splitViewController!.view.addSubview(loadingScreen.view)
         
         UIView.animate(withDuration: 0.5, animations: {
             
@@ -223,6 +222,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 detailView = controller
                 controller.delegate = self
                 controller.detailDelegate = self
+                
                 viewModel.getImageforID(id: object.objectID, callback: { [unowned controller, unowned self] (img) in
                     controller.img = img
                     self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)
@@ -453,9 +453,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //            (navigationItem.leftBarButtonItem?.customView as! UIActivityIndicatorView).stopAnimating()
         //        }
         
-        cell.layoutIfNeeded()
+        //cell.layoutIfNeeded()
         let pokeCell = cell as! PokeCellTableViewCell
-        pokeCell.updateCircle()
+        //pokeCell.updateCircle()
         DispatchQueue.global(qos: .background).async {
             
             //asynchronously requests image if there is none
@@ -506,40 +506,50 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
     
     // MARK: - Fetched results controller
-    
-    var fetchedResultsController: NSFetchedResultsController<Pokemon> {
-        if _fetchedResultsController != nil {
-            return _fetchedResultsController!
-        }
-        print("loading frc")
-        let fetchRequest: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
-        
-        // Set the batch size to a suitable number.
-        fetchRequest.fetchBatchSize = 20
-        
-        // Edit the sort key as appropriate.
-        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
-        
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        // Edit the section name key path and cache name if appropriate.
-        // nil for section name key path means "no sections".
-        let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: "generation", cacheName: nil)
-        aFetchedResultsController.delegate = self
-        _fetchedResultsController = aFetchedResultsController
-        
-        do {
-            try _fetchedResultsController!.performFetch()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nserror = error as NSError
-            fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-        }
-        
-        return _fetchedResultsController!
-    }    
     var _fetchedResultsController: NSFetchedResultsController<Pokemon>? = nil
+    lazy var fetchedResultsController: NSFetchedResultsController<Pokemon> = {
+        return getFetchedResultsController()
+    }()
+    
+    
+}
+
+extension MasterViewController : NSFetchedResultsControllerDelegate {
+    
+func getFetchedResultsController()->NSFetchedResultsController<Pokemon>{
+    if _fetchedResultsController != nil {
+    return _fetchedResultsController!
+    }
+    print("loading frc")
+    let fetchRequest: NSFetchRequest<Pokemon> = Pokemon.fetchRequest()
+    
+    // Set the batch size to a suitable number.
+    fetchRequest.fetchBatchSize = 20
+    
+    // Edit the sort key as appropriate.
+    let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
+    
+    fetchRequest.sortDescriptors = [sortDescriptor]
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    let aFetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.managedObjectContext!, sectionNameKeyPath: "generation", cacheName: nil)
+    aFetchedResultsController.delegate = self
+    _fetchedResultsController = aFetchedResultsController
+    
+    do {
+    try _fetchedResultsController!.performFetch()
+    } catch {
+    // Replace this implementation with code to handle the error appropriately.
+    // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+    let nserror = error as NSError
+    fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+    }
+    
+    return _fetchedResultsController!
+    }
+    
+   
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         
@@ -568,29 +578,28 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         if(!scrollLoading){
             
-            guard let indexpath = indexPath,let newIndexPath = newIndexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-                print("\(indexPath) has likely scrolled out of view")
-                return
-            }
-            
             switch type {
             case .insert:
-                tableView.insertRows(at: [newIndexPath], with: .fade)
-            case .delete:
-                if let indexPath = indexPath{
-                    tableView.deleteRows(at: [indexPath], with: .fade)
-                }
-            case .update:
-                
-                guard let indexpath = indexPath, let pkmncell = tableView.cellForRow(at: indexpath) else {
-                    print("\(indexPath) has likely scrolled out of view")
+                guard let newIndexPath = newIndexPath else {
                     return
                 }
-                print("updating row \(indexpath)")
-                self.configureCell(pkmncell, withPokemon: anObject as! Pokemon)
+                tableView.insertRows(at: [newIndexPath], with: .fade)
+            case .delete:
+                guard let indexpath = indexPath else {
+                    return
+                }
+                tableView.deleteRows(at: [indexpath], with: .fade)
+            case .update:
+                guard let indexpath = indexPath, let pokeCell = tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell else {
+                    return
+                }
+                self.configureCell(pokeCell, withPokemon: anObject as! Pokemon)
             case .move:
-                configureCell(tableView.cellForRow(at: indexPath!)!, withPokemon: anObject as! Pokemon)
-                tableView.moveRow(at: indexPath!, to: newIndexPath)
+                guard let indexpath = indexPath, let newIndexPath = newIndexPath, let pokeCell = tableView.cellForRow(at: indexpath) as? PokeCellTableViewCell else {
+                    return
+                }
+                self.configureCell(pokeCell, withPokemon: anObject as! Pokemon)
+                tableView.moveRow(at: indexpath, to: newIndexPath)
             }
         }
     }
@@ -612,13 +621,12 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
      }
      */
     
-    
-    
 }
+
 
 // MARK: - Delegate Methods
 
-extension MasterViewController : DetailDelegate{
+extension MasterViewController : DetailDelegate {
     
     func requestModel() -> PokeARModel {
         return viewModel.pokemonARModel
@@ -646,7 +654,6 @@ extension MasterViewController : ResetProtocol{
 extension MasterViewController : LoadingProtocol{
     
     
-    
     func loadingInProgress() {
         print("loading in progress")
         
@@ -656,7 +663,7 @@ extension MasterViewController : LoadingProtocol{
     
     func loadingDone(_ sender:Any) {
         print("loading done",sender)
-        if(sender is PokeLoader || sender is PokeViewModel){
+        if(sender is PokeDataLoader || sender is PokeViewModel){
             //if(isLoading){
             print("loading done")
             if isLoading == false{
@@ -665,7 +672,6 @@ extension MasterViewController : LoadingProtocol{
                 isLoading = false
             }
             
-            //} else {
             guard let vm = viewModel, let cp = vm.currentPokemon else {
                 return
             }
@@ -675,6 +681,16 @@ extension MasterViewController : LoadingProtocol{
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
+            
+//            switch(self.traitCollection.horizontalSizeClass){
+//            case .regular:
+//                self.splitViewController?.preferredDisplayMode = .automatic
+//            default:
+//                self.splitViewController?.preferredDisplayMode = .primaryOverlay
+//            }
+//            
+            
+            //self.splitViewController!.preferredDisplayMode = .automatic
             
             //}
         } else if (sender is DetailViewController){
@@ -737,3 +753,4 @@ extension MasterViewController : LoadingProtocol{
         })
     }
 }
+

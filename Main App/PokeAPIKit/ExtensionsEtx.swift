@@ -229,7 +229,7 @@ extension UIColor {
 }
 
 
-public enum ElementalType : String, Codable {
+public enum ElementalType : String, Codable, CaseIterable {
     case fire = "fire"
     case water = "water"
     case grass = "grass"
@@ -247,6 +247,14 @@ public enum ElementalType : String, Codable {
     case dark = "dark"
     case dragon = "dragon"
     case ice = "ice"
+    
+    public static func rawStrings() -> [String]{
+        
+         return ElementalType.allCases.map{ element in
+            element.rawValue
+        }
+        
+    }
     
     public func getColors()->(textColor:UIColor,backgroundColor:UIColor){
         

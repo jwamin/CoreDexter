@@ -22,7 +22,7 @@ final class PokeViewModel{
         }
     }
     
-    private let pokeModel:PokeLoader
+    private let pokeModel:PokeDataLoader
     
     public private(set) var currentPokemon:PokemonViewStruct? {
         didSet{
@@ -46,10 +46,10 @@ final class PokeViewModel{
         
         loadingDelegate = delegate
         
-        let initialiser = PokeLoader(APP_REGION)
+        let initialiser = PokeDataLoader(APP_REGION)
         pokeModel = initialiser
         
-        if(!PokeLoader.datasetCheck()){
+        if(!PokeDataLoader.datasetCheck()){
             pokeModel.loadData()
             pokeModel.loadDelegate = loadingDelegate
             loadingDelegate?.loadingInProgress()
@@ -96,6 +96,7 @@ final class PokeViewModel{
             
             if(poke != nil && filename != nil && poke!.front_sprite_filename == nil){
                 poke!.front_sprite_filename = filename
+                print("updated managedObject")
             }
             
                 callback(img)
