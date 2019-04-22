@@ -42,9 +42,9 @@ class FilesystemOperationTests: XCTestCase {
             
             for pokemon in pokemons{
                 dispatchq.enter()
-                initialiser.loadImage(item: pokemon, callback: nil) {
+                initialiser.getImage(item: pokemon, callback: { (_,_) in
                     dispatchq.leave()
-                }
+                })
             }
             
             dispatchq.notify(queue: .main) {
@@ -88,28 +88,27 @@ class FilesystemOperationTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
     
-//    func testZImagesGetUnloaded(){
-//
-//
-//        AppDelegate.clearAllFilesFromTempDirectory()
-//
-//        let promise = expectation(description: "there are no files in the directory")
-//
-//        var contents:[URL] = []
-//
-//        let fileManager = FileManager.default
-//        do{
-//            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-//                contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
-//            if(contents.count==0){
-//                promise.fulfill()
-//            }
-//
-//        } catch {
-//            XCTFail("Failed to get document directory")
-//        }
-//        wait(for: [promise], timeout: 10)
-//        XCTAssertEqual(contents.count, 0)
-//    }
+    func testZImagesGetUnloaded(){
+
+        AppDelegate.clearAllFilesFromTempDirectory()
+
+        let promise = expectation(description: "there are no files in the directory")
+
+        var contents:[URL] = []
+
+        let fileManager = FileManager.default
+        do{
+            let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
+                contents = try! fileManager.contentsOfDirectory(at: documentDirectory, includingPropertiesForKeys: nil, options: [])
+            if(contents.count==0){
+                promise.fulfill()
+            }
+
+        } catch {
+            XCTFail("Failed to get document directory")
+        }
+        wait(for: [promise], timeout: 10)
+        XCTAssertEqual(contents.count, 0)
+    }
     
 }

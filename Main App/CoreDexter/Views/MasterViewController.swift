@@ -151,15 +151,23 @@ class MasterViewController: UITableViewController {
     @objc
     func fileinfo(_ sender:Any){
         
-        let alert = UIAlertController(title: "File Info", message:nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "File Info", message:nil, preferredStyle: .actionSheet)
+        alert.title = "Core Dexter"
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do{
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             alert.message = fileURLs.count.digitString()+" sprites cached"
-            alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: {(action) in
+            alert.addAction(UIAlertAction(title: "Delete cached sprites", style: .default, handler: {[weak self] (action) in
+                AppDelegate.clearAllFilesFromTempDirectory()
+                for pokecell in self?.tableView.visibleCells as! [PokeCellTableViewCell]{
+                    pokecell.imgview.image = nil
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "Reset all data and favourites", style: .destructive, handler: {(action) in
                 self.callReset()
             }))
+            
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } catch {

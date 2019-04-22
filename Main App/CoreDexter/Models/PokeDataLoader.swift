@@ -24,18 +24,31 @@ struct PokeData {
     var genus:String?
     var height:Int
     var weight:Int
+    var status:PokeLoadStatus
+}
+
+enum PokeLoadStatus{
+    case initialised
+    case gotSpeciesData
+    case readyForCoreData
+}
+
+enum FSRetrievalError : Error{
+    case inDataButNotFileSystem
+    case noFiles
 }
 
 // MARK: - Networking and Data Retrieval
 
 class PokeDataLoader{
-
+    
     let region:RegionIndex
     
     var delegate:ResetProtocol?
     var loadDelegate:LoadingProtocol?
     
     var dispatchGroup:DispatchGroup!
+    
     var pokeArray:[PokeData] = []
     var appDelegate:AppDelegate!
     
@@ -43,10 +56,10 @@ class PokeDataLoader{
     
     init(_ injectedRegion:RegionIndex,_ appDelegate:AppDelegate?){
         
-            region = injectedRegion
-            self.appDelegate = appDelegate ?? (UIApplication.shared.delegate as! AppDelegate)
-            managedObjectContext = self.appDelegate.persistentContainer.viewContext
-            print("initialised")
+        region = injectedRegion
+        self.appDelegate = appDelegate ?? (UIApplication.shared.delegate as! AppDelegate)
+        managedObjectContext = self.appDelegate.persistentContainer.viewContext
+        print("initialised poke data loader")
         
     }
     
@@ -58,25 +71,7 @@ class PokeDataLoader{
         print("pokemodel deinitialised")
     }
     
-    func updateFavourite(id:NSManagedObjectID,callback:((_ id:NSManagedObjectID,_ favourite:Bool)->Void)?){
-        
-        let pokemon = getItem(id: id)
-        
-        pokemon.favourite = !pokemon.favourite
-        
-        do {
-           try managedObjectContext.save()
-            callback?(id,pokemon.favourite)
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-        
-    }
-    
-    
-    func getItem(id:NSManagedObjectID)->Pokemon{
-        return managedObjectContext.object(with: id) as! Pokemon
-    }
+    //MARK: Primary Data loading functions
     
     func loadData(){
         
@@ -86,9 +81,10 @@ class PokeDataLoader{
         getPokedex()?.resume()
         
         dispatchGroup.notify(queue: .main) {
-            print("loaded",self.pokeArray.first)
+
             print(self.pokeArray.count)
             self.coreDataProcess()
+            
         }
         
     }
@@ -121,17 +117,22 @@ class PokeDataLoader{
     }
     
     private func coreDataProcess(){
+        
         guard let context = self.managedObjectContext else{
             return
         }
         
         //create region object
-
+        
+        for pokemon in pokeArray{
+            if pokemon.status != .readyForCoreData{
+                fatalError()
+            }
+        }
+        
         guard let pokefirst = pokeArray.first else {
             fatalError()
         }
-        
-        
         
         var region = getOrGenerateNextRegion(generation: pokefirst.generation)
         
@@ -161,9 +162,9 @@ class PokeDataLoader{
             
         }
         
-            appDelegate.saveContext()
-            loadDelegate?.loadingDone(self)
-            delegate?.resetDone()
+        appDelegate.saveContext()
+        loadDelegate?.loadingDone(self)
+        delegate?.resetDone()
         
         
     }
@@ -195,6 +196,8 @@ class PokeDataLoader{
         
     }
     
+    
+    
     func getPokedex() -> URLSessionDataTask?{
         
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokedex/"+String(region.rawValue)) else {
@@ -212,7 +215,7 @@ class PokeDataLoader{
             guard let data = data else {
                 fatalError("no data")
             }
-
+            
             let decoder = JSONDecoder()
             
             var pokedex:Pokedex
@@ -229,14 +232,15 @@ class PokeDataLoader{
             for poke in pokeDict{
                 let regionNumber = poke.entry_number
                 let urlString = poke.pokemon_species.url.absoluteString
+                
                 self.getSpeciesDataforPokemon(urlString: urlString,regionIndex:regionNumber)
             }
             
-
             
-             self.dispatchGroup.leave()
             
-            })
+            self.dispatchGroup.leave()
+            
+        })
         return task
     }
     
@@ -308,7 +312,7 @@ class PokeDataLoader{
                 }
             }
             
-            let poke = PokeData(name: name, region: region, generation: generation, index: String(speciesInfo.id), regionIndex: String(gameIndex), nationalIndex: number, type1: nil, type2: nil, description: message, genus: genusEntry, height: 0, weight:0)
+            let poke = PokeData(name: name, region: region, generation: generation, index: String(speciesInfo.id), regionIndex: String(gameIndex), nationalIndex: number, type1: nil, type2: nil, description: message, genus: genusEntry, height: 0, weight:0, status: .initialised)
             
             self.pokeArray.append(poke)
             //print(poke)
@@ -332,11 +336,11 @@ class PokeDataLoader{
         guard let url = URL(string: urlString) else {
             return
         }
-        URLSession.shared.dataTask(with: url, completionHandler: {
+        let pokemonDataTask = URLSession.shared.dataTask(with: url, completionHandler: {
             [unowned self] (data, response, error) in
             
-            if (error != nil){
-                print(error?.localizedDescription, "\(regionIndex) dropped from deep pokemon info, retrying...")
+            if let error = error {
+                print(error.localizedDescription, "\(regionIndex) dropped from deep pokemon info, retrying...")
                 self.getDataforPokemon(regionIndex: regionIndex)
                 //self.dispatchGroup.leave()
                 return
@@ -383,7 +387,7 @@ class PokeDataLoader{
                 }
                 
             }
-
+            thisPokemon.status = .readyForCoreData
             self.pokeArray[thisPokeIndex] = thisPokemon
             //process pokedata and
             self.dispatchGroup.leave()
@@ -391,29 +395,59 @@ class PokeDataLoader{
             
             
             
-        }).resume()
+        })
+        pokemonDataTask.resume()
         
         
     }
     
-
+    //MARK: Single Item Operations
+    
+    func getItem(id:NSManagedObjectID)->Pokemon{
+        return managedObjectContext.object(with: id) as! Pokemon
+    }
+    
+    //MARK: Favourites
+    
+    func updateFavourite(id:NSManagedObjectID,callback:((_ id:NSManagedObjectID,_ favourite:Bool)->Void)?){
+        
+        let pokemon = getItem(id: id)
+        
+        pokemon.favourite = !pokemon.favourite
+        
+        do {
+            try managedObjectContext.save()
+            callback?(id,pokemon.favourite)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        
+    }
+    
+    
+    //MARK: Image Operations
     
     public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
         
         if let sprite_filename = item.front_sprite_filename{
             
-            getImageFromStorage(filepath: sprite_filename, callback: callback)
+            //attempt loading from filesystem, this still might fail
+            do {
+                try getImageFromStorage(filepath: sprite_filename, callback: callback)
+            } catch FSRetrievalError.inDataButNotFileSystem {
+                loadImageFromAPI(item: item, callback: callback)
+            } catch {
+                fatalError()
+            }
             
         } else {
             //print("no filename, will load",item.id)
-           loadImageFromAPI(item: item, callback: callback,nil)
+            loadImageFromAPI(item: item, callback: callback)
         }
         
-       
-}
-
-    private func getImageFromStorage(filepath:String,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
-        DispatchQueue.global().async {
+    }
+    
+    private func getImageFromStorage(filepath:String,callback:((_ img:UIImage,_ filePath:String?)->Void)?) throws {
             
             let filepaths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
             if let dirpath = filepaths.first{
@@ -438,26 +472,30 @@ class PokeDataLoader{
                     
                     
                 }
-                print("file doesnt exist \(filepath)")
-                //handle this better
-                return
+                
+                //this is key for tests which can easily delete images without updating core data file reference
+                throw FSRetrievalError.inDataButNotFileSystem
+                
+                
             }
-            print("no callback, so pointless")
-            return
-        }
+        
+            throw FSRetrievalError.noFiles
+        
     }
     
-    private func loadImageFromAPI(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?,_ secondaryCallback:(()->Void)?){
-    
+    private func loadImageFromAPI(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
+        
         DispatchQueue.global().async {
+            
             guard let url = URL(string:IMAGE_URL+String(item.id)+".png") else {
                 return
             }
-            URLSession.shared.dataTask(with: url, completionHandler: {
+            
+            let imageTask = URLSession.shared.dataTask(with: url, completionHandler: {
                 (data, response, error) in
                 
-                if (error != nil){
-                    print(error?.localizedDescription)
+                if let error = error {
+                    print(error.localizedDescription)
                     return
                 }
                 
@@ -465,9 +503,9 @@ class PokeDataLoader{
                     return
                 }
                 
-                
                 let fileManager = FileManager.default
                 do{
+                    
                     let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
                     let filename = "\(Int(item.id).digitString()).png"
                     let fileURL = documentDirectory.appendingPathComponent(filename)
@@ -484,33 +522,25 @@ class PokeDataLoader{
                         
                         try imgdata.write(to: fileURL)
                         
-                        
                         if let callback = callback{
                             callback(image,filename)
                         }
-                        
-                        if let secondaryCallback = secondaryCallback{
-                            secondaryCallback()
-                        }
-                        
-                        
-                        //print("getting image from github success!",item.id)
-                        
-                        
+         
                     } catch {
-                        print("write failed")
+                        print("write failed",error.localizedDescription)
                     }
                     
                 } catch {
-                    print("error")
+                    print("error",error.localizedDescription)
                 }
                 
-                
-            }).resume()
+            })
+            
+            imageTask.resume()
         }
     }
-        
-        
-    }
+    
+    
+}
 
 

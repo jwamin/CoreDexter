@@ -70,7 +70,7 @@ extension MasterViewController : UISearchResultsUpdating{
         
         //element matches
         
-        var elementMatch = false
+        //var elementMatch = false
         
         for elementString in ElementalType.rawStrings(){
             
@@ -82,7 +82,7 @@ extension MasterViewController : UISearchResultsUpdating{
                 let orPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [elementPredicate,element2Predicate])
                 
                 searchItemsPredicate.append(orPredicate)
-                elementMatch = true
+                //elementMatch = true
                 break
                 
             }

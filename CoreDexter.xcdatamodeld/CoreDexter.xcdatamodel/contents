@@ -13,12 +13,12 @@
         <attribute name="type1" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="type2" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="weight" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="region" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Region" inverseName="pokemon" inverseEntity="Region" syncable="YES"/>
+        <relationship name="region" maxCount="1" deletionRule="Deny" destinationEntity="Region" inverseName="pokemon" inverseEntity="Region" syncable="YES"/>
     </entity>
     <entity name="Region" representedClassName="Region" syncable="YES" codeGenerationType="class">
         <attribute name="generation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="pokemon" toMany="YES" deletionRule="Nullify" destinationEntity="Pokemon" inverseName="region" inverseEntity="Pokemon" syncable="YES"/>
+        <relationship name="pokemon" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Pokemon" inverseName="region" inverseEntity="Pokemon" syncable="YES"/>
     </entity>
     <elements>
         <element name="Pokemon" positionX="-330.58203125" positionY="-164.1015625" width="128" height="240"/>

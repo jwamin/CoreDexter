@@ -13,22 +13,19 @@ import PokeAPIKit
 
 final class PokeViewModel{
     
-    public var pokemonARModel:PokeARModel{
-        get{
-            guard let currentPokemon = currentPokemon else {
-                fatalError()
-            }
-            return PokeARModel(number: currentPokemon.idString, name: currentPokemon.name, spriteData: currentImageData!, height: currentPokemon.height)
-        }
-    }
+
+    private let pokeDataLoader:PokeDataLoader
     
-    private let pokeModel:PokeDataLoader
+    public private(set) var currentImageData:Data?
+    
+    var loadingDelegate:LoadingProtocol?
     
     public private(set) var currentPokemon:PokemonViewStruct? {
         didSet{
             guard let curdata = currentPokemon else {
                 return
             }
+            
             self.getImageforID(id: curdata.dataID) { (image) in
                 self.currentImageData = image.pngData()
             }
@@ -38,26 +35,32 @@ final class PokeViewModel{
         }
     }
     
-    public private(set) var currentImageData:Data?
+    public var pokemonARModel:PokeARModel{
+        get{
+            guard let currentPokemon = currentPokemon else {
+                fatalError()
+            }
+            return PokeARModel(number: currentPokemon.idString, name: currentPokemon.name, spriteData: currentImageData!, height: currentPokemon.height)
+        }
+    }
     
-    var loadingDelegate:LoadingProtocol?
+    
+
     
     init(delegate:LoadingProtocol?) {
         
         loadingDelegate = delegate
         
         let initialiser = PokeDataLoader(APP_REGION)
-        pokeModel = initialiser
+        pokeDataLoader = initialiser
         
         if(!PokeDataLoader.datasetCheck()){
-            pokeModel.loadData()
-            pokeModel.loadDelegate = loadingDelegate
+            pokeDataLoader.loadData()
+            pokeDataLoader.loadDelegate = loadingDelegate
             loadingDelegate?.loadingInProgress()
         } else {
             loadingDelegate?.loadingDone(self)
         }
-       
-        
         
     }
     
@@ -65,59 +68,12 @@ final class PokeViewModel{
         print("pokeviewmodel deallocated")
     }
     
-    public func updateFavouriteForPokemon(id:NSManagedObjectID?,callback:((_ id:NSManagedObjectID,_ favourite:Bool)->Void)?){
- 
-        let workingID:NSManagedObjectID
-        
-        if let id = id {
-            workingID = id
-        } else {
-            workingID = currentPokemon!.dataID
-        }
-        
-        pokeModel.updateFavourite(id: workingID) { (returnedID, isFavourite) in
-            if(self.currentPokemon?.dataID == workingID){
-                print("updating current pokemon")
-                self.currentPokemon?.isFavourite = isFavourite
-        } else {
-            callback?(returnedID,isFavourite)
-        }
-        }
-        
-    }
-    
-    public func getImageforID(id:NSManagedObjectID, callback:@escaping ((UIImage)->())){
-        
-        let poke = pokeModel.managedObjectContext.object(with: id) as! Pokemon
-        
-        //get image from model
-        pokeModel.getImage(item: poke) { [weak poke] (img, filename) in
-
-            
-            if(poke != nil && filename != nil && poke!.front_sprite_filename == nil){
-                poke!.front_sprite_filename = filename
-                print("updated managedObject")
-            }
-            
-                callback(img)
-  
-            
-        }
-        
-    }
-    
-    public func assignDelegate(delegate:ResetProtocol){
-        pokeModel.delegate = delegate
-    }
-    
-    public func resetDelegate(){
-        pokeModel.delegate = nil
-    }
+    //MARK: Current View Model
     
     public func setCurrentPokemonViewStruct(id:NSManagedObjectID){
         
-        let detail = pokeModel.getItem(id: id)
-    
+        let detail = pokeDataLoader.getItem(id: id)
+        
         let idNumber = Int(detail.id).digitString()
         let regionId = Int(detail.region_id).digitString()
         let physicalRegion = Generation(rawValue: detail.generation!)
@@ -134,6 +90,61 @@ final class PokeViewModel{
         
         currentPokemon = returnItem
         
+    }
+    
+    
+    //MARK: Favourites
+    
+    public func updateFavouriteForPokemon(id:NSManagedObjectID?,callback:((_ id:NSManagedObjectID,_ favourite:Bool)->Void)?){
+ 
+        let workingID:NSManagedObjectID
+        
+        if let id = id {
+            workingID = id
+        } else {
+            workingID = currentPokemon!.dataID
+        }
+        
+        pokeDataLoader.updateFavourite(id: workingID) { (returnedID, isFavourite) in
+            if(self.currentPokemon?.dataID == workingID){
+                print("updating current pokemon")
+                self.currentPokemon?.isFavourite = isFavourite
+        } else {
+            callback?(returnedID,isFavourite)
+        }
+        }
+        
+    }
+    
+    //MARK: Images
+    
+    public func getImageforID(id:NSManagedObjectID, callback:@escaping ((UIImage)->())){
+        
+        let poke = pokeDataLoader.managedObjectContext.object(with: id) as! Pokemon
+        
+        //get image from model
+        pokeDataLoader.getImage(item: poke) { [weak poke] (img, filename) in
+
+            
+            if(poke != nil && filename != nil && poke!.front_sprite_filename == nil){
+                poke!.front_sprite_filename = filename
+                print("updated managedObject")
+            }
+            
+                callback(img)
+            
+        }
+        
+    }
+    
+    //MARK: Reset Delegate
+    
+    public func assignDelegate(delegate:ResetProtocol){
+        pokeDataLoader.delegate = delegate
+    }
+    
+    public func resetDelegate(){
+        pokeDataLoader.delegate = nil
     }
     
 }

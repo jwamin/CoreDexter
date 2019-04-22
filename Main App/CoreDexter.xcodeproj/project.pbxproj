@@ -169,7 +169,6 @@
 				3D2BE742220231F300E28519 /* Assets.xcassets */,
 				3D2BE744220231F300E28519 /* LaunchScreen.storyboard */,
 				3D2BE747220231F300E28519 /* Info.plist */,
-				3D2BE738220231F200E28519 /* CoreDexter.xcdatamodeld */,
 			);
 			path = CoreDexter;
 			sourceTree = "<group>";
@@ -232,6 +231,7 @@
 		57E46F66226E3382000E1BCE /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				3D2BE738220231F200E28519 /* CoreDexter.xcdatamodeld */,
 				57E46F64226E3366000E1BCE /* Predicates.swift */,
 			);
 			name = Data;
