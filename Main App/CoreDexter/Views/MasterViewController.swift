@@ -74,10 +74,7 @@ class MasterViewController: UITableViewController {
                                         
             
         navigationItem.rightBarButtonItem = addButton
-        if let split = splitViewController {
-            let controllers = split.viewControllers
-            //detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
-        }
+       
         
         //activity view in toolbar .. mebbe refactor to loading screen
         //        let activityview = UIActivityIndicatorView(style: .gray)
@@ -167,7 +164,7 @@ class MasterViewController: UITableViewController {
             alert.addAction(UIAlertAction(title: "Reset all data and favourites", style: .destructive, handler: {(action) in
                 self.callReset()
             }))
-            
+            alert.popoverPresentationController?.barButtonItem = (sender as! UIBarButtonItem)
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } catch {
