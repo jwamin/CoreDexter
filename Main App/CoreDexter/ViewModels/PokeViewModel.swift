@@ -37,10 +37,10 @@ final class PokeViewModel{
     
     public var pokemonARModel:PokeARModel{
         get{
-            guard let currentPokemon = currentPokemon else {
+            guard let currentPokemon = currentPokemon, let imageData = currentImageData else {
                 fatalError()
             }
-            return PokeARModel(number: currentPokemon.idString, name: currentPokemon.name, spriteData: currentImageData!, height: currentPokemon.height)
+            return PokeARModel(number: currentPokemon.idString, name: currentPokemon.name, spriteData: imageData, height: currentPokemon.height)
         }
     }
     
