@@ -75,6 +75,7 @@ class MasterViewController: UITableViewController {
             
         navigationItem.rightBarButtonItem = addButton
        
+        self.navigationController?.delegate = self
         
         //activity view in toolbar .. mebbe refactor to loading screen
         //        let activityview = UIActivityIndicatorView(style: .gray)
