@@ -34,10 +34,9 @@ class Animator : NSObject, UIViewControllerAnimatedTransitioning{
         
         context = transitionContext
         
-        
         let fromView = transitionContext.viewController(forKey: .from) as! MasterViewController
         let toViewNavigator = transitionContext.viewController(forKey: .to) as! UINavigationController
-        toView = transitionContext.view(forKey: .to)
+        let toViewController = toViewNavigator.topViewController as! DetailViewController
         let container = transitionContext.containerView
         
         guard let moveViewIndexPath = fromView.tableView.indexPathForSelectedRow, let cell = fromView.tableView.cellForRow(at: moveViewIndexPath) as? PokeCellTableViewCell, let animateBubble = cell.imgview else {
@@ -45,26 +44,13 @@ class Animator : NSObject, UIViewControllerAnimatedTransitioning{
             return
         }
         
-        
-       
-        //        guard let target = toViewController.imageOuterContainer else {
-        //            return
-        //        }
-        
         let duration = transitionDuration(using: transitionContext)
-        
-        //animateBubble.removeFromSuperview()
-        //container.addSubview(animateBubble)
-        //toViewNavigator.view.frame.origin = .zero
+
         snapshot = fromView.view.snapshotView(afterScreenUpdates: false)!
         
-        
-        
         container.addSubview(snapshot)
-        container.addSubview(toView)
-        
-        //        let originalFrame = animateBubble.frame
-        //        container.addSubview(animateBubble)
+        container.addSubview(toViewNavigator.view)
+
         
         
         let cellframe = fromView.tableView.rectForRow(at: moveViewIndexPath)
@@ -80,7 +66,7 @@ class Animator : NSObject, UIViewControllerAnimatedTransitioning{
         maskLayer.bounds = fromFrame
         maskLayer.position = fromView.tableView.convert(cell.center, to: fromView.tableView.superview!)
         maskLayer.backgroundColor = UIColor.black.cgColor
-        //toView = toViewController.view
+        toView = toViewController.view
         toView.layer.mask = maskLayer
         
         
@@ -96,8 +82,6 @@ class Animator : NSObject, UIViewControllerAnimatedTransitioning{
         animation.delegate = self
         animation.duration = duration
         maskLayer.add(animation, forKey: "bounds")
-        //CATransaction.commit()
-        
         
     }
     
@@ -110,6 +94,7 @@ class Animator : NSObject, UIViewControllerAnimatedTransitioning{
 extension Animator : CAAnimationDelegate{
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        
         context.completeTransition(true)
         
     }
