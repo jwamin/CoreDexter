@@ -15,6 +15,10 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     var targetView:UIView!
     var pokemonData:PokeARModel?
     
+    var pokePlanes = [PokePlane]()
+    
+    let updateQueue = DispatchQueue(label: "com.jossy.CoreDexter.pokeCameraARKitQueue")
+    
     init(view:ARSCNView){
         self.view = view
         self.scene = view.scene
@@ -72,7 +76,8 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     }
     
     func getFirstSCNIntersection(point:CGPoint)->SCNHitTestResult?{
-        let hits = self.view.hitTest(point, options: nil)
+        let pointAdjust = CGPoint(x: point.x, y: point.y-10)
+        let hits = self.view.hitTest(pointAdjust, options: nil)
         return hits.first
     }
     
@@ -92,50 +97,30 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
             return
         }
         
-        var image:UIImage = UIImage(named: "darkrai", in: Bundle(for: type(of: self)), compatibleWith: nil)!
-        var dimension:CGFloat = pokeDefaultPlainDimension
-        
-        if let data = pokemonData{
-            dimension = CGFloat(data.height)
-            image = UIImage(data: data.sprite)!
-        }
-        
-        print(dimension,image,pokemonData)
-        
-        
-        //create SCN geometry and node (it's a plane)
-        let geometry = SCNPlane(width: dimension, height: dimension)
-        let newnode = SCNNode(geometry: geometry)
-        
-        //set bitmask for removal later
-        newnode.categoryBitMask = POKE_PLAIN_CATEGORY_BIT_MASK
-        
-        //create identity transform to set initial settings
-        var identity = matrix_identity_float4x4
-
-        // since the height of the plane is 0.3 meters, translate the plane by half its height in the y axis, ensures it appears to "sit" on the floor in the center
-        identity.columns.3.y = identity.columns.3.y + (Float(dimension)/2)
-        
+       let newnode = PokePlane(pokemonData: pokemonData)
+        newnode.anchor = anchor
         //multiply adjustment transform and world transform of insersection together
-        let transform = matrix_multiply(identity, intersection.worldTransform)
-        
-        //setup geometry materials (image)
-        geometry.materials.first!.diffuse.contents = image
-        geometry.materials.first!.isDoubleSided = true
+        let transform = matrix_multiply(newnode.simdTransform, intersection.worldTransform)
         
         //set transform of node to multiplied result of intersection tr
         newnode.simdTransform = transform
         newnode.eulerAngles.y = camera.eulerAngles.y
        
-        //newnode.simdEulerAngles = camera.eulerAngles
-        self.scene.rootNode.addChildNode(newnode)
         
+        
+        //newnode.simdEulerAngles = camera.eulerAngles
+        pokePlanes.append(newnode)
+        self.scene.rootNode.addChildNode(newnode)
+    
     }
     
     func removeGeometryNode(node:SCNNode){
         
+        pokePlanes.removeAll { (listNode) -> Bool in
+            listNode == node
+        }
         node.removeFromParentNode()
-        
+        print(pokePlanes.count)
     }
     
     var isDragging = false
@@ -192,6 +177,7 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     func translate( basedOn screenPos: CGPoint, infinitePlane: Bool, allowAnimation: Bool) {
         guard let cameraTransform = view.session.currentFrame?.camera.transform,
             let result = getFirstARIntersection(point: screenPos), let scnhittest = getFirstSCNIntersection(point: screenPos) else {
+                print("something missing")
                 return
         }
         
@@ -205,6 +191,7 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
         } else if result.type == .estimatedVerticalPlane {
             planeAlignment = .vertical
         } else {
+            print("plane?")
             return
         }
         
@@ -265,29 +252,31 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+        updateQueue.async {
+            for object in self.pokePlanes {
+                object.addToPlaneAnchor(anchor: planeAnchor, with: node)
+            }
+        }
 
-    
-        
-//        let geometry = SCNPlane(width: 0.3, height: 0.3)
-//        let newnode = SCNNode(geometry: geometry)
-//        geometry.materials.first!.diffuse.contents = UIColor.red.cgColor
-//
-//        //          newnode.rotation
-//        //          newnode.rotation = SCNVector4Make(0,0,1, -.pi / 2)
-//        //          newnode.rotation = SCNVector4Make(0,1,0, -.pi / 2)
-//        //newnode.eulerAngles.x = -.pi / 2
-//        //          newnode.rotation
-//
-//        newnode.transform = SCNMatrix4MakeRotation(-.pi/2, 1, 0, 0)
-//        //newnode.transform
-//        node.addChildNode(newnode)
+
     }
-    
+
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        
+        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+        updateQueue.async {
+            if let sceneNode = self.pokePlanes.first(where: {$0.anchor == anchor}){
+                print("updated")
+                sceneNode.simdPosition = planeAnchor.transform.translation
+                sceneNode.anchor = planeAnchor
+            }
+        }
+
+
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
+        
         
     }
     
