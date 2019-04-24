@@ -251,41 +251,55 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     }
     
     
-    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        updateQueue.async {
-            for object in self.pokePlanes {
-                object.addToPlaneAnchor(anchor: planeAnchor, with: node)
-            }
-        }
-
-
-    }
-
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        updateQueue.async {
-            if let sceneNode = self.pokePlanes.first(where: {$0.anchor == anchor}){
-                print("updated")
-                sceneNode.simdPosition = planeAnchor.transform.translation
-                sceneNode.anchor = planeAnchor
-            }
-        }
-
-
-    }
+//    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+//        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+//        updateQueue.async {
+//            for object in self.pokePlanes {
+//                object.addToPlaneAnchor(anchor: planeAnchor, with: node)
+//            }
+//        }
+//
+//
+//    }
+//
+//    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+//        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+//        updateQueue.async {
+//            if let sceneNode = self.pokePlanes.first(where: {$0.anchor == anchor}){
+//                print("updated")
+//                sceneNode.simdPosition = planeAnchor.transform.translation
+//                sceneNode.anchor = planeAnchor
+//            }
+//        }
+//
+//
+//    }
     
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        
-        
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        switch camera.trackingState{
+        case .notAvailable, .limited:
+            pokePlanes.forEach {
+                $0.isHidden = true
+            }
+        case .normal:
+            pokePlanes.forEach {
+                $0.isHidden = false
+            }
+        }
     }
     
     func sessionWasInterrupted(_ session: ARSession) {
         
+        pokePlanes.forEach {
+            $0.isHidden = true
+        }
+        
     }
     
     func sessionInterruptionEnded(_ session: ARSession) {
-        
+        pokePlanes.forEach {
+            $0.isHidden = false
+        }
     }
     
 }

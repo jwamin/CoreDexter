@@ -27,6 +27,8 @@
 		57ED9590226A51C600FECD71 /* 491Darkrai.png in Resources */ = {isa = PBXBuildFile; fileRef = 5712521B2259096500C55FC3 /* 491Darkrai.png */; };
 		57ED9591226A51F000FECD71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 572CE5372256C3F400622C3A /* Assets.xcassets */; };
 		57ED9596226A5D8000FECD71 /* libPokeAPIKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57ED9595226A5D8000FECD71 /* libPokeAPIKit.a */; };
+		57EE347B2270F8BD0061D574 /* ViewControllerActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EE347A2270F8BD0061D574 /* ViewControllerActions.swift */; };
+		57EE347C2270F8BD0061D574 /* ViewControllerActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EE347A2270F8BD0061D574 /* ViewControllerActions.swift */; };
 		57FBC1EC225D19F0002C63A1 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FBC1EB225D19F0002C63A1 /* Settings.swift */; };
 		57FBC1EE225D3794002C63A1 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FBC1ED225D3794002C63A1 /* CaptureButton.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +62,7 @@
 		57ED957F226A35F800FECD71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57ED958C226A4F1A00FECD71 /* libPokeAPIKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libPokeAPIKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		57ED9595226A5D8000FECD71 /* libPokeAPIKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libPokeAPIKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		57EE347A2270F8BD0061D574 /* ViewControllerActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerActions.swift; sourceTree = "<group>"; };
 		57FBC1EB225D19F0002C63A1 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		57FBC1ED225D3794002C63A1 /* CaptureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,6 +122,7 @@
 				5712521B2259096500C55FC3 /* 491Darkrai.png */,
 				572CE5302256C3F300622C3A /* AppDelegate.swift */,
 				572CE5322256C3F300622C3A /* ViewController.swift */,
+				57EE347A2270F8BD0061D574 /* ViewControllerActions.swift */,
 				57FBC1ED225D3794002C63A1 /* CaptureButton.swift */,
 				573D1191226F9682004BD625 /* PokePlane.swift */,
 				571252192258EA3100C55FC3 /* Renderer.swift */,
@@ -303,6 +307,7 @@
 			files = (
 				572CE5332256C3F300622C3A /* ViewController.swift in Sources */,
 				57FBC1EE225D3794002C63A1 /* CaptureButton.swift in Sources */,
+				57EE347B2270F8BD0061D574 /* ViewControllerActions.swift in Sources */,
 				5712521A2258EA3100C55FC3 /* Renderer.swift in Sources */,
 				573D1192226F9682004BD625 /* PokePlane.swift in Sources */,
 				57FBC1EC225D19F0002C63A1 /* Settings.swift in Sources */,
@@ -314,6 +319,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57EE347C2270F8BD0061D574 /* ViewControllerActions.swift in Sources */,
 				57ED9588226A360500FECD71 /* CaptureButton.swift in Sources */,
 				573D1193226FAE36004BD625 /* PokePlane.swift in Sources */,
 				57ED9589226A360900FECD71 /* Renderer.swift in Sources */,
