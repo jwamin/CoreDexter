@@ -150,12 +150,15 @@ class MasterViewController: UITableViewController {
     func fileinfo(_ sender:Any){
         
         let alert = UIAlertController(title: "File Info", message:nil, preferredStyle: .actionSheet)
-        alert.title = "Core Dexter"
+        alert.title = "CoreDexter"
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do{
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             alert.message = fileURLs.count.digitString()+" sprites cached"
+            alert.addAction(UIAlertAction(title: "Show About Page", style: .default, handler: { (action) in
+                self.showInfoScreen()
+            }))
             alert.addAction(UIAlertAction(title: "Delete cached sprites", style: .default, handler: {[weak self] (action) in
                 AppDelegate.clearAllFilesFromTempDirectory()
                 for pokecell in self?.tableView.visibleCells as! [PokeCellTableViewCell]{
@@ -165,6 +168,7 @@ class MasterViewController: UITableViewController {
             alert.addAction(UIAlertAction(title: "Reset all data and favourites", style: .destructive, handler: {(action) in
                 self.callReset()
             }))
+            
             alert.popoverPresentationController?.barButtonItem = (sender as! UIBarButtonItem)
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
