@@ -12,7 +12,10 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     
     let scene:SCNScene
     let view:ARSCNView
-    var targetView:UIView!
+    var targetView:UILabel!
+    
+    var statusLabel:UILabel!
+    
     var pokemonData:PokeARModel?
     
     var pokePlanes = [PokePlane]()
@@ -23,19 +26,52 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
         self.view = view
         self.scene = view.scene
         
-        targetView = UIView()
+        targetView = UILabel()
         targetView.translatesAutoresizingMaskIntoConstraints = false
-        targetView.backgroundColor = .red
         view.addSubview(targetView)
         
         targetView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         targetView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        targetView.widthAnchor.constraint(equalToConstant: 10).isActive = true
-        targetView.heightAnchor.constraint(equalTo: targetView.widthAnchor).isActive = true
+        //targetView.widthAnchor.constraint(equalToConstant: 10).isActive = true
+        //targetView.heightAnchor.constraint(equalTo: targetView.widthAnchor).isActive = true
+        
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        
+        statusLabel = UILabel()
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        statusLabel.text = "Status Label"
+        if let labelFont = PokeCameraViewController.labelFont{
+            statusLabel.font = UIFontMetrics(forTextStyle: .title2).scaledFont(for: labelFont)
+        }
+        
+        blurView.contentView.addSubview(statusLabel)
+        
+        statusLabel.centerXAnchor.constraint(equalTo: blurView.centerXAnchor).isActive = true
+        statusLabel.centerYAnchor.constraint(equalTo: blurView.centerYAnchor).isActive = true
+        
+        statusLabel.topAnchor.constraint(equalToSystemSpacingBelow: blurView.contentView.topAnchor, multiplier: 1.0).isActive = true
+        statusLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: blurView.contentView.leadingAnchor, multiplier: 1.0).isActive = true
+        blurView.contentView.trailingAnchor.constraint(equalToSystemSpacingAfter: statusLabel.trailingAnchor, multiplier: 1.0).isActive = true
+        blurView.contentView.bottomAnchor.constraint(equalToSystemSpacingBelow: statusLabel.bottomAnchor, multiplier: 1.0).isActive = true
+        
+        
+        view.addSubview(blurView)
+        
+        blurView.heightAnchor.constraint(greaterThanOrEqualTo: statusLabel.heightAnchor).isActive = true
+        blurView.widthAnchor.constraint(greaterThanOrEqualTo: statusLabel.widthAnchor).isActive = true
+        blurView.topAnchor.constraint(equalToSystemSpacingBelow: view.safeAreaLayoutGuide.topAnchor, multiplier: 1.0).isActive = true
+        blurView.leftAnchor.constraint(lessThanOrEqualToSystemSpacingAfter: view.safeAreaLayoutGuide.leftAnchor, multiplier: 1.0).isActive = true
         
         super.init()
         view.delegate = self
-        view.debugOptions = [.showBoundingBoxes,.showFeaturePoints,.showWorldOrigin]
+        view.debugOptions = []
+        self.view.superview?.layoutIfNeeded()
+        blurView.clipsToBounds = true
+        
+        //clean the views up so this is dynamic
+        blurView.layer.cornerRadius = 10
+        
     }
     
     func updateDebug(debug:Bool){
@@ -57,14 +93,47 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     
         DispatchQueue.main.async {
             let midPoint = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
+            
+            //first look for existing
+            if let scnIntersection = self.getFirstSCNIntersection(point: midPoint){
+                if(scnIntersection.node.categoryBitMask == POKE_PLAIN_CATEGORY_BIT_MASK){
+                    
+                    self.updateQueue.sync {
+                        self.targetView.text = "❌"
+                        self.statusLabel.text = "Tap to remove sprite"
+                    }
+                    self.targetView.layer.removeAllAnimations()
+                    return
+                }
+            }
+            
             let hits = self.view.hitTest(midPoint, types: [.existingPlane])
             guard let nearestHit = hits.first else {
-                self.targetView.backgroundColor = .red
+                self.targetView.text = "🚫"
+                self.targetView.layer.removeAllAnimations()
                 return
             }
             
             //print(nearestHit)
-            self.targetView.backgroundColor = UIColor.green
+            
+            self.updateQueue.sync {
+                self.targetView.text = "⭕️"
+                self.statusLabel.text = "Tap to add sprite"
+            }
+            if(self.targetView.layer.animation(forKey: "scale") == nil){
+                
+                let animation = CABasicAnimation(keyPath: "transform")
+                animation.fromValue = CATransform3DMakeScale(1, 1, 1)
+                animation.toValue = CATransform3DMakeScale(2.0, 2.0, 1)
+                animation.autoreverses = true
+                animation.repeatCount = .infinity
+                animation.duration = 0.5
+                //self.targetView.layer.transform
+                self.targetView.layer.add(animation, forKey: "scale")
+            }
+            
+
+            
         }
         
 
@@ -281,9 +350,15 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
             pokePlanes.forEach {
                 $0.isHidden = true
             }
+            updateQueue.sync {
+                self.statusLabel.text = "AR Tracking Limited or Not Available"
+            }
         case .normal:
             pokePlanes.forEach {
                 $0.isHidden = false
+            }
+            updateQueue.sync {
+                self.statusLabel.text = "AR Tracking Is Ready!"
             }
         }
     }

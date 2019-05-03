@@ -705,19 +705,18 @@ extension DetailViewController{
     @objc
     func startARKitView(){
     
-        let navigationcontroller = UINavigationController()
-        navigationcontroller.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.font:font
-        ]
-        let viewController = PokeCameraViewController(nibName: nil, bundle: nil)
-        viewController.pokeModel = detailDelegate?.requestModel()
-        viewController.view.backgroundColor = UIColor.white
-        viewController.title = self.title! + " Camera"
-        navigationcontroller.viewControllers = [viewController]
-        viewController.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "Done", style: .done, target: viewController, action: #selector(viewController.dismissz))
+        let arViewController = PokeCameraViewController(nibName: nil, bundle: nil)
+        guard let model = detailDelegate?.requestModel() else {
+            return
+        }
+        arViewController.pokeModel = model
+        PokeCameraViewController.labelFont = rawbodyfont
+        arViewController.view.backgroundColor = UIColor.white
+        arViewController.title = model.name + " Camera"
         
-        self.present(navigationcontroller, animated: true) {
-            print("done",navigationcontroller.description,viewController.description,self.description)
+        
+        self.present(arViewController, animated: true) {
+            print("done",arViewController.description,self.description)
         }
     
     }

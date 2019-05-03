@@ -161,11 +161,15 @@ class AboutScreenViewController : UIViewController {
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        animateSubviews()
+    }
+    
     override func viewDidLayoutSubviews() {
         
         //activateConstraints()
         print("layout subviews", stackView.arrangedSubviews.first!.frame.size == .zero)
-        animateSubviews()
+        
         
     }
     

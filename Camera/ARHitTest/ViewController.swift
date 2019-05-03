@@ -10,6 +10,13 @@ public class PokeCameraViewController : UIViewController, UIGestureRecognizerDel
     var renderer:Renderer!
     var captureButton:CaptureButton!
     
+    public static var labelFont:UIFont?
+    
+    var closeButton:UIButton!
+    var titleLable:UILabel!
+    
+    let debugModeSwitch:Bool = UserDefaults.standard.bool(forKey: "experimental")
+    
     public var pokeModel:PokeARModel?{
         didSet{
            updateData()
@@ -39,6 +46,8 @@ public class PokeCameraViewController : UIViewController, UIGestureRecognizerDel
         arView.addGestureRecognizer(pan)
         pan.delegate = self
         
+        let guide = arView.safeAreaLayoutGuide
+        
 //        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
 //        arView.addGestureRecognizer(pinch)
 //        pinch.delegate = self
@@ -51,32 +60,43 @@ public class PokeCameraViewController : UIViewController, UIGestureRecognizerDel
         arView.addGestureRecognizer(rotate)
         rotate.delegate = self
         
-
-        let uiswitch = UISwitch()
-        uiswitch.translatesAutoresizingMaskIntoConstraints = false
-        uiswitch.addTarget(self, action: #selector(updateDebug(_:)), for: .valueChanged)
-        uiswitch.transform = CGAffineTransform(rotationAngle: -.pi / 4)
-        arView.addSubview(uiswitch)
-        
         captureButton = CaptureButton()
         
         captureButton.addTarget(self, action: #selector(capture(_:)), for: .touchUpInside)
         captureButton.isUserInteractionEnabled = true
+        
         arView.addSubview(captureButton)
-        
-        let guide = arView.safeAreaLayoutGuide
-        
         captureButton.widthAnchor.constraint(equalToConstant: captureButton.captureButtonDimension).isActive = true
         captureButton.heightAnchor.constraint(equalToConstant: captureButton.captureButtonDimension).isActive = true
-        
         captureButton.rightAnchor.constraint(equalTo: guide.rightAnchor, constant: -20).isActive = true
-        
         captureButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
         
-        guide.rightAnchor.constraint(equalToSystemSpacingAfter:uiswitch.rightAnchor, multiplier: 1.0).isActive = true
-       guide.bottomAnchor.constraint(equalToSystemSpacingBelow:uiswitch.bottomAnchor, multiplier: 2.0).isActive = true
+        closeButton = UIButton()
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("Close", for: .normal)
         
-        updateDebug(uiswitch)
+        if let labelFont = PokeCameraViewController.labelFont{
+            closeButton.titleLabel?.font = UIFontMetrics(forTextStyle: .title2).scaledFont(for: labelFont)
+        }
+        
+        closeButton.addTarget(self, action: #selector(dismissz), for: .touchUpInside)
+        view.addSubview(closeButton)
+        
+        closeButton.topAnchor.constraint(equalToSystemSpacingBelow: view.safeAreaLayoutGuide.topAnchor, multiplier: 1.0).isActive = true
+        arView.safeAreaLayoutGuide.trailingAnchor.constraint(lessThanOrEqualToSystemSpacingAfter: closeButton.trailingAnchor, multiplier: 1.0).isActive = true
+    
+        
+        if(debugModeSwitch){
+            let uiswitch = UISwitch()
+            uiswitch.translatesAutoresizingMaskIntoConstraints = false
+            uiswitch.addTarget(self, action: #selector(updateDebug(_:)), for: .valueChanged)
+            uiswitch.transform = CGAffineTransform(rotationAngle: -.pi / 4)
+            arView.addSubview(uiswitch)
+            guide.rightAnchor.constraint(equalToSystemSpacingAfter:uiswitch.rightAnchor, multiplier: 1.0).isActive = true
+            guide.bottomAnchor.constraint(equalToSystemSpacingBelow:uiswitch.bottomAnchor, multiplier: 2.0).isActive = true
+            updateDebug(uiswitch)
+        }
+        
     }
     
     override public func viewWillLayoutSubviews() {
