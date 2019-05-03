@@ -125,7 +125,9 @@ public class PokeCameraViewController : UIViewController, UIGestureRecognizerDel
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Saved To Camera Roll"
-        //label.font = UIFontMetrics.init(forTextStyle: .caption1).scaledFont(for: UIFont.systemFont(ofSize: 10))
+        if let labelFont = PokeCameraViewController.labelFont{
+            label.font = UIFontMetrics.init(forTextStyle: .title1).scaledFont(for: labelFont)
+        }
         label.textColor = .white
         label.textAlignment = .center
         let safety = self.view.safeAreaLayoutGuide
