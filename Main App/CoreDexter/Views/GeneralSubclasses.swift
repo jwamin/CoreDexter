@@ -166,3 +166,9 @@ class RingImageView : UIView{
     }
 }
 
+
+class ArrangedUILabel : UILabel{
+    
+    var animated = false
+    
+}

@@ -512,7 +512,7 @@ class DetailViewController: UIViewController {
             let vXConstraint = imageContainer.centerXAnchor.constraint(equalTo: layoutGuides.centerXAnchor)
             let vYConstraint = imageContainer.centerYAnchor.constraint(equalTo: layoutGuides.centerYAnchor)
             
-            let metrics = ["maxDimension":(widthConstraint - 16),"layoutHeight":self.view.bounds.height/8]
+            let metrics = ["maxDimension":(widthConstraint - 17),"layoutHeight":self.view.bounds.height/8]
             
             centeriseConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-8@999-[imgcontainer(==maxDimension)]-8@999-|", options: [], metrics: metrics, views: views)
             

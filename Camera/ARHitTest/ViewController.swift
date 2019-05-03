@@ -73,8 +73,8 @@ public class PokeCameraViewController : UIViewController, UIGestureRecognizerDel
         
         captureButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
         
-        guide.rightAnchor.constraint(equalToSystemSpacingAfter: uiswitch.rightAnchor, multiplier: 1.0).isActive = true
-       guide.bottomAnchor.constraint(equalToSystemSpacingBelow:uiswitch.bottomAnchor, multiplier: 1.0).isActive = true
+        guide.rightAnchor.constraint(equalToSystemSpacingAfter:uiswitch.rightAnchor, multiplier: 1.0).isActive = true
+       guide.bottomAnchor.constraint(equalToSystemSpacingBelow:uiswitch.bottomAnchor, multiplier: 2.0).isActive = true
         
         updateDebug(uiswitch)
     }

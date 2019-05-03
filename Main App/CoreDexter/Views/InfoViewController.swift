@@ -21,6 +21,10 @@ class AboutScreenViewController : UIViewController {
         ["test":.grass],
         ["test":.ghost],
         ["test":.ice],
+        ["test":.dragon],
+        ["test":.grass],
+        ["test":.ghost],
+        ["test":.ice],
         ["test":.dragon]
     ]
     
@@ -32,7 +36,7 @@ class AboutScreenViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("loaded")
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .lightGray
         
         setupViews()
         
@@ -46,7 +50,7 @@ class AboutScreenViewController : UIViewController {
             
             scrollView = UIScrollView()
             scrollView.translatesAutoresizingMaskIntoConstraints = false
-            scrollView.backgroundColor = .red
+            
             stackView = UIStackView()
             stackView.translatesAutoresizingMaskIntoConstraints = false
             stackView.axis = .vertical
@@ -70,7 +74,7 @@ class AboutScreenViewController : UIViewController {
                 label.setContentHuggingPriority(UILayoutPriority(100), for: .vertical)
                 label.setContentHuggingPriority(UILayoutPriority(100), for: .horizontal)
                 
-                label.layer.opacity = 0.1
+                label.layer.opacity = 0.0
                 label.transform = CGAffineTransform(translationX: 0, y: 100)
                 
                 
@@ -117,7 +121,7 @@ class AboutScreenViewController : UIViewController {
             NSLayoutConstraint.activate(constraints)
             
         }
-        //self.view.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         
         
     }
@@ -125,16 +129,9 @@ class AboutScreenViewController : UIViewController {
     override func viewDidLayoutSubviews() {
         
         //activateConstraints()
+        print("layout subviews", stackView.arrangedSubviews.first!.frame.size == .zero)
+        animateSubviews()
         
-        //animateSubviews()
-        
-        //        if stackView != nil {
-        //            stackView.arrangedSubviews[0].frame
-        //            (stackView.arrangedSubviews[0] as! UILabel).text
-        //            stackView.arrangedSubviews.count
-        //            //view.layoutIfNeeded()
-        //
-        //        }
     }
     
 }
@@ -149,21 +146,36 @@ extension AboutScreenViewController : UIScrollViewDelegate {
         
     }
     
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        animateSubviews()
+    }
+    
     func animateSubviews(){
-        for (index,arranged) in (stackView.arrangedSubviews as! [ArrangedUILabel]).enumerated(){
-            
-            if arranged.frame.size == .zero {
-                return
+        
+        guard let last = stackView.arrangedSubviews.last as? ArrangedUILabel else {
+            return
+        }
+        
+        if(last.animated || last.frame.size == .zero){
+            // halt if the final element has already animated
+            return
+        }
+        
+        let toAnimate:[ArrangedUILabel] = (stackView!.arrangedSubviews as! [ArrangedUILabel]).compactMap {
+            view in
+            if(!view.animated && scrollView.bounds.intersects(view.frame)){
+                return view
             }
-            
-            print(scrollView.convert(arranged.bounds, from: stackView))
-            
-            if scrollView.bounds.intersects(arranged.frame){
-                
+            return nil
+        }
+        
+        for (index,arranged) in toAnimate.enumerated() {
+ 
                 let animatedBool = arranged.animated
                 if(!animatedBool){
                     arranged.animated = true
-                    UIView.animate(withDuration: 1.0, delay: TimeInterval(0.2 * Float(index)), options: [], animations: {
+                    print(arranged.description, "will animate with index \(index) with delay: \(TimeInterval(0.1 * Float(index)))")
+                    UIView.animate(withDuration: 1.0, delay: TimeInterval(0.1 * Float(index)), options: [.beginFromCurrentState], animations: {
                         
                         arranged.transform = .identity
                         arranged.layer.opacity = 1.0
@@ -172,30 +184,33 @@ extension AboutScreenViewController : UIScrollViewDelegate {
                         print(index, "animated")
                     }
                 }
-            }
-            
+
         }
         
-        var animated = 0
         
-        for arranged in stackView.arrangedSubviews as! [ArrangedUILabel]{
-            
-            if(arranged.animated){
-                animated += 1
-                
-            }
-        }
+//        let toAnimate:[ArrangedUILabel] = (stackView!.arrangedSubviews as! [ArrangedUILabel]).compactMap {
+//            view in
+//            if(!view.animated && scrollView.bounds.intersects(view.frame)){
+//                return view
+//            }
+//            return nil
+//        }
         
-        print("animated \(animated), stillToAnimate: \(stackView.arrangedSubviews.count-animated)")
+        
+//
+//        var animated = 0
+//
+//        for arranged in stackView.arrangedSubviews as! [ArrangedUILabel]{
+//
+//            if(arranged.animated){
+//                animated += 1
+//
+//            }
+//        }
+//
+//        print("animated \(animated), stillToAnimate: \(stackView.arrangedSubviews.count-animated)")
         
         
     }
-    
-}
-
-
-class ArrangedUILabel : UILabel{
-    
-    var animated = false
     
 }

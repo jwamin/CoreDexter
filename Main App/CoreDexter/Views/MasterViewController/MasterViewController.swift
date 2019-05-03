@@ -150,6 +150,7 @@ class MasterViewController: UITableViewController {
     func fileinfo(_ sender:Any){
         
         let alert = UIAlertController(title: "File Info", message:nil, preferredStyle: .actionSheet)
+        alert.view.translatesAutoresizingMaskIntoConstraints = false
         alert.title = "CoreDexter"
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -170,6 +171,9 @@ class MasterViewController: UITableViewController {
             }))
             
             alert.popoverPresentationController?.barButtonItem = (sender as! UIBarButtonItem)
+            //alert.popoverPresentationController?.sourceView = self.view
+            //alert.popoverPresentationController?.sourceRect = self.view.bounds
+            
             alert.addAction(UIAlertAction(title: "Done", style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } catch {
