@@ -167,8 +167,24 @@ class RingImageView : UIView{
 }
 
 
-class ArrangedUILabel : UILabel{
+class ArrangedUILabel : UITextView{
     
     var animated = false
+    
+    override var contentSize: CGSize{
+        didSet{
+            centerAlign()
+        }
+    }
+    
+    private let leftRightInset:CGFloat = 50.0
+    
+    func centerAlign() {
+        var topCorrect = (self.bounds.size.height - self.contentSize.height * self.zoomScale) / 2
+        topCorrect = topCorrect < 0.0 ? 0.0 : topCorrect;
+        self.contentInset.top = topCorrect
+        self.contentInset.left = leftRightInset
+        self.contentInset.right = leftRightInset
+    }
     
 }

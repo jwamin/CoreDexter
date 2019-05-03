@@ -21,18 +21,18 @@ let setRegion:RegionIndex? = {
 }()
 
 // MARK: - Fonts
-fileprivate let font = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize)
-fileprivate let bodyfont = UIFont(name: "Rubik-Light", size: UIFont.systemFontSize)
+let rawfont = UIFont(name: "MajorMonoDisplay-Regular", size: UIFont.labelFontSize)
+let rawbodyfont = UIFont(name: "Rubik-Light", size: UIFont.systemFontSize)
 
 var headingFont:()->UIFont = {
-    guard let font = font else {
+    guard let font = rawfont else {
         fatalError()
     }
     return UIFontMetrics(forTextStyle: .headline).scaledFont(for:font)
 }
 
 var bodyFont:()->UIFont = {
-    guard let bodyfont = bodyfont else {
+    guard let bodyfont = rawbodyfont else {
         fatalError()
     }
     return UIFontMetrics(forTextStyle: .body).scaledFont(for:bodyfont)

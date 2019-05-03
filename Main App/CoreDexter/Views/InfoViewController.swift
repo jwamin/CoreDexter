@@ -11,37 +11,39 @@ import PokeAPIKit
 
 class AboutScreenViewController : UIViewController {
     
-    let messages:[[String:ElementalType]] = [
-        ["CoreDexter":.fire],
-        ["v0.1 (2)":.electric],
-        ["By Joss Manger":.grass],
-        ["some more interesting info":.ghost],
-        ["and more":.ice],
-        ["copy JM 2019":.dragon],
-        ["test":.grass],
-        ["test":.ghost],
-        ["test":.ice],
-        ["test":.dragon],
-        ["test":.grass],
-        ["test":.ghost],
-        ["test":.ice],
-        ["test":.dragon]
+    let elementStyles:[ElementalType] = [
+        .fire,
+        .electric,
+        .grass,
+        .water,
+        .ghost,
+        .ice,
+        .dragon,
+        .flying,
+        .bug,
+        .fairy,
+        .psychic
     ]
     
     var viewConstraints:[NSLayoutConstraint]?
     var scrollView:UIScrollView!
     var stackView:UIStackView!
     var label:UILabel!
+    var closeButton:UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print("loaded")
         self.view.backgroundColor = .lightGray
-        
+        print(plist)
         setupViews()
-        
+
         activateConstraints()
         
+    }
+    
+    @objc func dismissSelf(){
+        dismiss(animated: true, completion: nil)
     }
     
     private func setupViews(){
@@ -50,6 +52,7 @@ class AboutScreenViewController : UIViewController {
             
             scrollView = UIScrollView()
             scrollView.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.contentInsetAdjustmentBehavior = .never
             
             stackView = UIStackView()
             stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -57,17 +60,46 @@ class AboutScreenViewController : UIViewController {
             stackView.distribution = .fillEqually
             stackView.alignment = .fill
             
-            for info in messages{
+            closeButton = UIButton(type: .system)
+            closeButton.translatesAutoresizingMaskIntoConstraints = false
+            closeButton.setTitle("Close", for: .normal)
+            closeButton.addTarget(self, action: #selector(dismissSelf), for: .touchUpInside)
+            
+            
+            for (index,info) in messages.enumerated(){
                 
                 let label = ArrangedUILabel()
                 
-                let (message,element) = info.first!
-                
+                let (message,style) = info.first!
+                let element = elementStyles[index]
                 //this is very very odd, why does creating a reference to first arranged subview cause it to be removed from the stackview
                 
                 label.translatesAutoresizingMaskIntoConstraints = false
                 label.textAlignment = .center
-                label.text = message
+                label.dataDetectorTypes = [.all]
+                label.isEditable = false
+                //label.numberOfLines = 0
+                
+                
+                if(message == attributed.string){
+                    label.attributedText = attributed
+                    label.textAlignment = .center
+                    label.font = bodyFont()
+                } else {
+                    label.text = message
+                    switch style{
+                    case .title:
+                        label.font = headingFont()
+                    case .small:
+                        label.font = UIFontMetrics(forTextStyle: .footnote).scaledFont(for: rawbodyfont!)
+                    default:
+                        label.font = bodyFont()
+                    }
+                }
+                
+
+                
+                
                 let colors = element.getColors()
                 label.backgroundColor = colors.backgroundColor
                 label.textColor = colors.textColor
@@ -86,6 +118,7 @@ class AboutScreenViewController : UIViewController {
             //print(stackView.arrangedSubviews)
             scrollView.addSubview(stackView)
             view.addSubview(scrollView)
+            self.view.addSubview(closeButton)
             scrollView.delegate = self
         }
         
@@ -114,7 +147,9 @@ class AboutScreenViewController : UIViewController {
             constraints += [
                 
                 label.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-                label.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 0.2)
+                label.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 0.2),
+                view.safeAreaLayoutGuide.bottomAnchor.constraint(equalToSystemSpacingBelow: closeButton.bottomAnchor, multiplier: 1.0),
+                view.safeAreaLayoutGuide.rightAnchor.constraint(equalToSystemSpacingAfter: closeButton.rightAnchor, multiplier: 1.0)
                 
             ]
             
