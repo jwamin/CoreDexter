@@ -21,7 +21,7 @@ extension PokeCameraViewController {
         photoView.layer.opacity = 0.0
         savedLabel.layer.opacity = 0.0
         exposureView.frame = view.frame
-        self.view.insertSubview(exposureView, at: 0)
+        self.view.addSubview(exposureView)
         self.view.insertSubview(savedLabel, belowSubview: exposureView)
         UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(image:didFinishSavingWith:contextInfo:)), nil)
         

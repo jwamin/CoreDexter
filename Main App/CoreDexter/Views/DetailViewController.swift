@@ -10,6 +10,7 @@ import UIKit
 import PokeAPIKit
 import PokeCamera
 import AVFoundation
+import StoreKit
 
 class DetailViewController: UIViewController {
     
@@ -21,6 +22,8 @@ class DetailViewController: UIViewController {
     
     var delegate:LoadingProtocol?
     var detailDelegate:DetailDelegate?
+    
+    static var shouldShowAppstoreReview = false
     
     let font:UIFont = headingFont()
     let bodyfont:UIFont = bodyFont()
@@ -702,6 +705,45 @@ extension DetailViewController{
     
     //MARK: ARKit
     
+    override func viewDidAppear(_ animated: Bool) {
+        if(DetailViewController.shouldShowAppstoreReview){
+            DetailViewController.shouldShowAppstoreReview = false
+            maybeReview()
+        }
+    }
+    
+    public struct UserDefaultsKeys {
+        static let processCompletedCountKey = "reviewProcessCompleted"
+        static let lastVersionPromptedForReviewKey = "lastVersionPrompted"
+    }
+    
+    
+    func maybeReview(){
+        var count = UserDefaults.standard.integer(forKey: UserDefaultsKeys.processCompletedCountKey)
+        count += 1
+        UserDefaults.standard.set(count, forKey: UserDefaultsKeys.processCompletedCountKey)
+        
+        print("Process completed \(count) time(s)")
+        
+        // Get the current bundle version for the app
+        let infoDictionaryKey = kCFBundleVersionKey as String
+        guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
+            else { fatalError("Expected to find a bundle version in the info dictionary") }
+        
+        let lastVersionPromptedForReview = UserDefaults.standard.string(forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey)
+        
+        // Has the process been completed several times and the user has not already been prompted for this version?
+        if count >= 4 && currentVersion != lastVersionPromptedForReview {
+            let twoSecondsFromNow = DispatchTime.now() + 2.0
+            DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) { [navigationController] in
+                if navigationController?.topViewController is DetailViewController {
+                    SKStoreReviewController.requestReview()
+                    UserDefaults.standard.set(currentVersion, forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey)
+                }
+            }
+        }
+    }
+    
     @objc
     func startARKitView(){
     
@@ -714,6 +756,7 @@ extension DetailViewController{
         arViewController.view.backgroundColor = UIColor.white
         arViewController.title = model.name + " Camera"
         
+        DetailViewController.shouldShowAppstoreReview = true
         
         self.present(arViewController, animated: true) {
             print("done",arViewController.description,self.description)
