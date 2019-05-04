@@ -24,7 +24,7 @@
 		5710A59D224BF92F004F196F /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5710A59C224BF92F004F196F /* CoreDataTests.swift */; };
 		572C6E67225E676E00BD4F1F /* Rubik-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 572C6E66225E676E00BD4F1F /* Rubik-Light.ttf */; };
 		573E8ED722564E4F0009808E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D2BE742220231F300E28519 /* Assets.xcassets */; };
-		573E8ED922564E940009808E /* 1024-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 573E8ED822564E940009808E /* 1024-1.png */; };
+		573E8ED922564E940009808E /* Icon-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 573E8ED822564E940009808E /* Icon-1024.png */; };
 		5743B655226F5B5700113807 /* MasterViewControllerAnimating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5743B654226F5B5700113807 /* MasterViewControllerAnimating.swift */; };
 		5773AF81224C15D700C90641 /* FilesystemOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5773AF80224C15D700C90641 /* FilesystemOperationTests.swift */; };
 		57A859F5223ABACD00926BF7 /* PokeAPIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A859F4223ABACD00926BF7 /* PokeAPIKit.swift */; };
@@ -96,7 +96,7 @@
 		5710A59C224BF92F004F196F /* CoreDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTests.swift; sourceTree = "<group>"; };
 		5710A59E224BF92F004F196F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		572C6E66225E676E00BD4F1F /* Rubik-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rubik-Light.ttf"; sourceTree = "<group>"; };
-		573E8ED822564E940009808E /* 1024-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "1024-1.png"; path = "CoreDexter/Assets.xcassets/AppIcon.appiconset/1024-1.png"; sourceTree = "<group>"; };
+		573E8ED822564E940009808E /* Icon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-1024.png"; path = "CoreDexter/Assets.xcassets/AppIcon.appiconset/Icon-1024.png"; sourceTree = "<group>"; };
 		5743B654226F5B5700113807 /* MasterViewControllerAnimating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewControllerAnimating.swift; sourceTree = "<group>"; };
 		5773AF80224C15D700C90641 /* FilesystemOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesystemOperationTests.swift; sourceTree = "<group>"; };
 		57A859F2223ABACD00926BF7 /* libPokeAPIKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPokeAPIKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,7 +140,7 @@
 		3D2BE72A220231F200E28519 = {
 			isa = PBXGroup;
 			children = (
-				573E8ED822564E940009808E /* 1024-1.png */,
+				573E8ED822564E940009808E /* Icon-1024.png */,
 				3D2C342E220B64CB00282C38 /* Settings.swift */,
 				3D2BE736220231F200E28519 /* AppDelegate.swift */,
 				57F4078A2266962E00F92289 /* Extensions.swift */,
@@ -362,7 +362,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D2BE746220231F300E28519 /* LaunchScreen.storyboard in Resources */,
-				573E8ED922564E940009808E /* 1024-1.png in Resources */,
+				573E8ED922564E940009808E /* Icon-1024.png in Resources */,
 				573E8ED722564E4F0009808E /* Assets.xcassets in Resources */,
 				3D2C3434220B6FF400282C38 /* Settings.bundle in Resources */,
 				3D2BE741220231F200E28519 /* Main.storyboard in Resources */,

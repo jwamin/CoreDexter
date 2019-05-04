@@ -166,21 +166,21 @@
                                                         <constraint firstItem="2eT-fR-h0w" firstAttribute="width" secondItem="4O9-ww-IM5" secondAttribute="width" multiplier="0.3" id="l1K-5v-ep0"/>
                                                     </constraints>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="251" horizontalCompressionResistancePriority="999" ambiguous="YES" text="Lorme ipsum etc this should be really longh" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
-                                                    <rect key="frame" x="77" y="70.5" width="167.5" height="42.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="251" horizontalCompressionResistancePriority="999" text="Lorme ipsum etc this should be really longh" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NDO-eV-HRb">
+                                                    <rect key="frame" x="77" y="70.5" width="182" height="42.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1" horizontalCompressionResistancePriority="1" ambiguous="YES" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="G3k-iF-Lpa">
-                                                    <rect key="frame" x="252.5" y="38" width="90.5" height="108"/>
+                                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1" horizontalCompressionResistancePriority="1" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="G3k-iF-Lpa">
+                                                    <rect key="frame" x="267" y="61" width="76" height="62"/>
                                                     <subviews>
-                                                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WCK-BJ-GHZ" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
-                                                            <rect key="frame" x="0.0" y="0.0" width="90.5" height="50"/>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WCK-BJ-GHZ" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="0.0" width="76" height="27"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </view>
-                                                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MHD-zn-LD8" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
-                                                            <rect key="frame" x="0.0" y="58" width="90.5" height="50"/>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MHD-zn-LD8" customClass="ElementLabel" customModule="CoreDexter" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="35" width="76" height="27"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </view>
                                                     </subviews>
@@ -349,6 +349,6 @@
         <image name="test" width="512" height="512"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Tll-UG-LXB"/>
+        <segue reference="6S0-TO-JiA"/>
     </inferredMetricsTieBreakers>
 </document>
