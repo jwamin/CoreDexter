@@ -40,7 +40,7 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
         
         statusLabel = UILabel()
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        statusLabel.text = "Status Label"
+        statusLabel.text = ""
         if let labelFont = PokeCameraViewController.labelFont{
             statusLabel.font = UIFontMetrics(forTextStyle: .title2).scaledFont(for: labelFont)
         }
@@ -76,6 +76,10 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
     
     func updateDebug(debug:Bool){
         view.debugOptions = (debug) ? [.showBoundingBoxes,.showFeaturePoints,.showWorldOrigin] : []
+    }
+    
+    func resetExperience(){
+        
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
@@ -358,7 +362,7 @@ class Renderer : NSObject, ARSCNViewDelegate, SCNSceneRendererDelegate{
                 $0.isHidden = false
             }
             updateQueue.sync {
-                self.statusLabel.text = "AR Tracking Is Ready!"
+                self.statusLabel.text = "AR Tracking Is Ready! Move the device around to find a plane..."
             }
         }
     }

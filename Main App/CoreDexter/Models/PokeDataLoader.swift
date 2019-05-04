@@ -146,19 +146,19 @@ class PokeDataLoader{
                 region = getOrGenerateNextRegion(generation: pokemen.generation)
             }
             
-            let pokemon = Pokemon(context: context)
-            pokemon.name = pokemen.name
-            pokemon.generation = pokemen.generation
-            pokemon.region = region
-            pokemon.id = Int16(pokemen.nationalIndex)!
-            pokemon.region_id = Int16(pokemen.regionIndex)!
-            pokemon.type1 = pokemen.type1 ?? nil
-            pokemon.type2 = pokemen.type2 ?? nil
-            pokemon.initialDesc = pokemen.description ?? ""
-            pokemon.genus = pokemen.genus ?? ""
-            pokemon.height = Int16(pokemen.height)
+            let monster = Pokemon(context: context)
+            monster.name = pokemen.name
+            monster.generation = pokemen.generation
+            monster.region = region
+            monster.id = Int16(pokemen.nationalIndex)!
+            monster.region_id = Int16(pokemen.regionIndex)!
+            monster.type1 = pokemen.type1 ?? nil
+            monster.type2 = pokemen.type2 ?? nil
+            monster.initialDesc = pokemen.description ?? ""
+            monster.genus = pokemen.genus ?? ""
+            monster.height = Int16(pokemen.height)
             //add as set to region
-            region.pokemon?.adding(pokemon)
+            region.pokemon?.adding(monster)
             
         }
         
