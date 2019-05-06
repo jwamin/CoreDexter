@@ -280,10 +280,10 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z6i-u2-hvb" customClass="RingImageView" customModule="CoreDexter" customModuleProvider="target">
-                                                <rect key="frame" x="163.5" y="299.5" width="48" height="48"/>
+                                                <rect key="frame" x="179.5" y="315.5" width="16" height="16"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="132" translatesAutoresizingMaskIntoConstraints="NO" id="WBV-gO-dAb">
-                                                        <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
                                                     </imageView>
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

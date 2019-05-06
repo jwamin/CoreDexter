@@ -11,7 +11,7 @@ import PokeAPIKit
 
 protocol DetailDelegate {
     func requestModel()->PokeARModel
-    func updateFavourite() // send message to model to update the favourite status of the current pokemon
+    func updateFavourite() // send message to model to update the favourite status of the current monster
 }
 
 

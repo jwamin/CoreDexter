@@ -43,7 +43,8 @@ let messages:[[String:TextStyle]] = [
     ["Data and sprites from PokeAPI.co":.body],
     ["Cries from Pokeshowdown, requested on an ad-hoc basis":.body],
     ["fonts by Google Fonts":.body],
-    ["Data, sprites and other assets are freely available online and are intended as fair use.\n This app is a personal fan project and generates no revenue.":.small],
+    ["All Characters, names and content and are ©Nintendo and affiliates.":.body],
+    ["Data, sprites and other assets are freely available online and are intended as fair use.\n This app is a personal fan project built for educational purposes. It generates no revenue.":.small],
     ["Produced by JM in 2019":.small]
 ]
 

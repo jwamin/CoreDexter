@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5712521A2258EA3100C55FC3 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571252192258EA3100C55FC3 /* Renderer.swift */; };
-		5712521C2259096500C55FC3 /* 491Darkrai.png in Resources */ = {isa = PBXBuildFile; fileRef = 5712521B2259096500C55FC3 /* 491Darkrai.png */; };
 		572CE5312256C3F300622C3A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572CE5302256C3F300622C3A /* AppDelegate.swift */; };
 		572CE5332256C3F300622C3A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572CE5322256C3F300622C3A /* ViewController.swift */; };
 		572CE5362256C3F300622C3A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 572CE5342256C3F300622C3A /* Main.storyboard */; };
@@ -24,7 +23,6 @@
 		57ED9589226A360900FECD71 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571252192258EA3100C55FC3 /* Renderer.swift */; };
 		57ED958A226A360D00FECD71 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FBC1EB225D19F0002C63A1 /* Settings.swift */; };
 		57ED958D226A4F1A00FECD71 /* libPokeAPIKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57ED958C226A4F1A00FECD71 /* libPokeAPIKit.a */; };
-		57ED9590226A51C600FECD71 /* 491Darkrai.png in Resources */ = {isa = PBXBuildFile; fileRef = 5712521B2259096500C55FC3 /* 491Darkrai.png */; };
 		57ED9591226A51F000FECD71 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 572CE5372256C3F400622C3A /* Assets.xcassets */; };
 		57ED9596226A5D8000FECD71 /* libPokeAPIKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 57ED9595226A5D8000FECD71 /* libPokeAPIKit.a */; };
 		57EE347B2270F8BD0061D574 /* ViewControllerActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EE347A2270F8BD0061D574 /* ViewControllerActions.swift */; };
@@ -45,7 +43,6 @@
 
 /* Begin PBXFileReference section */
 		571252192258EA3100C55FC3 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
-		5712521B2259096500C55FC3 /* 491Darkrai.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 491Darkrai.png; sourceTree = "<group>"; };
 		572CE52D2256C3F300622C3A /* PokeCameraApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeCameraApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		572CE5302256C3F300622C3A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		572CE5322256C3F300622C3A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -119,7 +116,6 @@
 		572CE52F2256C3F300622C3A /* ARHitTest */ = {
 			isa = PBXGroup;
 			children = (
-				5712521B2259096500C55FC3 /* 491Darkrai.png */,
 				572CE5302256C3F300622C3A /* AppDelegate.swift */,
 				572CE5322256C3F300622C3A /* ViewController.swift */,
 				57EE347A2270F8BD0061D574 /* ViewControllerActions.swift */,
@@ -276,7 +272,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				572CE53B2256C3F400622C3A /* LaunchScreen.storyboard in Resources */,
-				5712521C2259096500C55FC3 /* 491Darkrai.png in Resources */,
 				572CE5382256C3F400622C3A /* Assets.xcassets in Resources */,
 				572CE5362256C3F300622C3A /* Main.storyboard in Resources */,
 			);
@@ -287,7 +282,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				57ED9591226A51F000FECD71 /* Assets.xcassets in Resources */,
-				57ED9590226A51C600FECD71 /* 491Darkrai.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

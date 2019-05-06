@@ -149,15 +149,14 @@ class MasterViewController: UITableViewController {
     @objc
     func fileinfo(_ sender:Any){
         
-        let alert = UIAlertController(title: "File Info", message:nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "CoreDexter", message:nil, preferredStyle: .actionSheet)
         alert.view.translatesAutoresizingMaskIntoConstraints = false
-        alert.title = "CoreDexter"
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do{
             let fileURLs = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil)
             alert.message = fileURLs.count.digitString()+" sprites cached"
-            alert.addAction(UIAlertAction(title: "Show About Page", style: .default, handler: { (action) in
+            alert.addAction(UIAlertAction(title: "About", style: .default, handler: { (action) in
                 self.showInfoScreen()
             }))
             alert.addAction(UIAlertAction(title: "Delete cached sprites", style: .default, handler: {[weak self] (action) in
@@ -166,7 +165,7 @@ class MasterViewController: UITableViewController {
                     pokecell.imgview.image = nil
                 }
             }))
-            alert.addAction(UIAlertAction(title: "Reset all data and favourites", style: .destructive, handler: {(action) in
+            alert.addAction(UIAlertAction(title: "Reset all data, sprites and favourites", style: .destructive, handler: {(action) in
                 self.callReset()
             }))
             
@@ -238,6 +237,7 @@ class MasterViewController: UITableViewController {
                 controller.detailDelegate = self
                 
                 viewModel.getImageforID(id: object.objectID, callback: { [unowned controller, unowned self] (img) in
+                    
                     controller.img = img
                     self.viewModel.setCurrentPokemonViewStruct(id: object.objectID)
                     print("setting pokemon data")
@@ -248,7 +248,7 @@ class MasterViewController: UITableViewController {
                     return
                 }
                 
-                switch(displayMode){
+              switch(displayMode){
                 case .primaryOverlay:
                     UIView.animate(withDuration: 0.3, animations: {
                         self.splitViewController?.preferredDisplayMode = UISplitViewController.DisplayMode.primaryHidden

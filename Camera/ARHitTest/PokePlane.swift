@@ -18,7 +18,7 @@ public class PokePlane : SCNNode{
     public init(pokemonData:PokeARModel?) {
         super.init()
         var dimension:CGFloat = pokeDefaultPlainDimension
-        var image:UIImage = UIImage(named: "darkrai", in: Bundle(for: type(of: self)), compatibleWith: nil)!
+        var image:UIImage?
         
         if let data = pokemonData{
             dimension = CGFloat(data.height)
@@ -33,7 +33,7 @@ public class PokePlane : SCNNode{
         
         self.geometry = geometry
         //setup geometry materials (image)
-        geometry.materials.first!.diffuse.contents = image
+        geometry.materials.first!.diffuse.contents = image ?? UIColor.red.cgColor
         geometry.materials.first!.isDoubleSided = true
         
         //set bitmask for removal later
