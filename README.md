@@ -1,5 +1,5 @@
 #  CoreDexter
-## The `CoreData` Pokédex
+## The `CoreData` Pokédex with AR Camera
 
 ![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e78.jpg?raw=true "Screenshot")
 ![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e67.jpg?raw=true "Screenshot")
@@ -11,14 +11,17 @@
 ### Features
 * `CoreData` backed relational persistence. Preloaded from [PokeAPI](https://pokeapi.co)
 * MVVM architecture
+* About Screen
 * `ARKit` Camera!
     * Sprites from API.
     * SCNPlane dimensions from `height` attribute from API response.
     * translate and rotate with `UIGestureRecognizers`
+    * AR Session `state` feedback.
     * Capture button, save to camera roll! Callback animation.
     * AR Debug view switch
 * Lazy loaded sprites on scroll, saved to CD on first load. Smooth async with tableview scroll!
-* cached resources alert view
+* Cached resources alert action sheet
+* Search Controller
 * Custom UITableViewCell View, nested stack views.
 * Constraint animation reorganises detail view.
 * Tap animation utilising `CAKeyframesAnimation`
@@ -31,18 +34,11 @@
 ### TODO
 * Initial load error handling
     * Handle `fatalError`s in initial load code, handle drops in connection. Present Alert View, flush and restart.
-* Master View Controller
-    * Search controller
-* Detail View Controller
-    * Dynamic Type
-* ARCamera
-    * Better onscreen feedback for AR State, controls etc...
 * Save images in a more organised way (Sub directories of .documentDirectory)
 * Segmented / Tab View for alternative regions?
-* Fix to CD Region object propagation.
 
 ### Future features
-* Scenekit FlyPast scene with hit tests
+* Scenekit FlyPast scene with hit tests ? 
 
 ### Assets
 * Sprites and data from [PokeAPI](https://pokeapi.co)
