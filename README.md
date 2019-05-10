@@ -1,6 +1,13 @@
 #  CoreDexter
 ## The `CoreData` Pokédex
 
+![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e78.jpg?raw=true "Screenshot")
+![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e67.jpg?raw=true "Screenshot")
+![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e77.jpg?raw=true "Screenshot")
+![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e6b.jpg?raw=true "Screenshot")
+![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e68.jpg?raw=true "Screenshot")
+![Alt text](/shots/UNADJUSTEDNONRAW_thumb_7e6a.jpg?raw=true "Screenshot")
+
 ### Features
 * `CoreData` backed relational persistence. Preloaded from [PokeAPI](https://pokeapi.co)
 * MVVM architecture

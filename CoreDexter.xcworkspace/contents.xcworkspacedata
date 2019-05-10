@@ -5,6 +5,9 @@
       location = "group:README.md">
    </FileRef>
    <FileRef
+      location = "group:shots">
+   </FileRef>
+   <FileRef
       location = "group:Main App/.gitignore">
    </FileRef>
    <FileRef
