@@ -506,6 +506,7 @@ class MasterViewController: UITableViewController {
             
             DispatchQueue.main.async {
                 
+                cell.imageRequest = nil
                 cell.imgview.image = img
                 cell.layoutIfNeeded()
                 

@@ -19,7 +19,11 @@ class PokeCellTableViewCell: UITableViewCell {
     
     var imageRequest:URLSessionDataTask? {
         didSet{
-            print("didSet")
+            
+            if let _ = self.imageRequest{
+                print("didSet")
+            }
+            
         }
     }
     
