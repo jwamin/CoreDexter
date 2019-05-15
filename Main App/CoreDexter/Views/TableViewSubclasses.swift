@@ -17,6 +17,12 @@ class PokeCellTableViewCell: UITableViewCell {
     @IBOutlet weak var type2Label: ElementLabel!
     @IBOutlet weak var favBadge: UIImageView!
     
+    var imageRequest:URLSessionDataTask? {
+        didSet{
+            print("didSet")
+        }
+    }
+    
     weak var layoutGuide:UILayoutGuide?
     
     override func awakeFromNib() {
@@ -60,6 +66,15 @@ class PokeCellTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         self.imgview.image = nil
         self.mainLabel.text = nil
+        
+        if let imageRequest = self.imageRequest{
+            if(imageRequest.state == .running){
+                imageRequest.cancel()
+                print("cancelling")
+                self.imageRequest = nil
+            }
+        }
+        
         setFavourite(isFavourite: false)
         super.prepareForReuse()
     }

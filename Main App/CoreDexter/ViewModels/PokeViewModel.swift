@@ -118,12 +118,14 @@ final class PokeViewModel{
     
     //MARK: Images
     
-    public func getImageforID(id:NSManagedObjectID, callback:@escaping ((UIImage)->())){
+    public func getImageforID(id:NSManagedObjectID, callback:@escaping ((UIImage)->())) -> URLSessionDataTask?{
         
         let poke = pokeDataLoader.managedObjectContext.object(with: id) as! Pokemon
         
+        let maybeRequest:URLSessionDataTask?
+        
         //get image from model
-        pokeDataLoader.getImage(item: poke) { [weak poke] (img, filename) in
+        maybeRequest = pokeDataLoader.getImage(item: poke) { [weak poke] (img, filename) in
 
             
             if(poke != nil && filename != nil && poke!.front_sprite_filename == nil){
@@ -134,6 +136,8 @@ final class PokeViewModel{
                 callback(img)
             
         }
+        
+        return maybeRequest
         
     }
     

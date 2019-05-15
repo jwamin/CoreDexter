@@ -427,7 +427,7 @@ class PokeDataLoader{
     
     //MARK: Image Operations
     
-    public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
+    public func getImage(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?) -> URLSessionDataTask?{
         
         if let sprite_filename = item.front_sprite_filename{
             
@@ -435,16 +435,16 @@ class PokeDataLoader{
             do {
                 try getImageFromStorage(filepath: sprite_filename, callback: callback)
             } catch FSRetrievalError.inDataButNotFileSystem {
-                loadImageFromAPI(item: item, callback: callback)
+                return loadImageFromAPI(item: item, callback: callback)
             } catch {
                 fatalError()
             }
             
         } else {
             //print("no filename, will load",item.id)
-            loadImageFromAPI(item: item, callback: callback)
+            return loadImageFromAPI(item: item, callback: callback)
         }
-        
+        return nil
     }
     
     private func getImageFromStorage(filepath:String,callback:((_ img:UIImage,_ filePath:String?)->Void)?) throws {
@@ -483,12 +483,12 @@ class PokeDataLoader{
         
     }
     
-    private func loadImageFromAPI(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?){
+    private func loadImageFromAPI(item:Pokemon,callback:((_ img:UIImage,_ filePath:String?)->Void)?)->URLSessionDataTask?{
         
-        DispatchQueue.global().async {
+       
             
             guard let url = URL(string:IMAGE_URL+String(item.id)+".png") else {
-                return
+                return nil
             }
             
             let imageTask = URLSession.shared.dataTask(with: url, completionHandler: {
@@ -535,9 +535,10 @@ class PokeDataLoader{
                 }
                 
             })
-            
+             DispatchQueue.global().async {
             imageTask.resume()
         }
+        return imageTask
     }
     
     

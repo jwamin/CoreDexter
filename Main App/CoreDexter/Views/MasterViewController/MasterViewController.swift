@@ -470,12 +470,12 @@ class MasterViewController: UITableViewController {
         //cell.layoutIfNeeded()
         let pokeCell = cell as! PokeCellTableViewCell
         //pokeCell.updateCircle()
-        DispatchQueue.global(qos: .background).async {
+        
             
             //asynchronously requests image if there is none
-            self.getImageForCell(at: indexPath)
+        self.getImageForCell(at: indexPath,cell:pokeCell)
             
-        }
+        
     }
     
     
@@ -492,7 +492,7 @@ class MasterViewController: UITableViewController {
     }
     
     
-    public func getImageForCell(at indexPath:IndexPath){
+    public func getImageForCell(at indexPath:IndexPath,cell:PokeCellTableViewCell){
         
         //send message to model to retrieve or request image for cell
         
@@ -501,21 +501,17 @@ class MasterViewController: UITableViewController {
         self.scrollLoading = true
         let id = obj.objectID
         
-        viewModel.getImageforID(id: id){ [unowned self] (img:UIImage) in
+        DispatchQueue.global(qos: .background).async {
+            cell.imageRequest = self.viewModel.getImageforID(id: id){ [unowned self] (img:UIImage) in
             
             DispatchQueue.main.async {
                 
-                //cell might have moved out of view, so we test
-                guard let cell = self.tableView.cellForRow(at: indexPath) as? PokeCellTableViewCell else {
-                    print("no cell at \(indexPath) ?")
-                    return
-                }
-                
                 cell.imgview.image = img
                 cell.layoutIfNeeded()
+                
             }
         }
-        
+        }
         
     }
     
