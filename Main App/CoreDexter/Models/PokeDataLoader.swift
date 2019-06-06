@@ -99,6 +99,7 @@ class PokeDataLoader{
         let predicate = NSPredicate(format: "name==%@", argumentArray: [name])
         let fetchRequest = NSFetchRequest<Region>(entityName: "Region")
         fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1
         do{
             let result = try context.fetch(fetchRequest)
             print("number of \(name) regions now \(result.count)")
