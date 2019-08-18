@@ -755,7 +755,11 @@ extension DetailViewController{
         PokeCameraViewController.labelFont = rawbodyfont
         arViewController.view.backgroundColor = UIColor.white
         arViewController.title = model.name + " Camera"
-        
+      
+      if #available(iOS 13.0,*){
+        arViewController.modalPresentationStyle = .fullScreen
+      }
+      
         DetailViewController.shouldShowAppstoreReview = true
         
         self.present(arViewController, animated: true) {

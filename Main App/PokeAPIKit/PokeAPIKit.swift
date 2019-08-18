@@ -53,20 +53,31 @@ public struct Description : Codable {
     public let language:NameURL
 }
 
+//public struct PokemonStruct : Codable {
+//    public let abilities:[Ability]
+//    public let forms:[NameURL]
+//    public let species:NameURL
+//    public let types:[Type]
+//    public let game_indices:[GameIndex]
+//    public let weight:Int
+//    public let order:Int
+//    public let name:String
+//    public let height:Int
+//    public let id:Int
+//    public let is_default:Bool
+//    public let location_area_encounters: URL
+//    public let sprites:Sprites
+//}
+
 public struct PokemonStruct : Codable {
-    public let abilities:[Ability]
-    public let forms:[NameURL]
-    public let species:NameURL
-    public let types:[Type]
-    public let game_indices:[GameIndex]
-    public let weight:Int
-    public let order:Int
-    public let name:String
-    public let height:Int
-    public let id:Int
-    public let is_default:Bool
-    public let location_area_encounters: URL
-    public let sprites:Sprites
+  public let species:NameURL
+  public let types:[Type]
+  public let game_indices:[GameIndex]
+  public let weight:Int
+  public let name:String
+  public let height:Int
+  public let id:Int
+  public let sprites:Sprites
 }
 
 public struct Stat:Codable {

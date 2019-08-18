@@ -338,7 +338,7 @@ class PokeDataLoader{
             return
         }
         let pokemonDataTask = URLSession.shared.dataTask(with: url, completionHandler: {
-            [unowned self] (data, response, error) in
+            [unowned self,url] (data, response, error) in
             
             if let error = error {
                 print(error.localizedDescription, "\(regionIndex) dropped from deep pokemon info, retrying...")
@@ -356,7 +356,8 @@ class PokeDataLoader{
             do {
                 pokemon = try decoder.decode(PokemonStruct.self, from: data)
             } catch {
-                fatalError(error.localizedDescription)
+                print(error,url)
+              fatalError()
             }
             
             var thisPokeIndex = 0

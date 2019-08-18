@@ -24,6 +24,7 @@ class CoreDexterTests: XCTestCase {
         
         container = NSPersistentContainer(name: "CoreDexter")
         //container.persistentStoreDescriptions[0].url = URL(fileURLWithPath: "/dev/null")
+        //container.persistentStoreCoordinator.addPersistentStore(ofType: NSInMemoryStoreType, configurationName: nil, at: container.persistentStoreDescriptions[0].url, options: nil)
         container.loadPersistentStores { (description, error) in
             XCTAssertNil(error)
         }
