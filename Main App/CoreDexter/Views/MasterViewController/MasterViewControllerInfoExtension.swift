@@ -13,7 +13,9 @@ extension MasterViewController {
     func showInfoScreen(){
         
         let aboutScreen = AboutScreenViewController(nibName: nil, bundle: nil)
-
+      if #available(iOS 13.0,*){
+      aboutScreen.modalPresentationStyle = .fullScreen
+      }
         self.present(aboutScreen, animated: true, completion: nil)
         
         
